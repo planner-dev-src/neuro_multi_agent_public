@@ -1,0 +1,91 @@
+{
+  "config_type": "parsing_rules",
+  "schema_version": "1.0",
+  "domain": "education_market",
+  "owner": "market_agent",
+  "consumers": [
+    "market_agent",
+    "metrics_agent",
+    "report_agent"
+  ],
+  "description": "Field extraction rules for course and program pages",
+  "entity_types": [
+    {
+      "content_type": "course",
+      "required_fields": [
+        "platform_id",
+        "source_url",
+        "title"
+      ],
+      "optional_fields": [
+        "subtitle",
+        "description",
+        "category",
+        "subcategories",
+        "format",
+        "language",
+        "difficulty_level",
+        "duration_text",
+        "duration_months",
+        "hours_total",
+        "price_text",
+        "price_amount",
+        "currency",
+        "installment_available",
+        "certificate",
+        "employment_support",
+        "internship",
+        "mentoring",
+        "projects_count",
+        "modules_count",
+        "lessons_count",
+        "skills",
+        "tools",
+        "teachers",
+        "admission_requirements",
+        "start_date_text"
+      ]
+    },
+    {
+      "content_type": "program",
+      "required_fields": [
+        "platform_id",
+        "source_url",
+        "title"
+      ],
+      "optional_fields": [
+        "subtitle",
+        "description",
+        "program_type",
+        "format",
+        "language",
+        "target_audience",
+        "duration_text",
+        "duration_months",
+        "hours_total",
+        "price_text",
+        "price_amount",
+        "currency",
+        "document_type",
+        "admission_requirements",
+        "curriculum",
+        "modules_count",
+        "teachers",
+        "start_date_text"
+      ]
+    }
+  ],
+  "normalization_rules": {
+    "trim_whitespace": true,
+    "strip_html": true,
+    "normalize_urls": true,
+    "deduplicate_lists": true,
+    "convert_empty_strings_to_null": true
+  },
+  "value_rules": {
+    "currency_default": "RUB",
+    "duration_months_rounding": "half_up",
+    "max_text_length_description": 5000,
+    "max_items_in_list_fields": 100
+  }
+}

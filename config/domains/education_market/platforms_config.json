@@ -1,0 +1,173 @@
+{
+  "config_type": "platform_registry",
+  "schema_version": "1.2",
+  "domain": "education_market",
+  "owner": "market_agent",
+  "consumers": [
+    "orchestrator",
+    "market_agent",
+    "metrics_agent",
+    "report_agent"
+  ],
+  "description": "Shared platform registry for RU education market discovery and parsing",
+  "platforms": [
+    {
+      "platform_id": "yandex-practicum",
+      "platform_name": "Yandex Practicum",
+      "category": "ru",
+      "enabled": true,
+      "priority": 1,
+      "seed_urls": [
+        "https://practicum.yandex.ru/catalog/?from=main_all-courses-first-page_card",
+        "https://practicum.yandex.ru/catalog/iskusstvennyj-intellekt/?from=main_ai_card",
+        "https://practicum.yandex.ru/catalog/data-analysis/?from=main_data-analysis_card",
+        "https://practicum.yandex.ru/catalog/programming/?from=main_programming_card"
+      ],
+      "discovery_mode": "catalog_cards",
+      "content_type": "course",
+      "include_url_patterns": [
+        "practicum.yandex.ru/*"
+      ],
+      "exclude_url_patterns": [
+        "*/catalog/*",
+        "*/journal/*",
+        "*/blog/*",
+        "*/media/*",
+        "*?from=*"
+      ],
+      "max_discovered_urls": 80
+    },
+    {
+      "platform_id": "karpov-courses",
+      "platform_name": "Karpov Courses",
+      "category": "ru",
+      "enabled": true,
+      "priority": 2,
+      "seed_urls": [
+        "https://karpov.courses/"
+      ],
+      "discovery_mode": "homepage_blocks",
+      "content_type": "course",
+      "include_url_patterns": [
+        "karpov.courses/*"
+      ],
+      "exclude_url_patterns": [
+        "*/blog/*",
+        "*/media/*",
+        "*/privacy*",
+        "*/terms*"
+      ],
+      "max_discovered_urls": 50
+    },
+    {
+      "platform_id": "otus",
+      "platform_name": "OTUS",
+      "category": "ru",
+      "enabled": true,
+      "priority": 3,
+      "seed_urls": [
+        "https://otus.ru/catalog/courses"
+      ],
+      "discovery_mode": "catalog_cards",
+      "content_type": "course",
+      "include_url_patterns": [
+        "otus.ru/*"
+      ],
+      "exclude_url_patterns": [
+        "*/catalog/courses*",
+        "*/events/*",
+        "*/blog/*",
+        "*/company/*"
+      ],
+      "max_discovered_urls": 120
+    },
+    {
+      "platform_id": "netology",
+      "platform_name": "Netology",
+      "category": "ru",
+      "enabled": true,
+      "priority": 4,
+      "seed_urls": [
+        "https://netology.ru/navigation"
+      ],
+      "discovery_mode": "catalog_cards",
+      "content_type": "course",
+      "include_url_patterns": [
+        "netology.ru/*"
+      ],
+      "exclude_url_patterns": [
+        "*/navigation*",
+        "*/blog/*",
+        "*/media/*",
+        "*/contacts*"
+      ],
+      "max_discovered_urls": 120
+    },
+    {
+      "platform_id": "skillbox",
+      "platform_name": "Skillbox",
+      "category": "ru",
+      "enabled": true,
+      "priority": 5,
+      "seed_urls": [
+        "https://skillbox.ru/courses/"
+      ],
+      "discovery_mode": "catalog_cards_with_pagination",
+      "content_type": "course",
+      "include_url_patterns": [
+        "skillbox.ru/*"
+      ],
+      "exclude_url_patterns": [
+        "*/courses/*",
+        "*/blog/*",
+        "*/media/*",
+        "*/events/*"
+      ],
+      "max_discovered_urls": 150
+    },
+    {
+      "platform_id": "yandex-shad",
+      "platform_name": "Yandex SHAD",
+      "category": "ru",
+      "enabled": true,
+      "priority": 6,
+      "seed_urls": [
+        "https://shad.yandex.ru/courses"
+      ],
+      "discovery_mode": "catalog_courses_list",
+      "content_type": "course",
+      "include_url_patterns": [
+        "shad.yandex.ru/*"
+      ],
+      "exclude_url_patterns": [
+        "*/education*",
+        "*/news/*",
+        "*/events/*"
+      ],
+      "max_discovered_urls": 80
+    },
+    {
+      "platform_id": "hse-dpo",
+      "platform_name": "HSE DPO",
+      "category": "ru",
+      "enabled": true,
+      "priority": 7,
+      "seed_urls": [
+        "https://www.hse.ru/edu/dpo/?tags=867039226&tags=867039230&tags=867039232&tags=867039167&tags=867039231&tags=867039227&tags=867039168&tags=914770513",
+        "https://www.hse.ru/edu/dpo/?page=2&tags=867039226&tags=867039230&tags=867039232&tags=867039167&tags=867039231&tags=867039227&tags=867039168&tags=914770513",
+        "https://www.hse.ru/edu/dpo/?page=3&tags=867039226&tags=867039230&tags=867039232&tags=867039167&tags=867039231&tags=867039227&tags=867039168&tags=914770513"
+      ],
+      "discovery_mode": "paginated_program_cards",
+      "content_type": "program",
+      "include_url_patterns": [
+        "www.hse.ru/edu/dpo/*"
+      ],
+      "exclude_url_patterns": [
+        "*/edu/dpo/?page=*",
+        "*/news/*",
+        "*/events/*"
+      ],
+      "max_discovered_urls": 120
+    }
+  ]
+}

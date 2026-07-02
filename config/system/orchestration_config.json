@@ -1,0 +1,145 @@
+{
+  "config_type": "orchestration_config",
+  "schema_version": "1.0",
+  "domain": "education_market",
+  "owner": "orchestrator",
+  "consumers": [
+    "orchestrator",
+    "meeting_recorder",
+    "market_agent",
+    "metrics_agent",
+    "report_agent"
+  ],
+  "workflow_name": "education_market_analysis",
+  "description": "Deterministic orchestration workflow for meeting-driven market analysis",
+  "global_rules": {
+    "max_retries_per_step": 2,
+    "require_structured_json_handoffs": true,
+    "log_all_agent_actions": true,
+    "allow_partial_results": true
+  },
+  "workflow_steps": [
+    {
+      "step_id": "capture_meeting_results",
+      "agent_id": "meeting_recorder",
+      "input_dependencies": [
+        "meeting_transcript",
+        "manual_notes"
+      ],
+      "output_artifacts": [
+        "meeting_summary",
+        "decision_log",
+        "action_items"
+      ],
+      "next_steps": [
+        "plan_execution"
+      ]
+    },
+    {
+      "step_id": "plan_execution",
+      "agent_id": "orchestrator",
+      "input_dependencies": [
+        "decision_log",
+        "agents_registry",
+        "platform_registry"
+      ],
+      "output_artifacts": [
+        "task_assignments",
+        "workflow_state"
+      ],
+      "next_steps": [
+        "run_market_collection"
+      ]
+    },
+    {
+      "step_id": "run_market_collection",
+      "agent_id": "market_agent",
+      "input_dependencies": [
+        "task_assignments",
+        "platform_registry",
+        "parsing_rules"
+      ],
+      "output_artifacts": [
+        "raw_discovery_results",
+        "normalized_program_records",
+        "crawl_logs"
+      ],
+      "next_steps": [
+        "compute_metrics"
+      ],
+      "fallback_steps": [
+        "retry_market_collection",
+        "manual_seed_url_review"
+      ]
+    },
+    {
+      "step_id": "compute_metrics",
+      "agent_id": "metrics_agent",
+      "input_dependencies": [
+        "normalized_program_records",
+        "metric_definitions"
+      ],
+      "output_artifacts": [
+        "metrics_dataset",
+        "coverage_report",
+        "quality_checks"
+      ],
+      "next_steps": [
+        "generate_report"
+      ],
+      "fallback_steps": [
+        "request_data_repair"
+      ]
+    },
+    {
+      "step_id": "generate_report",
+      "agent_id": "report_agent",
+      "input_dependencies": [
+        "normalized_program_records",
+        "metrics_dataset",
+        "decision_log"
+      ],
+      "output_artifacts": [
+        "draft_report",
+        "final_report",
+        "executive_summary"
+      ],
+      "next_steps": [
+        "close_workflow"
+      ]
+    },
+    {
+      "step_id": "close_workflow",
+      "agent_id": "orchestrator",
+      "input_dependencies": [
+        "final_report",
+        "workflow_state"
+      ],
+      "output_artifacts": [
+        "workflow_status",
+        "completion_log"
+      ],
+      "next_steps": []
+    }
+  ],
+  "fallback_policies": [
+    {
+      "policy_id": "retry_market_collection",
+      "trigger": "market_agent_failed_or_low_coverage",
+      "action": "rerun_market_agent_with_same_config",
+      "max_attempts": 2
+    },
+    {
+      "policy_id": "manual_seed_url_review",
+      "trigger": "discovery_results_below_threshold",
+      "action": "request_manual_seed_url_update",
+      "max_attempts": 1
+    },
+    {
+      "policy_id": "request_data_repair",
+      "trigger": "metrics_agent_detected_missing_required_fields",
+      "action": "send_records_back_to_market_agent_for_repair",
+      "max_attempts": 1
+    }
+  ]
+}

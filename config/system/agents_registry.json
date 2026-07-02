@@ -1,0 +1,160 @@
+{
+  "config_type": "agents_registry",
+  "schema_version": "1.0",
+  "domain": "education_market",
+  "owner": "orchestrator",
+  "consumers": [
+    "orchestrator",
+    "meeting_recorder",
+    "market_agent",
+    "metrics_agent",
+    "report_agent"
+  ],
+  "description": "Registry of agents participating in the education market analysis workflow",
+  "agents": [
+    {
+      "agent_id": "meeting_recorder",
+      "agent_name": "Meeting Recorder Agent",
+      "role": "capture_and_structure_meeting_results",
+      "enabled": true,
+      "inputs": [
+        "meeting_transcript",
+        "manual_decisions",
+        "task_updates"
+      ],
+      "outputs": [
+        "meeting_summary",
+        "action_items",
+        "decision_log"
+      ],
+      "reads_from": [
+        "knowledge_store"
+      ],
+      "writes_to": [
+        "knowledge_store/meeting_notes",
+        "knowledge_store/decision_log"
+      ],
+      "handoff_to": [
+        "orchestrator"
+      ]
+    },
+    {
+      "agent_id": "market_agent",
+      "agent_name": "Market Analysis Agent",
+      "role": "discover_and_parse_platform_program_pages",
+      "enabled": true,
+      "inputs": [
+        "platform_registry",
+        "parsing_rules",
+        "task_scope"
+      ],
+      "outputs": [
+        "raw_discovery_results",
+        "normalized_program_records",
+        "crawl_logs"
+      ],
+      "reads_from": [
+        "config/domains/education_market/platforms_config.json",
+        "config/domains/education_market/parsing_rules.json",
+        "knowledge_store/decision_log"
+      ],
+      "writes_to": [
+        "knowledge_store/raw_market_data",
+        "knowledge_store/normalized_market_data",
+        "knowledge_store/crawl_logs"
+      ],
+      "handoff_to": [
+        "metrics_agent"
+      ]
+    },
+    {
+      "agent_id": "metrics_agent",
+      "agent_name": "Metrics Analysis Agent",
+      "role": "compute_market_and_quality_metrics",
+      "enabled": true,
+      "inputs": [
+        "normalized_program_records",
+        "metric_definitions",
+        "task_scope"
+      ],
+      "outputs": [
+        "metrics_dataset",
+        "quality_checks",
+        "coverage_report"
+      ],
+      "reads_from": [
+        "config/domains/education_market/platforms_config.json",
+        "config/domains/education_market/metric_definitions.json",
+        "knowledge_store/normalized_market_data"
+      ],
+      "writes_to": [
+        "knowledge_store/metrics_data",
+        "knowledge_store/quality_checks"
+      ],
+      "handoff_to": [
+        "report_agent"
+      ]
+    },
+    {
+      "agent_id": "report_agent",
+      "agent_name": "Final Report Agent",
+      "role": "generate_final_report",
+      "enabled": true,
+      "inputs": [
+        "normalized_program_records",
+        "metrics_dataset",
+        "decision_log",
+        "report_template"
+      ],
+      "outputs": [
+        "draft_report",
+        "final_report",
+        "executive_summary"
+      ],
+      "reads_from": [
+        "config/domains/education_market/platforms_config.json",
+        "knowledge_store/normalized_market_data",
+        "knowledge_store/metrics_data",
+        "knowledge_store/decision_log"
+      ],
+      "writes_to": [
+        "knowledge_store/reports"
+      ],
+      "handoff_to": [
+        "orchestrator"
+      ]
+    },
+    {
+      "agent_id": "orchestrator",
+      "agent_name": "Orchestration System",
+      "role": "route_tasks_and_control_workflow",
+      "enabled": true,
+      "inputs": [
+        "decision_log",
+        "system_config",
+        "workflow_state"
+      ],
+      "outputs": [
+        "task_assignments",
+        "workflow_status",
+        "retry_requests"
+      ],
+      "reads_from": [
+        "config/system/agents_registry.json",
+        "config/system/orchestration_config.json",
+        "knowledge_store/decision_log",
+        "knowledge_store/workflow_state"
+      ],
+      "writes_to": [
+        "knowledge_store/workflow_state",
+        "knowledge_store/orchestration_logs"
+      ],
+      "handoff_to": [
+        "meeting_recorder",
+        "market_agent",
+        "metrics_agent",
+        "report_agent"
+      ]
+    }
+  ]
+}

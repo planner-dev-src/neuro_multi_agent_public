@@ -1,0 +1,8 @@
+.nmap_venv/
+__pycache__/
+*.pyc
+.env
+.ipynb_checkpoints/
+data/raw_html/
+data/extracted/
+outputs/

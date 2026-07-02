@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+streamlit
+requests
+httpx
+trafilatura
+beautifulsoup4
+lxml
+pandas
+python-dotenv
+pydantic
+jupyter
+notebook
+ipykernel
+pytest

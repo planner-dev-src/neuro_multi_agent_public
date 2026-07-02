@@ -1,0 +1,397 @@
+{
+  "config_type": "metric_definitions",
+  "schema_version": "1.0",
+  "domain": "education_market",
+  "owner": "metrics_agent",
+  "consumers": [
+    "orchestrator",
+    "market_agent",
+    "metrics_agent",
+    "report_agent"
+  ],
+  "description": "Metric definitions for parsed course/program records and market data quality evaluation",
+  "entity_scope": [
+    "course",
+    "program"
+  ],
+  "record_quality_metrics": [
+    {
+      "metric_id": "required_fields_completeness",
+      "metric_name": "Required Fields Completeness",
+      "level": "record",
+      "description": "Share of required fields that are present and non-empty in a parsed record",
+      "formula_type": "ratio",
+      "numerator": "required_fields_present_count",
+      "denominator": "required_fields_total_count",
+      "value_range": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "thresholds": {
+        "good": 1.0,
+        "warning": 0.8,
+        "critical": 0.5
+      }
+    },
+    {
+      "metric_id": "optional_fields_completeness",
+      "metric_name": "Optional Fields Completeness",
+      "level": "record",
+      "description": "Share of optional fields that are present and non-empty in a parsed record",
+      "formula_type": "ratio",
+      "numerator": "optional_fields_present_count",
+      "denominator": "optional_fields_total_count",
+      "value_range": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "thresholds": {
+        "good": 0.7,
+        "warning": 0.4,
+        "critical": 0.2
+      }
+    },
+    {
+      "metric_id": "field_validity_score",
+      "metric_name": "Field Validity Score",
+      "level": "record",
+      "description": "Share of checked fields that satisfy format and value validation rules",
+      "formula_type": "ratio",
+      "numerator": "valid_fields_count",
+      "denominator": "validated_fields_count",
+      "value_range": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "thresholds": {
+        "good": 0.95,
+        "warning": 0.8,
+        "critical": 0.6
+      }
+    },
+    {
+      "metric_id": "text_richness_score",
+      "metric_name": "Text Richness Score",
+      "level": "record",
+      "description": "Measures whether a record contains enough descriptive content to be analytically useful",
+      "formula_type": "weighted_sum",
+      "components": [
+        {
+          "field": "description",
+          "rule": "non_empty",
+          "weight": 0.35
+        },
+        {
+          "field": "curriculum",
+          "rule": "non_empty",
+          "weight": 0.25
+        },
+        {
+          "field": "skills",
+          "rule": "non_empty",
+          "weight": 0.15
+        },
+        {
+          "field": "teachers",
+          "rule": "non_empty",
+          "weight": 0.10
+        },
+        {
+          "field": "admission_requirements",
+          "rule": "non_empty",
+          "weight": 0.15
+        }
+      ],
+      "value_range": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "thresholds": {
+        "good": 0.7,
+        "warning": 0.4,
+        "critical": 0.2
+      }
+    },
+    {
+      "metric_id": "record_overall_quality_score",
+      "metric_name": "Record Overall Quality Score",
+      "level": "record",
+      "description": "Weighted aggregate quality score for a parsed course/program record",
+      "formula_type": "weighted_sum",
+      "components": [
+        {
+          "metric_id": "required_fields_completeness",
+          "weight": 0.4
+        },
+        {
+          "metric_id": "optional_fields_completeness",
+          "weight": 0.2
+        },
+        {
+          "metric_id": "field_validity_score",
+          "weight": 0.25
+        },
+        {
+          "metric_id": "text_richness_score",
+          "weight": 0.15
+        }
+      ],
+      "value_range": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "thresholds": {
+        "good": 0.8,
+        "warning": 0.6,
+        "critical": 0.4
+      }
+    }
+  ],
+  "dataset_quality_metrics": [
+    {
+      "metric_id": "platform_discovery_coverage",
+      "metric_name": "Platform Discovery Coverage",
+      "level": "platform",
+      "description": "Share of discovered URLs relative to the configured discovery cap for a platform",
+      "formula_type": "ratio",
+      "numerator": "discovered_urls_count",
+      "denominator": "max_discovered_urls",
+      "value_range": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "thresholds": {
+        "good": 0.5,
+        "warning": 0.2,
+        "critical": 0.1
+      }
+    },
+    {
+      "metric_id": "parse_success_rate",
+      "metric_name": "Parse Success Rate",
+      "level": "platform",
+      "description": "Share of discovered URLs that produced structured parsed records",
+      "formula_type": "ratio",
+      "numerator": "parsed_records_count",
+      "denominator": "discovered_urls_count",
+      "value_range": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "thresholds": {
+        "good": 0.85,
+        "warning": 0.6,
+        "critical": 0.3
+      }
+    },
+    {
+      "metric_id": "required_field_fill_rate",
+      "metric_name": "Required Field Fill Rate",
+      "level": "platform",
+      "description": "Average completeness of required fields across all parsed records on a platform",
+      "formula_type": "average",
+      "source_metric": "required_fields_completeness",
+      "value_range": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "thresholds": {
+        "good": 0.95,
+        "warning": 0.8,
+        "critical": 0.6
+      }
+    },
+    {
+      "metric_id": "optional_field_fill_rate",
+      "metric_name": "Optional Field Fill Rate",
+      "level": "platform",
+      "description": "Average completeness of optional fields across all parsed records on a platform",
+      "formula_type": "average",
+      "source_metric": "optional_fields_completeness",
+      "value_range": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "thresholds": {
+        "good": 0.6,
+        "warning": 0.35,
+        "critical": 0.15
+      }
+    },
+    {
+      "metric_id": "duplicate_record_rate",
+      "metric_name": "Duplicate Record Rate",
+      "level": "platform",
+      "description": "Share of duplicate records detected after URL and title normalization",
+      "formula_type": "ratio",
+      "numerator": "duplicate_records_count",
+      "denominator": "parsed_records_count",
+      "value_range": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "thresholds": {
+        "good": 0.02,
+        "warning": 0.08,
+        "critical": 0.15
+      },
+      "direction": "lower_is_better"
+    },
+    {
+      "metric_id": "field_validity_platform_avg",
+      "metric_name": "Field Validity Platform Average",
+      "level": "platform",
+      "description": "Average field validity score across parsed records for a platform",
+      "formula_type": "average",
+      "source_metric": "field_validity_score",
+      "value_range": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "thresholds": {
+        "good": 0.95,
+        "warning": 0.8,
+        "critical": 0.6
+      }
+    },
+    {
+      "metric_id": "text_richness_platform_avg",
+      "metric_name": "Text Richness Platform Average",
+      "level": "platform",
+      "description": "Average text richness score across parsed records for a platform",
+      "formula_type": "average",
+      "source_metric": "text_richness_score",
+      "value_range": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "thresholds": {
+        "good": 0.65,
+        "warning": 0.4,
+        "critical": 0.2
+      }
+    },
+    {
+      "metric_id": "duplicate_record_penalty_score",
+      "metric_name": "Duplicate Record Penalty Score",
+      "level": "platform",
+      "description": "Inverted score derived from duplicate rate so that higher is better",
+      "formula_type": "inverse_ratio",
+      "source_metric": "duplicate_record_rate",
+      "value_range": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "thresholds": {
+        "good": 0.95,
+        "warning": 0.85,
+        "critical": 0.7
+      }
+    },
+    {
+      "metric_id": "platform_overall_quality_score",
+      "metric_name": "Platform Overall Quality Score",
+      "level": "platform",
+      "description": "Weighted aggregate quality score for one platform after discovery and parsing",
+      "formula_type": "weighted_sum",
+      "components": [
+        {
+          "metric_id": "parse_success_rate",
+          "weight": 0.25
+        },
+        {
+          "metric_id": "required_field_fill_rate",
+          "weight": 0.30
+        },
+        {
+          "metric_id": "optional_field_fill_rate",
+          "weight": 0.15
+        },
+        {
+          "metric_id": "field_validity_platform_avg",
+          "weight": 0.15
+        },
+        {
+          "metric_id": "text_richness_platform_avg",
+          "weight": 0.10
+        },
+        {
+          "metric_id": "duplicate_record_penalty_score",
+          "weight": 0.05
+        }
+      ],
+      "value_range": {
+        "min": 0.0,
+        "max": 1.0
+      },
+      "thresholds": {
+        "good": 0.8,
+        "warning": 0.6,
+        "critical": 0.4
+      }
+    }
+  ],
+  "workflow_health_metrics": [
+    {
+      "metric_id": "coverage_alert_flag",
+      "metric_name": "Coverage Alert Flag",
+      "level": "platform",
+      "description": "Boolean control flag showing whether platform coverage is below acceptable threshold",
+      "formula_type": "threshold_flag",
+      "source_metric": "parse_success_rate",
+      "trigger_condition": "< 0.6"
+    },
+    {
+      "metric_id": "manual_review_required_flag",
+      "metric_name": "Manual Review Required Flag",
+      "level": "platform",
+      "description": "Boolean flag for routing platform results to manual review",
+      "formula_type": "composite_flag",
+      "conditions": [
+        {
+          "metric_id": "platform_overall_quality_score",
+          "operator": "<",
+          "value": 0.6
+        },
+        {
+          "metric_id": "duplicate_record_rate",
+          "operator": ">",
+          "value": 0.08
+        }
+      ],
+      "logic": "OR"
+    }
+  ],
+  "reporting_groups": [
+    {
+      "group_id": "collection_efficiency",
+      "group_name": "Collection Efficiency",
+      "metric_ids": [
+        "platform_discovery_coverage",
+        "parse_success_rate"
+      ]
+    },
+    {
+      "group_id": "data_completeness",
+      "group_name": "Data Completeness",
+      "metric_ids": [
+        "required_field_fill_rate",
+        "optional_field_fill_rate",
+        "required_fields_completeness",
+        "optional_fields_completeness"
+      ]
+    },
+    {
+      "group_id": "data_quality",
+      "group_name": "Data Quality",
+      "metric_ids": [
+        "field_validity_score",
+        "field_validity_platform_avg",
+        "duplicate_record_rate",
+        "text_richness_score",
+        "platform_overall_quality_score",
+        "record_overall_quality_score"
+      ]
+    }
+  ]
+}
