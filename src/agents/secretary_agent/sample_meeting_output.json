@@ -1,0 +1,57 @@
+{
+  "meeting_date": "2026-07-07",
+  "participants": ["Руководитель", "Технический директор", "HR-директор"],
+  "transcript_summary": "Обсуждали развитие AI-направления компании на ближайшие 12 месяцев. Руководитель обозначил стратегический приоритет: усилить направление LLM Agents и MLOps. Технический директор доложил о текущем покрытии компетенций: сильные стороны — NLP и Classical ML, слабые — GAN, Reinforcement Learning, Genetic Algorithms. HR-директор подтвердила дефицит senior-специалистов на рынке. Договорились: нанять 2 LLM Engineers (senior), запустить пилотный MLOps-проект для корпоративных клиентов, выделить бюджет на upskill текущей команды по GAN и RL. Также руководитель поручил изучить тренды AI в корпоративном секторе и оценить спрос на LLM Engineers.",
+  "key_decisions": [
+    "Усилить направление LLM Agents — нанять 2 senior LLM Engineers",
+    "Запустить пилотный проект по MLOps для корпоративных клиентов",
+    "Выделить бюджет на upskill команды по GAN и Reinforcement Learning",
+    "Изучить возможность выхода на рынок Genetic Algorithms (долгосрочно)"
+  ],
+  "assigned_tasks": [
+    {
+      "task": "Поиск и наём 2 senior LLM Engineers",
+      "responsible": "HR-директор",
+      "deadline": "2026-08-01"
+    },
+    {
+      "task": "Подготовка пилотного MLOps-проекта для корпоративных клиентов",
+      "responsible": "Технический директор",
+      "deadline": "2026-09-01"
+    },
+    {
+      "task": "Организация внутреннего обучения по GAN и Reinforcement Learning",
+      "responsible": "Технический директор",
+      "deadline": "2026-08-15"
+    },
+    {
+      "task": "Анализ рынка Genetic Algorithms и подготовка рекомендаций",
+      "responsible": "Технический директор",
+      "deadline": "2026-10-01"
+    }
+  ],
+  "priority_directions": [
+    "llm_agents",
+    "production_integration",
+    "reinforcement_learning",
+    "gan",
+    "genetic_algorithms"
+  ],
+  "search_queries": [
+    "тренды AI в корпоративном секторе 2026",
+    "спрос на LLM Engineers на рынке труда 2026",
+    "кто учит MLOps в России",
+    "курсы по Genetic Algorithms 2026",
+    "платформы с AI Reality форматом обучения"
+  ],
+  "risks": [
+    "Дефицит senior LLM Engineers на рынке — сроки найма могут затянуться",
+    "Возможное сопротивление текущей команды при переходе на MLOps",
+    "Genetic Algorithms — долгосрочная инвестиция без гарантии быстрого возврата"
+  ],
+  "kpi_targets": {
+    "revenue_growth": 0.25,
+    "headcount_growth": 0.20,
+    "new_products": 1
+  }
+}
