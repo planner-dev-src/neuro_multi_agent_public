@@ -5,4 +5,4 @@ __pycache__/
 .ipynb_checkpoints/
 data/raw_html/
 data/extracted/
-outputs/
+outputs/data/ 
