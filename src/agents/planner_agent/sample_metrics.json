@@ -1,0 +1,168 @@
+{
+  "company_name": "AI Company (модельные данные)",
+  "generated_at": "2026-07-07",
+
+  "strategy": {
+    "priority_topics": [
+      "llm_agents",
+      "production_integration",
+      "nlp",
+      "genetic_algorithms",
+      "computer_vision"
+    ],
+    "target_revenue_growth": 0.25,
+    "target_headcount_growth": 0.20,
+    "hire_priority_roles": [
+      "ML Engineer",
+      "MLOps Engineer",
+      "NLP Engineer",
+      "CV Engineer"
+    ],
+    "upskill_priority_topics": [
+      "llm_agents",
+      "production_integration",
+      "gan",
+      "reinforcement_learning",
+      "cybersecurity"
+    ],
+    "narrative": "Компания фокусируется на расширении AI-продуктовой линейки и усилении MLOps-направления."
+  },
+
+  "employees": [
+    {
+      "employee_id": "e1", "role": "ML Engineer", "grade": "senior",
+      "department": "AI", "team_id": "t1",
+      "competencies": ["classical_ml", "nlp", "time_series", "reinforcement_learning"],
+      "competency_levels": {"classical_ml": 0.90, "nlp": 0.80, "time_series": 0.60, "reinforcement_learning": 0.40},
+      "velocity_score": 0.85, "utilisation": 0.80, "is_key_person": true, "replacement_risk": 0.70,
+      "product_ids": ["p1", "p2"]
+    },
+    {
+      "employee_id": "e2", "role": "ML Engineer", "grade": "middle",
+      "department": "AI", "team_id": "t1",
+      "competencies": ["classical_ml", "computer_vision", "gan"],
+      "competency_levels": {"classical_ml": 0.70, "computer_vision": 0.50, "gan": 0.30},
+      "velocity_score": 0.75, "utilisation": 0.85, "is_key_person": false, "replacement_risk": 0.30,
+      "product_ids": ["p1"]
+    },
+    {
+      "employee_id": "e3", "role": "Data Engineer", "grade": "senior",
+      "department": "Data", "team_id": "t2",
+      "competencies": ["data_engineering", "production_integration", "devops_sre"],
+      "competency_levels": {"data_engineering": 0.90, "production_integration": 0.70, "devops_sre": 0.60},
+      "velocity_score": 0.90, "utilisation": 0.75, "is_key_person": true, "replacement_risk": 0.60,
+      "product_ids": ["p1", "p3"]
+    },
+    {
+      "employee_id": "e4", "role": "Data Engineer", "grade": "junior",
+      "department": "Data", "team_id": "t2",
+      "competencies": ["data_engineering"],
+      "competency_levels": {"data_engineering": 0.40},
+      "velocity_score": 0.50, "utilisation": 0.90, "is_key_person": false, "replacement_risk": 0.20,
+      "product_ids": ["p3"]
+    },
+    {
+      "employee_id": "e5", "role": "NLP Engineer", "grade": "senior",
+      "department": "AI", "team_id": "t1",
+      "competencies": ["nlp", "llm_agents", "speech_audio"],
+      "competency_levels": {"nlp": 0.95, "llm_agents": 0.65, "speech_audio": 0.40},
+      "velocity_score": 0.90, "utilisation": 0.70, "is_key_person": true, "replacement_risk": 0.80,
+      "product_ids": ["p2"]
+    },
+    {
+      "employee_id": "e6", "role": "Backend Developer", "grade": "middle",
+      "department": "Engineering", "team_id": "t3",
+      "competencies": ["backend_development", "devops_sre", "data_engineering"],
+      "competency_levels": {"backend_development": 0.80, "devops_sre": 0.50, "data_engineering": 0.30},
+      "velocity_score": 0.70, "utilisation": 0.85, "is_key_person": false, "replacement_risk": 0.30,
+      "product_ids": ["p1", "p2", "p3"]
+    },
+    {
+      "employee_id": "e7", "role": "Product Manager", "grade": "lead",
+      "department": "Product", "team_id": "t4",
+      "competencies": ["product_management_it", "ai_project_management_custom_sales"],
+      "competency_levels": {"product_management_it": 0.90, "ai_project_management_custom_sales": 0.70},
+      "velocity_score": 0.85, "utilisation": 0.60, "is_key_person": true, "replacement_risk": 0.50,
+      "product_ids": ["p1", "p2", "p3"]
+    },
+    {
+      "employee_id": "e8", "role": "Data Scientist", "grade": "middle",
+      "department": "AI", "team_id": "t1",
+      "competencies": ["classical_ml", "time_series", "product_analytics"],
+      "competency_levels": {"classical_ml": 0.70, "time_series": 0.50, "product_analytics": 0.60},
+      "velocity_score": 0.70, "utilisation": 0.80, "is_key_person": false, "replacement_risk": 0.30,
+      "product_ids": ["p1", "p2"]
+    },
+    {
+      "employee_id": "e9", "role": "MLOps Engineer", "grade": "middle",
+      "department": "Data", "team_id": "t2",
+      "competencies": ["production_integration", "devops_sre", "automl"],
+      "competency_levels": {"production_integration": 0.60, "devops_sre": 0.50, "automl": 0.40},
+      "velocity_score": 0.70, "utilisation": 0.80, "is_key_person": false, "replacement_risk": 0.40,
+      "product_ids": ["p3"]
+    },
+    {
+      "employee_id": "e10", "role": "Frontend Developer", "grade": "middle",
+      "department": "Engineering", "team_id": "t3",
+      "competencies": ["frontend_development", "fullstack_development"],
+      "competency_levels": {"frontend_development": 0.75, "fullstack_development": 0.40},
+      "velocity_score": 0.70, "utilisation": 0.85, "is_key_person": false, "replacement_risk": 0.30,
+      "product_ids": ["p1"]
+    },
+    {
+      "employee_id": "e11", "role": "DevOps Engineer", "grade": "senior",
+      "department": "Engineering", "team_id": "t3",
+      "competencies": ["devops_sre", "cybersecurity", "backend_development"],
+      "competency_levels": {"devops_sre": 0.85, "cybersecurity": 0.50, "backend_development": 0.40},
+      "velocity_score": 0.80, "utilisation": 0.70, "is_key_person": true, "replacement_risk": 0.60,
+      "product_ids": ["p1", "p3"]
+    },
+    {
+      "employee_id": "e12", "role": "QA Engineer", "grade": "middle",
+      "department": "Product", "team_id": "t4",
+      "competencies": ["qa_engineering", "automl"],
+      "competency_levels": {"qa_engineering": 0.70, "automl": 0.30},
+      "velocity_score": 0.65, "utilisation": 0.80, "is_key_person": false, "replacement_risk": 0.30,
+      "product_ids": ["p1", "p2", "p3"]
+    }
+  ],
+
+  "products": [
+    {
+      "product_id": "p1",
+      "product_name": "AI Training Platform",
+      "product_type": "platform",
+      "revenue_share": 0.45,
+      "growth_rate": 0.15,
+      "margin": 0.60,
+      "maturity": "growth",
+      "required_competencies": ["classical_ml", "nlp", "data_engineering", "frontend_development", "backend_development"],
+      "required_competency_levels": {"classical_ml": 0.70, "nlp": 0.60, "data_engineering": 0.70, "frontend_development": 0.50, "backend_development": 0.60},
+      "assigned_team_ids": ["t1", "t2", "t3", "t4"]
+    },
+    {
+      "product_id": "p2",
+      "product_name": "AI Consulting Services",
+      "product_type": "service",
+      "revenue_share": 0.35,
+      "growth_rate": 0.10,
+      "margin": 0.45,
+      "maturity": "mature",
+      "required_competencies": ["nlp", "llm_agents", "classical_ml", "ai_project_management_custom_sales"],
+      "required_competency_levels": {"nlp": 0.80, "llm_agents": 0.50, "classical_ml": 0.60, "ai_project_management_custom_sales": 0.60},
+      "assigned_team_ids": ["t1", "t4"]
+    },
+    {
+      "product_id": "p3",
+      "product_name": "MLOps Infrastructure",
+      "product_type": "platform",
+      "revenue_share": 0.20,
+      "growth_rate": 0.30,
+      "margin": 0.55,
+      "maturity": "seed",
+      "required_competencies": ["production_integration", "data_engineering", "devops_sre", "cybersecurity"],
+      "required_competency_levels": {"production_integration": 0.80, "data_engineering": 0.70, "devops_sre": 0.60, "cybersecurity": 0.40},
+      "assigned_team_ids": ["t2", "t3"]
+    }
+  ]
+}
