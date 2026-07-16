@@ -1,0 +1,505 @@
+{
+  "version": "2.0",
+  "last_updated": "2026-07-16T17:13:50.354320",
+  "levels": {
+    "strategic": {
+      "data": {
+        "ai_projects": {
+          "name": "AI проекты",
+          "target": 1000,
+          "current": 750,
+          "unit": "проектов",
+          "source": "file://ai_projects_count.txt",
+          "update_frequency": "daily",
+          "status": "critical"
+        }
+      }
+    },
+    "market": {
+      "data": {
+        "competitors": {
+          "name": "Конкуренты",
+          "total": 14,
+          "analyzed": 5,
+          "list": [
+            "Яндекс Практикум",
+            "Karpov Courses",
+            "OTUS",
+            "Нетология",
+            "Skillbox"
+          ],
+          "not_analyzed": [
+            "GeekBrains",
+            "simplilearn",
+            "deeplearning.ai",
+            "coursera",
+            "datacamp",
+            "skillfactory",
+            "Высшая школа экономики",
+            "Bloom Institute of Technology"
+          ],
+          "coverage_percent": 35.7,
+          "source": "market_agent",
+          "status": "warning"
+        },
+        "directions": {
+          "name": "Направления",
+          "total": 12,
+          "analyzed": 0,
+          "list": [
+            "Компьютерное зрение (CV)",
+            "Обработка естественного языка (NLP)",
+            "Временные ряды (TS)",
+            "Обучение с подкреплением (RL)",
+            "Аудио и распознавание речи (S2T)",
+            "Генеративно-состязательные нейросети (GAN)",
+            "Классическое машинное обучение (ML)",
+            "Генетические алгоритмы",
+            "Управление AI проектами и продажи на заказ",
+            "Интеграция в PRODUCTION",
+            "AI-агенты на базе LLM",
+            "AUTOML"
+          ],
+          "coverage_percent": 0.0,
+          "source": "company_knowledge_base",
+          "status": "critical"
+        }
+      }
+    },
+    "products": {
+      "data": {
+        "neuro_curator": {
+          "name": "Нейро-куратор",
+          "description": "ChatGPT, обученная на БД компании",
+          "metrics": {
+            "quality": {
+              "name": "Качество ответов",
+              "value": 9.6,
+              "target": 9.5,
+              "unit": "/10",
+              "status": "exceeded"
+            },
+            "response_time": {
+              "name": "Время ответа",
+              "value": 8.0,
+              "target": 7.5,
+              "unit": "сек",
+              "status": "warning"
+            },
+            "availability": {
+              "name": "Доступность",
+              "value": "24/7",
+              "target": "24/7",
+              "unit": "",
+              "status": "met"
+            }
+          },
+          "source": "manual",
+          "update_frequency": "monthly",
+          "data_available": true
+        }
+      }
+    },
+    "competency": {
+      "data": {
+        "mlops": {
+          "name": "MLOps",
+          "coverage": 25,
+          "unit": "%",
+          "context": {
+            "tasks": [
+              "Настройка CI/CD",
+              "Мониторинг моделей"
+            ],
+            "total_effort": 3,
+            "available_effort": 0.75,
+            "gap": 2.25
+          },
+          "source": "metrics_agent",
+          "status": "critical"
+        },
+        "python": {
+          "name": "Python",
+          "coverage": 100,
+          "unit": "%",
+          "source": "metrics_agent",
+          "status": "met"
+        },
+        "nlp": {
+          "name": "NLP",
+          "coverage": 50,
+          "unit": "%",
+          "source": "metrics_agent",
+          "status": "warning"
+        },
+        "pytorch": {
+          "name": "PyTorch",
+          "coverage": 50,
+          "unit": "%",
+          "source": "metrics_agent",
+          "status": "warning"
+        },
+        "gan": {
+          "name": "GAN",
+          "value": "0.7308",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем представлен ограниченно и может рассматриваться как заметная зона конкурентного роста."
+        },
+        "генеративно-состязательные_нейросети": {
+          "name": "Генеративно-состязательные нейросети",
+          "value": "0.7308",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем представлен ограниченно и может рассматриваться как заметная зона конкурентного роста."
+        },
+        "обучение_с_подкреплением": {
+          "name": "Обучение с подкреплением",
+          "value": "0.6608",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем представлен ограниченно и может рассматриваться как заметная зона конкурентного роста."
+        },
+        "frontend_development": {
+          "name": "Frontend Development",
+          "value": "0.605",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем покрыт частью игроков, но ещё оставляет пространство для выборочной дифференциации."
+        },
+        "reinforcement_learning": {
+          "name": "Reinforcement Learning",
+          "value": "0.5875",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем покрыт частью игроков, но ещё оставляет пространство для выборочной дифференциации."
+        },
+        "devops_/_sre": {
+          "name": "DevOps / SRE",
+          "value": "0.5667",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем покрыт частью игроков, но ещё оставляет пространство для выборочной дифференциации."
+        },
+        "генетические_алгоритмы": {
+          "name": "Генетические алгоритмы",
+          "value": "0.5667",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем покрыт частью игроков, но ещё оставляет пространство для выборочной дифференциации."
+        },
+        "llm_agents": {
+          "name": "LLM Agents",
+          "value": "0.5592",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем представлен ограниченно и может рассматриваться как заметная зона конкурентного роста."
+        },
+        "аудио_и_распознавание_речи": {
+          "name": "Аудио и распознавание речи",
+          "value": "0.5592",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем представлен ограниченно и может рассматриваться как заметная зона конкурентного роста."
+        },
+        "компьютерное_зрение": {
+          "name": "Компьютерное зрение",
+          "value": "0.5592",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем представлен ограниченно и может рассматриваться как заметная зона конкурентного роста."
+        },
+        "job_support": {
+          "name": "Job Support",
+          "value": "0.5557",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Эта каноническая ось дифференциации пока используется избирательно и выглядит как сильная возможность для конкурентного отличия."
+        },
+        "webinars_and_free_content": {
+          "name": "Webinars and Free Content",
+          "value": "0.5557",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Эта каноническая ось дифференциации пока используется избирательно и выглядит как сильная возможность для конкурентного отличия."
+        },
+        "software_engineering": {
+          "name": "Software Engineering",
+          "value": "0.5142",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Семейство компетенций представлено умеренно и может использоваться как рабочая зона усиления."
+        },
+        "backend_development": {
+          "name": "Backend Development",
+          "value": "0.4967",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем покрыт частью игроков, но ещё оставляет пространство для выборочной дифференциации."
+        },
+        "интеграция_в_production": {
+          "name": "Интеграция в PRODUCTION",
+          "value": "0.4825",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем покрыт частью игроков, но ещё оставляет пространство для выборочной дифференциации."
+        },
+        "ai_in_production": {
+          "name": "AI in Production",
+          "value": "0.4683",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Семейство компетенций недопредставлено и выглядит как потенциально сильная точка позиционирования."
+        },
+        "computer_vision": {
+          "name": "Computer Vision",
+          "value": "0.4683",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем представлен ограниченно и может рассматриваться как заметная зона конкурентного роста."
+        },
+        "production_integration_/_mlops": {
+          "name": "Production Integration / MLOps",
+          "value": "0.4683",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем представлен ограниченно и может рассматриваться как заметная зона конкурентного роста."
+        },
+        "обработка_естественного_языка": {
+          "name": "Обработка естественного языка",
+          "value": "0.4683",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем представлен ограниченно и может рассматриваться как заметная зона конкурентного роста."
+        },
+        "independent_assignments": {
+          "name": "Independent Assignments",
+          "value": "0.4613",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Эта каноническая ось дифференциации пока используется избирательно и выглядит как сильная возможность для конкурентного отличия."
+        },
+        "cloud_/_devops": {
+          "name": "Cloud / DevOps",
+          "value": "0.4583",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Семейство компетенций уже стало близким к рыночному стандарту и даёт ограниченный потенциал для отличия."
+        },
+        "quality_/_security": {
+          "name": "Quality / Security",
+          "value": "0.4583",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Семейство компетенций уже стало близким к рыночному стандарту и даёт ограниченный потенциал для отличия."
+        },
+        "cybersecurity": {
+          "name": "Cybersecurity",
+          "value": "0.4583",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем уже широко представлен на рынке и скорее отражает конкурентный паритет, чем выраженный gap."
+        },
+        "product_analytics": {
+          "name": "Product Analytics",
+          "value": "0.4583",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем уже широко представлен на рынке и скорее отражает конкурентный паритет, чем выраженный gap."
+        },
+        "qa_engineering": {
+          "name": "QA Engineering",
+          "value": "0.4233",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем уже широко представлен на рынке и скорее отражает конкурентный паритет, чем выраженный gap."
+        },
+        "product_/_it_management": {
+          "name": "Product / IT Management",
+          "value": "0.4058",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем уже широко представлен на рынке и скорее отражает конкурентный паритет, чем выраженный gap."
+        },
+        "fullstack_development": {
+          "name": "Fullstack Development",
+          "value": "0.3775",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем покрыт частью игроков, но ещё оставляет пространство для выборочной дифференциации."
+        },
+        "data_platforms": {
+          "name": "Data Platforms",
+          "value": "0.3742",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Семейство компетенций представлено умеренно и может использоваться как рабочая зона усиления."
+        },
+        "ai_/_ml_core": {
+          "name": "AI / ML Core",
+          "value": "0.35",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Семейство компетенций уже стало близким к рыночному стандарту и даёт ограниченный потенциал для отличия."
+        },
+        "analytics_/_bi": {
+          "name": "Analytics / BI",
+          "value": "0.35",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Семейство компетенций уже стало близким к рыночному стандарту и даёт ограниченный потенциал для отличия."
+        },
+        "generative_ai": {
+          "name": "Generative AI",
+          "value": "0.35",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Семейство компетенций уже стало близким к рыночному стандарту и даёт ограниченный потенциал для отличия."
+        },
+        "product_/_delivery_management": {
+          "name": "Product / Delivery Management",
+          "value": "0.35",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Семейство компетенций уже стало близким к рыночному стандарту и даёт ограниченный потенциал для отличия."
+        },
+        "classical_ml": {
+          "name": "Classical ML",
+          "value": "0.35",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем уже широко представлен на рынке и скорее отражает конкурентный паритет, чем выраженный gap."
+        },
+        "nlp_/_language_ai": {
+          "name": "NLP / Language AI",
+          "value": "0.35",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем уже широко представлен на рынке и скорее отражает конкурентный паритет, чем выраженный gap."
+        },
+        "временные_ряды": {
+          "name": "Временные ряды",
+          "value": "0.35",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем уже широко представлен на рынке и скорее отражает конкурентный паритет, чем выраженный gap."
+        },
+        "классическое_машинное_обучение": {
+          "name": "Классическое машинное обучение",
+          "value": "0.35",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем уже широко представлен на рынке и скорее отражает конкурентный паритет, чем выраженный gap."
+        },
+        "data_engineering": {
+          "name": "Data Engineering",
+          "value": "0.3358",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем уже широко представлен на рынке и скорее отражает конкурентный паритет, чем выраженный gap."
+        },
+        "управление_ai_проектами": {
+          "name": "Управление AI проектами",
+          "value": "0.2833",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем уже широко представлен на рынке и скорее отражает конкурентный паритет, чем выраженный gap."
+        },
+        "ai-агенты_на_базе_llm": {
+          "name": "AI-агенты на базе LLM",
+          "value": "0.2658",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем уже широко представлен на рынке и скорее отражает конкурентный паритет, чем выраженный gap."
+        },
+        "enterprise_enablement": {
+          "name": "Enterprise Enablement",
+          "value": "0.2308",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Семейство компетенций уже стало близким к рыночному стандарту и даёт ограниченный потенциал для отличия."
+        }
+      }
+    },
+    "technical": {
+      "data": {
+        "code_coverage": {
+          "name": "Покрытие кода",
+          "value": 78.5,
+          "target": 80.0,
+          "unit": "%",
+          "context": {
+            "product": "Нейро-куратор",
+            "module": "API",
+            "measurement_date": "2026-07-10",
+            "measurement_tool": "pytest-cov"
+          },
+          "source": "CI/CD",
+          "status": "warning"
+        },
+        "neuro_curator_response_time": {
+          "name": "Время ответа нейро-куратора",
+          "value": 8.0,
+          "target": 7.5,
+          "unit": "сек",
+          "context": {
+            "product": "Нейро-куратор",
+            "measurement_date": "2026-07-11"
+          },
+          "source": "manual",
+          "status": "warning"
+        }
+      }
+    }
+  },
+  "summary": {
+    "total_metrics": 50,
+    "total_decisions": 0,
+    "status_distribution": {
+      "critical": 3,
+      "warning": 5,
+      "met": 2,
+      "data_missing": 40
+    }
+  }
+}

@@ -1,601 +1,1174 @@
-"""planner_agent — сопоставление внешних рыночных gap-зон с внутренними метриками компании.
-
-Читает:
-- competitive_gaps_*.csv и trend_signals_*.csv из data/reports/market_analysis_agent/
-- CompanyMetrics из sample_metrics.json (или переданный объект)
-
-Выдаёт:
-- PlannerOutput: CompetencyGapAnalysis, RoleRecommendation, ProductPivotRecommendation
-- RAG-чанки для сохранения в knowledge base
+"""
+Planner Agent - отвечает за формирование плана действий и рекомендаций
+на основе метрик, рыночного анализа, нарратива и вводных от руководителя
 """
 
-from __future__ import annotations
-
-import csv
-from dataclasses import asdict
+import json
+from typing import Dict, Any, List, Optional
 from pathlib import Path
-from typing import Any
+from datetime import datetime
+from dataclasses import dataclass, field, asdict
 
-from src.agents.planner_agent.metrics_schema import (
-    CompanyMetrics,
-    EmployeeMetrics,
-    ProductMetrics,
-    StrategyInput,
-    TeamMetrics,
+from src.agents.metrics_agent.metrics_registry import (
+    MetricsRegistry, 
+    Metric, 
+    MetricStatus, 
+    MetricLevel
 )
-from src.agents.planner_agent.planner_types import (
-    CompetencyGapAnalysis,
-    PlannerOutput,
-    ProductPivotRecommendation,
-    RAGChunk,
-    RoleRecommendation,
-)
-from src.agents.planner_agent.sample_metrics import load_sample_metrics
-
-# ---------------------------------------------------------------------------
-# Пути
-# ---------------------------------------------------------------------------
-
-_MARKET_ANALYSIS_DIR = Path("data/reports/market_analysis_agent")
 
 
-def _latest_csv(pattern: str) -> Path:
-    files = sorted(_MARKET_ANALYSIS_DIR.glob(pattern), key=lambda p: p.stat().st_mtime)
-    if not files:
-        raise FileNotFoundError(f"No files matching {pattern} in {_MARKET_ANALYSIS_DIR}")
-    return files[-1]
+@dataclass
+class ActionItem:
+    """Модель действия/задачи"""
+    id: str
+    type: str  # hire, improve, market, research, training, process, strategic, decision, task, risk
+    description: str
+    priority: str  # critical, high, medium, low
+    status: str = "pending"
+    source: str = ""
+    details: Dict[str, Any] = field(default_factory=dict)
+    deadline: Optional[str] = None
+    assignee: Optional[str] = None
+    context: Optional[str] = None  # контекст: к чему относится
 
 
-# ---------------------------------------------------------------------------
-# Ключи таксономии, для которых наём нерелевантен
-# (это характеристики продукта/услуги, а не компетенции сотрудников)
-# ---------------------------------------------------------------------------
-
-_NON_HIRE_TOPIC_KEYS: set[str] = {
-    "independent_assignments",
-    "flexible_schedule",
-    "webinars_and_free_content",
-    "job_support",
-    "job_guarantee",
-    "ai_content_base",
-    "ai_specialization",
-    "real_enterprise_projects",
-    "own_ai_hr_agency",
-    "course_buyout_employment",
-    "hackathon_wins",
-    "ai_reality_format",
-    "ai_curator_chatgpt",
-    "lessons_count",
-}
+@dataclass
+class Plan:
+    """Модель плана"""
+    actions: List[ActionItem]
+    summary: str
+    priorities: Dict[str, List[str]]
+    timeline: Dict[str, List[str]]
+    risks: List[str]
+    success_criteria: List[str]
+    generated_at: str = field(default_factory=lambda: datetime.now().isoformat())
 
 
-# ---------------------------------------------------------------------------
-# Агрегация сотрудников в команды
-# ---------------------------------------------------------------------------
-
-def _build_teams_from_employees(employees: list[EmployeeMetrics]) -> list[TeamMetrics]:
-    """Агрегирует сотрудников в команды."""
-    from collections import defaultdict
-
-    team_map: dict[str, dict[str, Any]] = defaultdict(
-        lambda: {
-            "employees": [],
-            "competencies": defaultdict(list),
+class PlannerAgent:
+    """
+    Агент для формирования плана действий на основе метрик и анализа
+    """
+    
+    # Карта уровней с иконками и русскими названиями
+    LEVEL_CONFIG = {
+        "strategic": {"icon": "🎯", "name": "Уровень стратегический"},
+        "market": {"icon": "🌍", "name": "Уровень рыночный"},
+        "products": {"icon": "📦", "name": "Уровень продуктовый"},
+        "competency": {"icon": "🧠", "name": "Уровень компетенций"},
+        "technical": {"icon": "⚙️", "name": "Уровень технический"}
+    }
+    
+    # Карта приоритетов на русские названия
+    PRIORITY_RU = {
+        "critical": "КРИТИЧЕСКИЙ",
+        "high": "ВЫСОКИЙ",
+        "medium": "СРЕДНИЙ",
+        "low": "НИЗКИЙ"
+    }
+    
+    # Карта временных периодов на русские названия
+    TIMELINE_RU = {
+        "immediate": "НЕМЕДЛЕННО",
+        "1-2 weeks": "1-2 НЕДЕЛИ",
+        "1 month": "1 МЕСЯЦ",
+        "2-3 months": "2-3 МЕСЯЦА"
+    }
+    
+    def __init__(self, registry_path: Optional[str] = None):
+        self.project_root = self._get_project_root()
+        self.results_dir = self.project_root / "src" / "agents" / "planner_agent" / "results"
+        self.results_dir.mkdir(parents=True, exist_ok=True)
+        
+        self.registry = MetricsRegistry(registry_path)
+        
+        print(f"📋 Planner Agent инициализирован")
+        print(f"   Метрик в реестре: {len(self.registry.get_all_metrics())}")
+    
+    def _get_project_root(self) -> Path:
+        current = Path(__file__).resolve().parent
+        for parent in [current] + list(current.parents):
+            if (parent / ".git").exists():
+                return parent
+            if (parent / "src" / "agents").exists():
+                return parent
+        return current.parent.parent.parent
+    
+    def _get_level_prefix(self, level: str) -> str:
+        """Возвращает префикс уровня с иконкой и названием"""
+        config = self.LEVEL_CONFIG.get(level, {})
+        icon = config.get("icon", "")
+        name = config.get("name", level)
+        return f"{icon} {name}"
+    
+    def _is_numeric(self, value: Any) -> bool:
+        """Проверяет, является ли значение числовым"""
+        return isinstance(value, (int, float))
+    
+    def _safe_get_value(self, data: Dict, key: str, default: Any = 0) -> Any:
+        """Безопасно получает значение из словаря"""
+        value = data.get(key, default)
+        if value is None:
+            return default
+        return value
+    
+    def plan(
+        self,
+        metrics_data: Dict[str, Any],
+        market_analysis: Dict[str, Any],
+        narrative: str,
+        transcript_analysis: Optional[Dict[str, Any]] = None
+    ) -> Plan:
+        """
+        Формирует план действий на основе всех данных
+        
+        Args:
+            metrics_data: Данные от Metrics Agent
+            market_analysis: Данные от Market Analysis Agent
+            narrative: Нарратив от Market Narrative Agent
+            transcript_analysis: Анализ транскрипта от Secretary Agent (ВВОДНЫЕ ОТ РУКОВОДИТЕЛЯ)
+        """
+        print("📋 Формирование плана действий...")
+        
+        actions: List[ActionItem] = []
+        
+        # 1. Вводные от руководителя (из транскрипта) - САМЫЙ ВАЖНЫЙ ИСТОЧНИК
+        if transcript_analysis:
+            actions.extend(self._generate_transcript_actions(transcript_analysis))
+        
+        # 2. Действия из реестра метрик (все уровни)
+        actions.extend(self._generate_actions_from_registry())
+        
+        # 3. Действия на основе пробелов в компетенциях
+        actions.extend(self._generate_competency_actions(metrics_data))
+        
+        # 4. Действия на основе покрытия критериев
+        actions.extend(self._generate_criteria_actions(metrics_data))
+        
+        # 5. Действия на основе выводов и рекомендаций
+        actions.extend(self._generate_findings_actions(metrics_data))
+        
+        # 6. Действия на основе рыночного анализа
+        actions.extend(self._generate_market_actions(market_analysis))
+        
+        # 7. Действия на основе нарратива (если есть)
+        if narrative and narrative.strip():
+            actions.extend(self._generate_narrative_actions(narrative))
+        
+        # Сортируем по приоритету
+        priority_order = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+        actions.sort(key=lambda x: priority_order.get(x.priority, 99))
+        
+        plan = Plan(
+            actions=actions,
+            summary=self._generate_summary(actions),
+            priorities=self._get_priorities(actions),
+            timeline=self._generate_timeline(actions),
+            risks=self._identify_risks(metrics_data, market_analysis, transcript_analysis),
+            success_criteria=self._define_success_criteria(metrics_data, transcript_analysis)
+        )
+        
+        print(f"✅ План сформирован: {len(actions)} действий")
+        return plan
+    
+    def _generate_transcript_actions(self, transcript_analysis: Dict) -> List[ActionItem]:
+        """
+        Генерирует действия на основе транскрипта (вводные от руководителя)
+        """
+        actions = []
+        
+        # 1. Основные тезисы руководителя (информационные, не требуют действий)
+        main_theses = transcript_analysis.get("main_theses", [])
+        for i, thesis in enumerate(main_theses):
+            actions.append(ActionItem(
+                id=f"thesis_{i}",
+                type="process",
+                description=f"📌 Тезис руководителя: {thesis}",
+                priority="high",
+                source="transcript",
+                context="вводные от руководителя"
+            ))
+        
+        # 2. Принятые решения
+        decisions = transcript_analysis.get("decisions", [])
+        for decision in decisions:
+            who = decision.get("who", "не указан")
+            deadline = decision.get("deadline")
+            actions.append(ActionItem(
+                id=f"decision_{len(actions)}",
+                type="decision",
+                description=f"📋 Решение: {decision.get('decision', '')}",
+                priority="high",
+                source="transcript",
+                context=f"кто: {who}",
+                details={"who": who, "deadline": deadline},
+                deadline=deadline
+            ))
+        
+        # 3. Поручения и задачи
+        action_items = transcript_analysis.get("action_items", [])
+        for item in action_items:
+            assignee = item.get("assignee", "не назначен")
+            deadline = item.get("deadline")
+            actions.append(ActionItem(
+                id=f"task_{len(actions)}",
+                type="task",
+                description=f"📋 Поручение: {item.get('task', '')}",
+                priority="high",
+                source="transcript",
+                context=f"исполнитель: {assignee}",
+                details={"assignee": assignee, "deadline": deadline},
+                deadline=deadline,
+                assignee=assignee
+            ))
+        
+        # 4. Риски
+        risks = transcript_analysis.get("risks", [])
+        for risk in risks:
+            owner = risk.get("owner", "не указан")
+            severity = risk.get("severity", "medium")
+            actions.append(ActionItem(
+                id=f"risk_{len(actions)}",
+                type="risk",
+                description=f"⚠️ Риск: {risk.get('risk', '')}",
+                priority="critical" if severity == "high" else "high",
+                source="transcript",
+                context=f"ответственный: {owner}",
+                details={"owner": owner, "severity": severity}
+            ))
+        
+        # 5. Ключевые темы
+        topics = transcript_analysis.get("key_topics", [])
+        if topics:
+            actions.append(ActionItem(
+                id="topics_summary",
+                type="process",
+                description=f"📌 Ключевые темы обсуждения: {', '.join(topics)}",
+                priority="medium",
+                source="transcript",
+                context="темы совещания"
+            ))
+        
+        # 6. Тональность
+        tone = transcript_analysis.get("tone_and_mood", "")
+        if tone:
+            actions.append(ActionItem(
+                id="tone_info",
+                type="process",
+                description=f"📊 Тональность встречи: {tone}",
+                priority="low",
+                source="transcript",
+                context="общая атмосфера"
+            ))
+        
+        return actions
+    
+    def _generate_actions_from_registry(self) -> List[ActionItem]:
+        """
+        Генерирует действия на основе реестра метрик с разделением по уровням
+        """
+        actions = []
+        
+        for level in ["strategic", "market", "products", "competency", "technical"]:
+            level_metrics = self.registry.get_level_metrics(level)
+            level_prefix = self._get_level_prefix(level)
+            
+            for metric_id, metric in level_metrics.items():
+                if metric.value is None:
+                    continue
+                
+                if metric.target is None and metric.level != "competency":
+                    continue
+                
+                context = self._get_metric_context(metric)
+                action = self._create_action_for_metric(metric, level_prefix, context)
+                if action:
+                    actions.append(action)
+        
+        return actions
+    
+    def _get_metric_context(self, metric: Metric) -> str:
+        """Получает контекст метрики"""
+        if metric.context:
+            if metric.context.product:
+                return f"продукт: {metric.context.product}"
+            elif metric.context.module:
+                return f"модуль: {metric.context.module}"
+            elif metric.context.tasks:
+                return f"задачи: {', '.join(metric.context.tasks[:2])}"
+        return ""
+    
+    def _create_action_for_metric(self, metric: Metric, level_prefix: str, context: str) -> Optional[ActionItem]:
+        """Создает действие для метрики на основе её статуса и уровня"""
+        if metric.status == MetricStatus.CRITICAL.value:
+            return self._create_critical_action(metric, level_prefix, context)
+        elif metric.status == MetricStatus.WARNING.value:
+            return self._create_warning_action(metric, level_prefix, context)
+        elif metric.status == MetricStatus.DATA_MISSING.value:
+            return self._create_data_missing_action(metric, level_prefix, context)
+        return None
+    
+    def _create_critical_action(self, metric: Metric, level_prefix: str, context: str) -> ActionItem:
+        """Создает действие для критической метрики"""
+        if metric.level == "strategic":
+            # Безопасное форматирование значения
+            value_str = str(metric.value) if metric.value is not None else "?"
+            target_str = str(metric.target) if metric.target is not None else "?"
+            return ActionItem(
+                id=f"reg_crit_strat_{metric.id}",
+                type="strategic",
+                description=f"{level_prefix}: Достичь стратегической цели: {metric.name} (текущее {value_str} из {target_str})",
+                priority="critical",
+                source="metrics_registry",
+                context=context or "стратегическая цель компании",
+                details={"metric_id": metric.id, "value": metric.value, "target": metric.target}
+            )
+        elif metric.level == "competency":
+            value_str = str(metric.value) if metric.value is not None else "?"
+            return ActionItem(
+                id=f"reg_crit_comp_{metric.id}",
+                type="hire",
+                description=f"{level_prefix}: Закрыть критический пробел в компетенции: {metric.name} (покрытие {value_str}%)",
+                priority="critical",
+                source="metrics_registry",
+                context=context or f"компетенция {metric.name}",
+                details={"skill": metric.name, "coverage": metric.value}
+            )
+        elif metric.level == "market":
+            value_str = str(metric.value) if metric.value is not None else "?"
+            target_str = str(metric.target) if metric.target is not None else "?"
+            return ActionItem(
+                id=f"reg_crit_market_{metric.id}",
+                type="market",
+                description=f"{level_prefix}: Расширить анализ: {metric.name} (охвачено {value_str} из {target_str})",
+                priority="high",
+                source="metrics_registry",
+                context=context or "рыночный анализ",
+                details={"metric_id": metric.id, "value": metric.value, "target": metric.target}
+            )
+        elif metric.level == "products":
+            value_str = str(metric.value) if metric.value is not None else "?"
+            target_str = str(metric.target) if metric.target is not None else "?"
+            return ActionItem(
+                id=f"reg_crit_prod_{metric.id}",
+                type="improve",
+                description=f"{level_prefix}: Улучшить продукт: {metric.name} (текущее {value_str} при цели {target_str})",
+                priority="high",
+                source="metrics_registry",
+                context=context or f"продукт {metric.name}",
+                details={"metric_id": metric.id, "value": metric.value, "target": metric.target}
+            )
+        elif metric.level == "technical":
+            value_str = str(metric.value) if metric.value is not None else "?"
+            target_str = str(metric.target) if metric.target is not None else "?"
+            return ActionItem(
+                id=f"reg_crit_tech_{metric.id}",
+                type="improve",
+                description=f"{level_prefix}: Улучшить техническую метрику: {metric.name} (текущее {value_str} при цели {target_str})",
+                priority="critical",
+                source="metrics_registry",
+                context=context or f"техническая метрика {metric.name}",
+                details={"metric_id": metric.id, "value": metric.value, "target": metric.target}
+            )
+        return None
+    
+    def _create_warning_action(self, metric: Metric, level_prefix: str, context: str) -> ActionItem:
+        """Создает действие для метрики с предупреждением"""
+        if metric.level == "technical":
+            value_str = str(metric.value) if metric.value is not None else "?"
+            target_str = str(metric.target) if metric.target is not None else "?"
+            return ActionItem(
+                id=f"reg_warn_tech_{metric.id}",
+                type="improve",
+                description=f"{level_prefix}: Улучшить: {metric.name} (текущее {value_str} при цели {target_str})",
+                priority="medium",
+                source="metrics_registry",
+                context=context or f"техническая метрика {metric.name}",
+                details={"metric_id": metric.id, "value": metric.value, "target": metric.target}
+            )
+        elif metric.level == "products":
+            value_str = str(metric.value) if metric.value is not None else "?"
+            target_str = str(metric.target) if metric.target is not None else "?"
+            return ActionItem(
+                id=f"reg_warn_prod_{metric.id}",
+                type="improve",
+                description=f"{level_prefix}: Доработать продукт: {metric.name} (текущее {value_str} при цели {target_str})",
+                priority="medium",
+                source="metrics_registry",
+                context=context or f"продукт {metric.name}",
+                details={"metric_id": metric.id, "value": metric.value, "target": metric.target}
+            )
+        return None
+    
+    def _create_data_missing_action(self, metric: Metric, level_prefix: str, context: str) -> ActionItem:
+        """Создает действие для метрики без данных"""
+        return ActionItem(
+            id=f"reg_nodata_{metric.id}",
+            type="process",
+            description=f"{level_prefix}: Ввести данные по метрике: {metric.name}",
+            priority="low",
+            source="metrics_registry",
+            context=context or f"метрика {metric.name}",
+            details={"metric_id": metric.id}
+        )
+    
+    def _generate_competency_actions(self, metrics_data: Dict) -> List[ActionItem]:
+        """Генерирует действия на основе пробелов в компетенциях"""
+        actions = []
+        competency_map = metrics_data.get("competency_map", {})
+        gaps = competency_map.get("gaps", [])
+        
+        if not gaps:
+            return actions
+        
+        level_prefix = self._get_level_prefix("competency")
+        priority_map = {
+            "MLOps": "critical",
+            "NLP": "critical",
+            "PyTorch": "high",
+            "TensorFlow": "high",
+            "Docker": "high",
+            "Kubernetes": "high",
+            "React": "medium",
+            "SQL": "medium",
+            "FastAPI": "medium"
         }
-    )
-
-    for emp in employees:
-        tm = team_map[emp.team_id]
-        tm["employees"].append(emp)
-        for comp, level in emp.competency_levels.items():
-            tm["competencies"][comp].append(level)
-
-    teams: list[TeamMetrics] = []
-    for team_id, data in team_map.items():
-        emps = data["employees"]
-        comp_coverage: dict[str, float] = {}
-        core: list[str] = []
-        deficit: list[str] = []
-
-        for comp, levels in data["competencies"].items():
-            avg = sum(levels) / len(levels)
-            comp_coverage[comp] = round(avg, 2)
-            if avg >= 0.6:
-                core.append(comp)
-            elif avg < 0.3:
-                deficit.append(comp)
-
-        jun = sum(1 for e in emps if e.grade == "junior")
-        mid = sum(1 for e in emps if e.grade == "middle")
-        sen = sum(1 for e in emps if e.grade == "senior")
-        lead = sum(1 for e in emps if e.grade == "lead")
-        key_count = sum(1 for e in emps if e.is_key_person)
-        bus = sum(1 for e in emps if e.is_key_person)
-
-        dept = emps[0].department if emps else ""
-
-        teams.append(
-            TeamMetrics(
-                team_id=team_id,
-                team_name=f"Team {team_id}",
-                department=dept,
-                headcount=len(emps),
-                junior_count=jun,
-                middle_count=mid,
-                senior_count=sen,
-                lead_count=lead,
-                competency_coverage=comp_coverage,
-                core_competencies=core,
-                deficit_competencies=deficit,
-                avg_velocity=round(sum(e.velocity_score for e in emps) / len(emps), 2),
-                avg_utilisation=round(sum(e.utilisation for e in emps) / len(emps), 2),
-                key_person_count=key_count,
-                bus_factor=bus,
-                product_ids=list({pid for e in emps for pid in e.product_ids}),
-            )
-        )
-
-    return teams
-
-
-# ---------------------------------------------------------------------------
-# Загрузка рыночных данных
-# ---------------------------------------------------------------------------
-
-def _load_gaps() -> list[dict[str, str]]:
-    path = _latest_csv("competitive_gaps_*.csv")
-    with path.open("r", encoding="utf-8-sig", newline="") as f:
-        return list(csv.DictReader(f))
-
-
-def _load_trends() -> list[dict[str, str]]:
-    path = _latest_csv("trend_signals_*.csv")
-    with path.open("r", encoding="utf-8-sig", newline="") as f:
-        return list(csv.DictReader(f))
-
-
-# ---------------------------------------------------------------------------
-# Сопоставление
-# ---------------------------------------------------------------------------
-
-def _safe_float(value: Any, default: float = 0.0) -> float:
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return default
-
-
-def _aggregate_internal_coverage(metrics: CompanyMetrics, topic_key: str) -> tuple[float, int, int]:
-    """Возвращает (среднее покрытие, кол-во экспертов, кол-во команд)."""
-    levels: list[float] = []
-    expert_count = 0
-    team_ids: set[str] = set()
-
-    for team in metrics.teams:
-        cov = team.competency_coverage.get(topic_key)
-        if cov is not None:
-            levels.append(cov)
-            team_ids.add(team.team_id)
-
-    for emp in metrics.employees:
-        lvl = emp.competency_levels.get(topic_key, 0.0)
-        if lvl >= 0.7:
-            expert_count += 1
-
-    avg = round(sum(levels) / len(levels), 2) if levels else 0.0
-    return avg, expert_count, len(team_ids)
-
-
-def _determine_gap_severity(
-    market_opportunity: float,
-    internal_coverage: float,
-) -> str:
-    """Определяет критичность gap на основе внешнего потенциала и внутреннего покрытия."""
-    if market_opportunity >= 0.6 and internal_coverage < 0.3:
-        return "critical"
-    if market_opportunity >= 0.5 and internal_coverage < 0.5:
-        return "significant"
-    if market_opportunity >= 0.4 or internal_coverage < 0.5:
-        return "moderate"
-    return "minimal"
-
-
-def _determine_recommendation(gap_severity: str, internal_coverage: float) -> str:
-    if gap_severity == "critical":
-        return "hire"
-    if gap_severity == "significant":
-        return "hire" if internal_coverage < 0.3 else "upskill"
-    if gap_severity == "moderate":
-        return "upskill"
-    return "maintain"
-
-
-def _build_narrative(gap: CompetencyGapAnalysis) -> str:
-    parts: list[str] = []
-
-    if gap.gap_severity == "critical":
-        parts.append(
-            f"Критический разрыв по направлению «{gap.topic_label}»: "
-            f"рыночный потенциал {gap.market_opportunity_score:.2f}, "
-            f"внутреннее покрытие всего {gap.internal_coverage:.2f}."
-        )
-    elif gap.gap_severity == "significant":
-        parts.append(
-            f"Значимый разрыв: «{gap.topic_label}» — "
-            f"рынок требует компетенций (opportunity={gap.market_opportunity_score:.2f}), "
-            f"но текущее покрытие {gap.internal_coverage:.2f}."
-        )
-    else:
-        parts.append(
-            f"Умеренный разрыв по «{gap.topic_label}»: "
-            f"покрытие {gap.internal_coverage:.2f}, "
-            f"рыночный потенциал {gap.market_opportunity_score:.2f}."
-        )
-
-    if gap.recommendation == "hire":
-        parts.append("Рекомендуется нанять специалистов с данной компетенцией.")
-    elif gap.recommendation == "upskill":
-        parts.append("Рекомендуется повысить квалификацию текущих сотрудников.")
-    elif gap.recommendation == "maintain":
-        parts.append("Текущий уровень компетенций достаточен — можно поддерживать.")
-    else:
-        parts.append("Наблюдать за рынком, решение принять позже.")
-
-    return " ".join(parts)
-
-
-# ---------------------------------------------------------------------------
-# Генерация рекомендаций
-# ---------------------------------------------------------------------------
-
-def _generate_role_recommendations(
-    gaps: list[CompetencyGapAnalysis],
-    metrics: CompanyMetrics,
-) -> list[RoleRecommendation]:
-    recommendations: list[RoleRecommendation] = []
-
-    for gap in gaps:
-        if gap.recommendation not in ("hire",):
-            continue
-
-        if gap.topic_key in _NON_HIRE_TOPIC_KEYS:
-            continue
-
-        role_mapping = {
-            "classical_ml": ("ML Engineer", "middle"),
-            "nlp": ("NLP Engineer", "senior"),
-            "llm_agents": ("LLM Engineer", "senior"),
-            "computer_vision": ("CV Engineer", "senior"),
-            "time_series": ("ML Engineer", "middle"),
-            "reinforcement_learning": ("RL Engineer", "senior"),
-            "speech_audio": ("Speech AI Engineer", "senior"),
-            "gan": ("ML Engineer", "middle"),
-            "genetic_algorithms": ("Research Engineer", "senior"),
-            "automl": ("MLOps Engineer", "middle"),
-            "production_integration": ("MLOps Engineer", "senior"),
-            "ai_in_production": ("MLOps Engineer", "senior"),
-            "data_engineering": ("Data Engineer", "middle"),
-            "data_platforms": ("Data Engineer", "middle"),
-            "devops_sre": ("DevOps Engineer", "middle"),
-            "cloud_devops": ("DevOps Engineer", "middle"),
-            "cybersecurity": ("Security Engineer", "senior"),
-            "quality_security": ("QA Engineer", "middle"),
-            "qa_engineering": ("QA Engineer", "middle"),
-            "backend_development": ("Backend Developer", "middle"),
-            "frontend_development": ("Frontend Developer", "middle"),
-            "fullstack_development": ("Fullstack Developer", "middle"),
-            "software_engineering": ("Software Engineer", "middle"),
-            "ai_project_management_custom_sales": ("AI Project Manager", "lead"),
-            "product_management_it": ("Product Manager", "lead"),
-            "product_delivery_management": ("Delivery Manager", "lead"),
-            "product_analytics": ("Product Analyst", "middle"),
-            "analytics_bi": ("BI Analyst", "middle"),
-            "enterprise_enablement": ("Enterprise Solutions Manager", "lead"),
-            "generative_ai": ("LLM Engineer", "senior"),
+        
+        for gap in gaps:
+            priority = priority_map.get(gap, "medium")
+            actions.append(ActionItem(
+                id=f"comp_{gap.lower()}",
+                type="hire",
+                description=f"{level_prefix}: Нанять специалиста по {gap}",
+                priority=priority,
+                source="competency_gap",
+                context=f"компетенция {gap}",
+                details={"skill": gap, "coverage": competency_map.get("coverage", {}).get(gap, 0)}
+            ))
+            
+            actions.append(ActionItem(
+                id=f"train_{gap.lower()}",
+                type="training",
+                description=f"{level_prefix}: Организовать обучение команды по {gap}",
+                priority=self._lower_priority(priority),
+                source="competency_gap_alternative",
+                context=f"компетенция {gap}",
+                details={"skill": gap, "type": "internal_training"}
+            ))
+        
+        return actions
+    
+    def _generate_criteria_actions(self, metrics_data: Dict) -> List[ActionItem]:
+        """Генерирует действия на основе покрытия критериев"""
+        actions = []
+        criteria_coverage = metrics_data.get("criteria_coverage", {})
+        details = criteria_coverage.get("criteria_details", [])
+        level_prefix = self._get_level_prefix("technical")
+        
+        for detail in details:
+            status = detail.get("status")
+            name = detail.get("name", "")
+            
+            # Определяем, относится ли критерий к техническому уровню
+            tech_keywords = ["покрытие", "код", "точность", "инференс", "скорость", "время", "модели", "api"]
+            is_tech = any(kw in name.lower() for kw in tech_keywords)
+            
+            prefix = level_prefix if is_tech else "📋 Критерий"
+            
+            # Безопасное получение значений
+            current = detail.get("current", 0)
+            target = detail.get("target", 0)
+            gap = detail.get("gap", 0)
+            
+            if status == "not_met":
+                actions.append(ActionItem(
+                    id=f"criteria_{name.replace(' ', '_').lower()}",
+                    type="improve",
+                    description=f"{prefix}: Улучшить: {name} (текущее {current} при цели {target})",
+                    priority="high" if gap > 10 else "medium",
+                    source="criteria_gap",
+                    context=name,
+                    details=detail
+                ))
+            elif status == "partially_met":
+                actions.append(ActionItem(
+                    id=f"criteria_{name.replace(' ', '_').lower()}_partial",
+                    type="improve",
+                    description=f"{prefix}: Довести до выполнения: {name}",
+                    priority="medium",
+                    source="criteria_partial",
+                    context=name,
+                    details=detail
+                ))
+        
+        return actions
+    
+    def _generate_findings_actions(self, metrics_data: Dict) -> List[ActionItem]:
+        """Генерирует действия на основе выводов и рекомендаций из метрик"""
+        actions = []
+        impact_map = metrics_data.get("impact_map", {})
+        findings = impact_map.get("findings", [])
+        recommendations = impact_map.get("recommendations", [])
+        level_prefix = self._get_level_prefix("technical")
+        
+        for finding in findings:
+            # Очищаем finding от артефактов
+            clean_finding = finding
+            if "1.2" in clean_finding:
+                clean_finding = clean_finding.replace("1.2", "1,2")
+            if "метрик" in clean_finding and "1,2" in clean_finding:
+                clean_finding = clean_finding.replace("1,2 метрик", "1,2")
+                clean_finding = clean_finding.replace("1.2 метрик", "1,2")
+            
+            if "ключевой драйвер" in finding.lower():
+                actions.append(ActionItem(
+                    id="focus_driver",
+                    type="process",
+                    description=f"{level_prefix}: Сфокусироваться на ключевом драйвере: {clean_finding}",
+                    priority="high",
+                    source="finding",
+                    context="анализ влияния",
+                    details={"finding": finding}
+                ))
+            elif "риск" in finding.lower() or "ниже" in finding.lower() or "покрытие кода" in finding.lower():
+                actions.append(ActionItem(
+                    id="risk_mitigation",
+                    type="process",
+                    description=f"{level_prefix}: Устранить риск: {clean_finding}",
+                    priority="critical",
+                    source="finding",
+                    context="управление рисками",
+                    details={"finding": finding}
+                ))
+            else:
+                actions.append(ActionItem(
+                    id=f"finding_{len(actions)}",
+                    type="process",
+                    description=f"{level_prefix}: {clean_finding}",
+                    priority="high",
+                    source="finding",
+                    context="вывод из метрик",
+                    details={"finding": finding}
+                ))
+        
+        for rec in recommendations:
+            actions.append(ActionItem(
+                id=f"rec_{len(actions)}",
+                type="process",
+                description=f"{level_prefix}: {rec}",
+                priority="high" if "срочно" in rec.lower() else "medium",
+                source="recommendation",
+                context="рекомендация из метрик",
+                details={"recommendation": rec}
+            ))
+        
+        return actions
+    
+    def _generate_market_actions(self, market_analysis: Dict) -> List[ActionItem]:
+        """Генерирует действия на основе рыночного анализа"""
+        actions = []
+        level_prefix = self._get_level_prefix("market")
+        
+        market_recs = market_analysis.get("recommendations", [])
+        for rec in market_recs:
+            actions.append(ActionItem(
+                id=f"market_{len(actions)}",
+                type="market",
+                description=f"{level_prefix}: {rec}",
+                priority="medium",
+                source="market_analysis",
+                context="рыночный анализ",
+                details={"recommendation": rec}
+            ))
+        
+        advantages = market_analysis.get("impact_from_metrics", {}).get("competitive_advantages", [])
+        for adv in advantages:
+            actions.append(ActionItem(
+                id=f"advantage_{len(actions)}",
+                type="market",
+                description=f"{level_prefix}: Усилить конкурентное преимущество: {adv}",
+                priority="high",
+                source="competitive_advantage",
+                context="конкурентные преимущества",
+                details={"advantage": adv}
+            ))
+        
+        return actions
+    
+    def _generate_narrative_actions(self, narrative: str) -> List[ActionItem]:
+        """Генерирует действия на основе нарратива"""
+        actions = []
+        keywords = ["рекомендуется", "необходимо", "следует", "важно", "требуется"]
+        
+        sentences = narrative.split(".")
+        for sentence in sentences:
+            for keyword in keywords:
+                if keyword in sentence.lower():
+                    actions.append(ActionItem(
+                        id=f"narrative_{len(actions)}",
+                        type="process",
+                        description=f"📄 Аналитический обзор: {sentence.strip()}",
+                        priority="medium",
+                        source="narrative",
+                        context="из аналитического обзора",
+                        details={"keyword": keyword}
+                    ))
+                    break
+        
+        return actions[:5]
+    
+    def _lower_priority(self, priority: str) -> str:
+        order = ["critical", "high", "medium", "low"]
+        if priority in order:
+            idx = min(order.index(priority) + 1, len(order) - 1)
+            return order[idx]
+        return "low"
+    
+    def _generate_summary(self, actions: List[ActionItem]) -> str:
+        if not actions:
+            return "Нет действий для выполнения"
+        
+        priority_counts = {"critical": 0, "high": 0, "medium": 0, "low": 0}
+        type_counts = {}
+        
+        for action in actions:
+            priority_counts[action.priority] = priority_counts.get(action.priority, 0) + 1
+            type_counts[action.type] = type_counts.get(action.type, 0) + 1
+        
+        summary = f"Всего действий: {len(actions)}\n"
+        summary += f"Критические: {priority_counts.get('critical', 0)}, "
+        summary += f"Высокий приоритет: {priority_counts.get('high', 0)}, "
+        summary += f"Средний: {priority_counts.get('medium', 0)}, "
+        summary += f"Низкий: {priority_counts.get('low', 0)}\n"
+        
+        type_desc = ", ".join([f"{k}: {v}" for k, v in type_counts.items()])
+        summary += f"Типы действий: {type_desc}"
+        
+        return summary
+    
+    def _get_priorities(self, actions: List[ActionItem]) -> Dict[str, List[str]]:
+        result = {"critical": [], "high": [], "medium": [], "low": []}
+        for action in actions:
+            if action.priority in result:
+                result[action.priority].append(action.description)
+        return result
+    
+    def _generate_timeline(self, actions: List[ActionItem]) -> Dict[str, List[str]]:
+        timeline = {"immediate": [], "1-2 weeks": [], "1 month": [], "2-3 months": []}
+        for action in actions:
+            if action.priority == "critical":
+                timeline["immediate"].append(action.description)
+            elif action.priority == "high":
+                timeline["1-2 weeks"].append(action.description)
+            elif action.priority == "medium":
+                timeline["1 month"].append(action.description)
+            else:
+                timeline["2-3 months"].append(action.description)
+        return timeline
+    
+    def _identify_risks(self, metrics_data: Dict, market_analysis: Dict, transcript_analysis: Optional[Dict] = None) -> List[str]:
+        """Идентифицирует риски из всех источников"""
+        risks = []
+        
+        # Риски из метрик
+        impact_map = metrics_data.get("impact_map", {})
+        findings = impact_map.get("findings", [])
+        for finding in findings:
+            if "риск" in finding.lower() or "ниже" in finding.lower():
+                risks.append(finding)
+        
+        # Риски из пробелов в компетенциях
+        gaps = metrics_data.get("competency_map", {}).get("gaps", [])
+        if gaps:
+            risks.append(f"Отсутствие экспертизы в: {', '.join(gaps[:3])}")
+        
+        # Риски из рыночного анализа
+        market_risks = market_analysis.get("impact_from_metrics", {}).get("market_risks", [])
+        risks.extend(market_risks[:3])
+        
+        # Риски из транскрипта (вводные от руководителя)
+        if transcript_analysis:
+            for risk in transcript_analysis.get("risks", []):
+                risks.append(risk.get("risk", ""))
+        
+        return risks[:5]
+    
+    def _define_success_criteria(self, metrics_data: Dict, transcript_analysis: Optional[Dict] = None) -> List[str]:
+        """Определяет критерии успеха"""
+        criteria = []
+        
+        # На основе покрытия критериев
+        criteria_coverage = metrics_data.get("criteria_coverage", {})
+        total = criteria_coverage.get("total", 0)
+        if total > 0:
+            criteria.append(f"Выполнить все {total} критериев качества")
+        
+        # На основе компетенций
+        competency_map = metrics_data.get("competency_map", {})
+        gaps = competency_map.get("gaps", [])
+        if gaps:
+            criteria.append(f"Закрыть пробелы в компетенциях: {', '.join(gaps)}")
+        
+        # На основе решений руководителя
+        if transcript_analysis:
+            decisions = transcript_analysis.get("decisions", [])
+            for decision in decisions[:2]:
+                criteria.append(f"Реализовать решение: {decision.get('decision', '')[:50]}")
+        
+        return criteria[:5]
+    
+    def save_plan(self, plan: Plan, filename: Optional[str] = None) -> str:
+        if not filename:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"plan_{timestamp}.json"
+        
+        filepath = self.results_dir / filename
+        
+        plan_dict = {
+            "actions": [asdict(a) for a in plan.actions],
+            "summary": plan.summary,
+            "priorities": plan.priorities,
+            "timeline": plan.timeline,
+            "risks": plan.risks,
+            "success_criteria": plan.success_criteria,
+            "generated_at": plan.generated_at
         }
-
-        role_info = role_mapping.get(gap.topic_key, (gap.topic_label.replace("_", " ").title(), "middle"))
-
-        recommendations.append(
-            RoleRecommendation(
-                role=role_info[0],
-                grade=role_info[1],
-                urgency="immediate" if gap.gap_severity == "critical" else "near_term",
-                reason_topic_keys=[gap.topic_key],
-                market_signal=f"opportunity_score={gap.market_opportunity_score:.2f}",
-                internal_deficit_score=round(1.0 - gap.internal_coverage, 2),
-                suggested_headcount=max(1, int((1.0 - gap.internal_coverage) * 5)),
-                narrative=f"Рынок сигнализирует о дефиците компетенций «{gap.topic_label}». "
-                          f"Текущее покрытие: {gap.internal_coverage:.2f}. "
-                          f"Рекомендуется нанять {role_info[0]} уровня {role_info[1]}.",
-            )
-        )
-
-    seen_roles: set[str] = set()
-    deduped: list[RoleRecommendation] = []
-    for rec in recommendations:
-        key = f"{rec.role}_{rec.grade}"
-        if key not in seen_roles:
-            seen_roles.add(key)
-            deduped.append(rec)
-
-    return deduped
-
-
-def _generate_product_recommendations(
-    metrics: CompanyMetrics,
-    gaps: list[CompetencyGapAnalysis],
-) -> list[ProductPivotRecommendation]:
-    recommendations: list[ProductPivotRecommendation] = []
-
-    gap_map: dict[str, CompetencyGapAnalysis] = {g.topic_key: g for g in gaps}
-
-    for product in metrics.products:
-        alignment_scores: list[float] = []
-        capability_scores: list[float] = []
-
-        for comp in product.required_competencies:
-            gap = gap_map.get(comp)
-            if gap:
-                alignment_scores.append(gap.market_opportunity_score)
-            cov = product.required_competency_levels.get(comp, 0.0)
-            capability_scores.append(cov)
-
-        market_alignment = round(sum(alignment_scores) / len(alignment_scores), 2) if alignment_scores else 0.5
-        internal_capability = round(sum(capability_scores) / len(capability_scores), 2) if capability_scores else 0.5
-
-        if product.maturity == "seed" and market_alignment > 0.6:
-            action = "invest"
-            reason = "Растущий рынок с высоким потенциалом."
-        elif product.maturity == "growth" and internal_capability > 0.6:
-            action = "invest"
-            reason = "Сильные внутренние компетенции, растущий продукт."
-        elif product.maturity == "mature" and market_alignment < 0.4:
-            action = "maintain"
-            reason = "Зрелый рынок, продукт стабилен."
-        elif product.maturity == "decline":
-            action = "divest"
-            reason = "Падающий рынок."
-        else:
-            action = "maintain"
-            reason = "Сбалансированная позиция."
-
-        recommendations.append(
-            ProductPivotRecommendation(
-                product_id=product.product_id,
-                product_name=product.product_name,
-                action=action,
-                reason=reason,
-                market_alignment_score=market_alignment,
-                internal_capability_score=internal_capability,
-                narrative=f"Продукт «{product.product_name}»: действие «{action}». {reason} "
-                          f"Рыночное соответствие: {market_alignment:.2f}, "
-                          f"внутренние возможности: {internal_capability:.2f}.",
-            )
-        )
-
-    return recommendations
-
-
-# ---------------------------------------------------------------------------
-# RAG-чанки
-# ---------------------------------------------------------------------------
-
-def _build_rag_chunks(output: PlannerOutput) -> list[RAGChunk]:
-    chunks: list[RAGChunk] = []
-
-    chunks.append(
-        RAGChunk(
-            chunk_id="planner::executive_summary",
-            source="planner",
-            section="summary",
-            title="Сводка рекомендаций",
-            text=output.executive_summary,
-            metadata={"generated_at": output.generated_at},
-        )
-    )
-
-    for gap in output.competency_gaps:
-        chunks.append(
-            RAGChunk(
-                chunk_id=f"planner::gap::{gap.topic_key}",
-                source="planner",
-                section="competency_gap",
-                title=f"Gap-анализ: {gap.topic_label}",
-                text=gap.narrative,
-                metadata={
-                    "topic_key": gap.topic_key,
-                    "severity": gap.gap_severity,
-                    "recommendation": gap.recommendation,
-                },
-            )
-        )
-
-    for rec in output.role_recommendations:
-        chunks.append(
-            RAGChunk(
-                chunk_id=f"planner::role::{rec.role}_{rec.grade}",
-                source="planner",
-                section="role_recommendation",
-                title=f"Рекомендация по роли: {rec.role} ({rec.grade})",
-                text=rec.narrative,
-                metadata={"role": rec.role, "grade": rec.grade, "urgency": rec.urgency},
-            )
-        )
-
-    return chunks
+        
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(plan_dict, f, ensure_ascii=False, indent=2)
+        
+        txt_path = filepath.with_suffix('.txt')
+        self._save_text_plan(plan, txt_path)
+        
+        print(f"💾 План сохранен: {filepath}")
+        return str(filepath)
+    
+    def _save_text_plan(self, plan: Plan, filepath: Path):
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write("=" * 80 + "\n")
+            f.write("ПЛАН ДЕЙСТВИЙ\n")
+            f.write("=" * 80 + "\n")
+            f.write(f"Сгенерирован: {plan.generated_at}\n")
+            f.write("=" * 80 + "\n\n")
+            
+            f.write("📋 РЕЗЮМЕ:\n")
+            f.write("-" * 40 + "\n")
+            f.write(plan.summary + "\n\n")
+            
+            f.write("📌 ВВОДНЫЕ ОТ РУКОВОДИТЕЛЯ:\n")
+            f.write("-" * 40 + "\n")
+            # Выводим действия из транскрипта
+            transcript_actions = [a for a in plan.actions if a.source == "transcript"]
+            for action in transcript_actions[:10]:
+                f.write(f"  • {action.description}\n")
+            if not transcript_actions:
+                f.write("  • Нет данных\n")
+            f.write("\n")
+            
+            f.write("🎯 ПРИОРИТЕТЫ:\n")
+            f.write("-" * 40 + "\n")
+            for priority, actions in plan.priorities.items():
+                if actions:
+                    priority_ru = self.PRIORITY_RU.get(priority, priority.upper())
+                    f.write(f"\n{priority_ru}:\n")
+                    for action in actions[:5]:
+                        f.write(f"  • {action}\n")
+            
+            f.write("\n📅 ВРЕМЕННАЯ ШКАЛА:\n")
+            f.write("-" * 40 + "\n")
+            for period, actions in plan.timeline.items():
+                if actions:
+                    period_ru = self.TIMELINE_RU.get(period, period)
+                    f.write(f"\n{period_ru}:\n")
+                    for action in actions[:3]:
+                        f.write(f"  • {action}\n")
+            
+            f.write("\n⚠️ РИСКИ:\n")
+            f.write("-" * 40 + "\n")
+            for risk in plan.risks:
+                f.write(f"  • {risk}\n")
+            
+            f.write("\n✅ КРИТЕРИИ УСПЕХА:\n")
+            f.write("-" * 40 + "\n")
+            for criterion in plan.success_criteria:
+                f.write(f"  • {criterion}\n")
+            
+            f.write("\n" + "=" * 80 + "\n")
+            f.write("ДЕТАЛИ ЗАДАЧ (с контекстом)\n")
+            f.write("=" * 80 + "\n\n")
+            
+            for action in plan.actions[:15]:
+                priority_emoji = {
+                    "critical": "🔴",
+                    "high": "🟠",
+                    "medium": "🟡",
+                    "low": "🟢"
+                }.get(action.priority, "⚪")
+                
+                priority_ru = self.PRIORITY_RU.get(action.priority, action.priority.upper())
+                
+                f.write(f"{priority_emoji} [{priority_ru}] {action.description}\n")
+                if action.context:
+                    f.write(f"  📌 Контекст: {action.context}\n")
+                f.write(f"  📂 Тип: {action.type} | Источник: {action.source}\n")
+                if action.assignee:
+                    f.write(f"  👤 Исполнитель: {action.assignee}\n")
+                if action.deadline:
+                    f.write(f"  📅 Дедлайн: {action.deadline}\n")
+                f.write("\n")
+    
+    def reload_registry(self) -> bool:
+        return self.registry.load()
 
 
-# ---------------------------------------------------------------------------
-# Главная функция
-# ---------------------------------------------------------------------------
+# ============================================================
+# ФУНКЦИЯ ЗАПУСКА (для оркестратора)
+# ============================================================
 
 def run_planner(
-    *,
-    metrics: CompanyMetrics | None = None,
-    gaps_csv_path: str | None = None,
-    trends_csv_path: str | None = None,
-) -> PlannerOutput:
-    """Запуск планировщика.
-
-    Если metrics не передан — загружаются модельные данные из sample_metrics.json.
-    Если пути к CSV не переданы — подхватываются последние файлы из data/reports/.
+    metrics=None,
+    gaps_csv_path: Optional[str] = None,
+    trends_csv_path: Optional[str] = None
+):
     """
-    from datetime import datetime, timezone
-
-    if metrics is None:
-        metrics = load_sample_metrics()
-        metrics.teams = _build_teams_from_employees(metrics.employees)
-        metrics.total_teams = len(metrics.teams)
-
+    Запускает planner_agent для формирования рекомендаций.
+    
+    Args:
+        metrics: Объект метрик от metrics_agent
+        gaps_csv_path: Путь к CSV с gap-зонами
+        trends_csv_path: Путь к CSV с трендами
+        
+    Returns:
+        Any: Результаты работы агента
+    """
+    print("📋 Запуск planner_agent...")
+    
+    agent = PlannerAgent()
+    
+    # Подготавливаем данные
+    metrics_data = {}
+    market_analysis = {}
+    narrative = ""
+    transcript_analysis = None
+    
+    # Если передан metrics, извлекаем данные
+    if metrics:
+        # Если metrics - это словарь с данными
+        if isinstance(metrics, dict):
+            metrics_data = metrics
+        # Если metrics - это объект MetricsAgent
+        elif hasattr(metrics, 'build_competency_map'):
+            metrics_data = {
+                "competency_map": metrics.build_competency_map(),
+                "criteria_coverage": metrics.analyze_criteria_coverage(),
+                "impact_map": metrics.build_impact_map()
+            }
+        # Если metrics - это результат run_metrics_agent
+        elif isinstance(metrics, dict) and "competency_map" in metrics:
+            metrics_data = metrics
+        # Если metrics - это объект с аттрибутами
+        elif hasattr(metrics, 'competency_map'):
+            metrics_data = {
+                "competency_map": getattr(metrics, 'competency_map', {}),
+                "criteria_coverage": getattr(metrics, 'criteria_coverage', {}),
+                "impact_map": getattr(metrics, 'impact_map', {})
+            }
+    
+    # Загружаем gaps из CSV если передан
     if gaps_csv_path:
-        gaps_raw = []
-        with open(gaps_csv_path, "r", encoding="utf-8-sig", newline="") as f:
-            gaps_raw = list(csv.DictReader(f))
-    else:
-        gaps_raw = _load_gaps()
-
+        try:
+            import csv
+            with open(gaps_csv_path, 'r', encoding='utf-8-sig') as f:
+                gaps_data = list(csv.DictReader(f))
+            if "gaps" not in metrics_data:
+                metrics_data["gaps"] = []
+            if isinstance(gaps_data, list):
+                for g in gaps_data:
+                    if isinstance(g, dict):
+                        topic = g.get("topic_label", "")
+                        if topic:
+                            metrics_data["gaps"].append(topic)
+        except Exception as e:
+            print(f"   ⚠️ Ошибка загрузки gaps из {gaps_csv_path}: {e}")
+    
+    # Загружаем trends из CSV если передан
     if trends_csv_path:
-        trends_raw = []
-        with open(trends_csv_path, "r", encoding="utf-8-sig", newline="") as f:
-            trends_raw = list(csv.DictReader(f))
+        try:
+            import csv
+            with open(trends_csv_path, 'r', encoding='utf-8-sig') as f:
+                trends_data = list(csv.DictReader(f))
+            market_analysis["trends"] = trends_data
+        except Exception as e:
+            print(f"   ⚠️ Ошибка загрузки trends из {trends_csv_path}: {e}")
+    
+    # Загружаем narrative из файла если есть
+    narrative_file = Path("src/agents/market_narrative_agent/results/narrative_latest.txt")
+    if narrative_file.exists():
+        try:
+            with open(narrative_file, 'r', encoding='utf-8') as f:
+                narrative = f.read()
+        except Exception as e:
+            print(f"   ⚠️ Ошибка загрузки narrative: {e}")
+    
+    # Загружаем вводные от руководителя из secretary_agent
+    transcript_file = Path("data/input/meeting_transcript.json")
+    if transcript_file.exists():
+        try:
+            with open(transcript_file, 'r', encoding='utf-8') as f:
+                transcript_data = json.load(f)
+            transcript_analysis = {
+                "main_theses": transcript_data.get("main_theses", []),
+                "decisions": transcript_data.get("decisions", []),
+                "action_items": transcript_data.get("action_items", []),
+                "risks": transcript_data.get("risks", [])
+            }
+        except Exception as e:
+            print(f"   ⚠️ Ошибка загрузки транскрипта: {e}")
+    
+    # Формируем план
+    plan = agent.plan(
+        metrics_data=metrics_data,
+        market_analysis=market_analysis,
+        narrative=narrative,
+        transcript_analysis=transcript_analysis
+    )
+    
+    # Сохраняем план
+    agent.save_plan(plan)
+    
+    # Возвращаем результат с аттрибутами, ожидаемыми в workflow
+    # Создаём объект с нужными полями
+    class PlannerResult:
+        def __init__(self, plan_obj):
+            self.role_recommendations = []
+            self.product_recommendations = []
+            self.rag_chunks = []
+            self.executive_summary = plan_obj.summary
+            self.plan = plan_obj
+            
+            # Конвертируем действия в ожидаемый формат
+            for action in plan_obj.actions:
+                if action.type == "hire" or "компетенц" in action.description:
+                    self.role_recommendations.append({
+                        "role": action.description,
+                        "urgency": action.priority,
+                        "narrative": action.context or ""
+                    })
+                elif action.type == "improve" or "продукт" in action.description:
+                    self.product_recommendations.append({
+                        "product_name": action.context or "",
+                        "action": action.description,
+                        "reason": action.details.get("value", "")
+                    })
+            
+            # Генерируем RAG-чанки из плана (с плоскими метаданными)
+            # Используем плоские значения вместо словаря
+            priority_counts = plan_obj.priorities
+            self.rag_chunks = [
+                {
+                    "chunk_id": f"plan_summary_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                    "text": plan_obj.summary,
+                    "source": "planner_agent",
+                    "section": "summary",
+                    "title": "План действий",
+                    "metadata": {
+                        "critical_count": len(priority_counts.get("critical", [])),
+                        "high_count": len(priority_counts.get("high", [])),
+                        "medium_count": len(priority_counts.get("medium", [])),
+                        "low_count": len(priority_counts.get("low", [])),
+                        "total_actions": len(plan_obj.actions),
+                        "generated_at": plan_obj.generated_at
+                    }
+                }
+            ]
+    
+    result = PlannerResult(plan)
+    
+    print(f"   ✅ planner_agent завершил работу")
+    print(f"   Всего действий: {len(plan.actions)}")
+    print(f"   Рекомендаций по ролям: {len(result.role_recommendations)}")
+    print(f"   Рекомендаций по продуктам: {len(result.product_recommendations)}")
+    
+    return result
+
+
+# ============================================================
+# ТОЧКА ВХОДА
+# ============================================================
+
+def main():
+    """Тестовый запуск"""
+    print("=" * 60)
+    print("📋 PLANNER AGENT - ТЕСТ С РЕЕСТРОМ И ВВОДНЫМИ ОТ РУКОВОДИТЕЛЯ")
+    print("=" * 60)
+    
+    agent = PlannerAgent()
+    
+    # ============================================================
+    # 1. ВВОДНЫЕ ОТ РУКОВОДИТЕЛЯ (из транскрипта)
+    # ============================================================
+    transcript_analysis = {
+        "meeting_date": None,
+        "main_theses": [
+            "Мы начинаем школу разработки агентов в университете искусственного интеллекта.",
+            "У нас богатый опыт преподавания и разработки проектов."
+        ],
+        "decisions": [
+            {
+                "decision": "Провести три живых занятия и бонусное занятие в записи",
+                "who": "Руководитель",
+                "deadline": None
+            },
+            {
+                "decision": "Рассмотреть монологовые и диалоговые промты на следующем занятии",
+                "who": "Руководитель",
+                "deadline": None
+            }
+        ],
+        "action_items": [
+            {
+                "task": "Создать проекты на Google As-2D, использовать промты для обучения агентов",
+                "assignee": "Участники школы",
+                "deadline": None
+            },
+            {
+                "task": "Ответить на вопросы участников в режиме вопросов и ответов",
+                "assignee": "Дмитрий Романов",
+                "deadline": None
+            }
+        ],
+        "risks": [
+            {
+                "risk": "Нехватка времени для всех вопросов из-за большого количества участников",
+                "owner": "Дмитрий Романов",
+                "severity": "medium"
+            }
+        ],
+        "key_topics": ["Обучение агентам", "Использование промтов"],
+        "tone_and_mood": "Уверенность, открытость для вопросов и взаимодействия",
+        "summary": "Руководитель начал школу разработки агентов с обещанием делиться практическим опытом"
+    }
+    
+    # ============================================================
+    # 2. ДАННЫЕ ИЗ РЕЕСТРА МЕТРИК
+    # ============================================================
+    competency_data = {
+        "competency_map": {
+            "gaps": ["MLOps", "Docker"],
+            "coverage": {"Python": 100, "NLP": 50}
+        }
+    }
+    
+    criteria_data = {
+        "criteria_coverage": {
+            "total": 5,
+            "met": 1,
+            "partially_met": 2,
+            "not_met": 2,
+            "overall_progress": 20,
+            "criteria_details": [
+                {
+                    "name": "Точность модели >= 95%",
+                    "status": "partially_met",
+                    "target": 95,
+                    "current": 94.2,
+                    "gap": 0.8
+                },
+                {
+                    "name": "Покрытие кода >= 80%",
+                    "status": "partially_met",
+                    "target": 80,
+                    "current": 78.5,
+                    "gap": 1.5
+                },
+                {
+                    "name": "Интеграция с источниками",
+                    "status": "not_met",
+                    "target": 3,
+                    "current": 2,
+                    "gap": 1
+                }
+            ]
+        }
+    }
+    
+    # ============================================================
+    # 3. РЫНОЧНЫЙ АНАЛИЗ
+    # ============================================================
+    market_analysis = {
+        "recommendations": [
+            "Усилить маркетинговую активность в сегменте Enterprise",
+            "Сфокусироваться на развитии MLOps-компетенций"
+        ],
+        "impact_from_metrics": {
+            "competitive_advantages": ["Скорость разработки", "Гибкость"],
+            "market_risks": ["Отставание от конкурентов в области MLOps"]
+        }
+    }
+    
+    # ============================================================
+    # 4. НАРРАТИВ
+    # ============================================================
+    narrative = ""
+    narrative_file = Path("src/agents/market_narrative_agent/results/narrative_latest.txt")
+    if narrative_file.exists():
+        try:
+            with open(narrative_file, 'r', encoding='utf-8') as f:
+                narrative = f.read()
+            print(f"📄 Загружен narrative из: {narrative_file}")
+        except Exception as e:
+            print(f"⚠️ Не удалось загрузить narrative: {e}")
     else:
-        trends_raw = _load_trends()
+        print("ℹ️ Narrative не найден, используется пустая строка")
+    
+    # ============================================================
+    # 5. ФОРМИРУЕМ metrics_data
+    # ============================================================
+    metrics_data = {
+        **competency_data,
+        **criteria_data,
+    }
+    
+    # ============================================================
+    # 6. ЗАПУСК
+    # ============================================================
+    plan = agent.plan(metrics_data, market_analysis, narrative, transcript_analysis)
+    
+    print("\n📊 ПЛАН:")
+    print("-" * 60)
+    print(f"Всего действий: {len(plan.actions)}")
+    print(f"\n📌 РЕЗЮМЕ:\n{plan.summary}")
+    
+    print("\n🎯 ПРИОРИТЕТЫ:")
+    for priority, actions in plan.priorities.items():
+        if actions:
+            priority_ru = agent.PRIORITY_RU.get(priority, priority.upper())
+            print(f"  {priority_ru}: {len(actions)}")
+            for action in actions[:2]:
+                print(f"    • {action[:80]}...")
+    
+    print("\n⚠️ РИСКИ:")
+    for risk in plan.risks:
+        print(f"  • {risk}")
+    
+    print("\n✅ КРИТЕРИИ УСПЕХА:")
+    for criterion in plan.success_criteria:
+        print(f"  • {criterion}")
+    
+    agent.save_plan(plan)
+    
+    # ============================================================
+    # 7. ТЕСТ run_planner
+    # ============================================================
+    print("\n🚀 ТЕСТ run_planner:")
+    result = run_planner(metrics=metrics_data)
+    print(f"  Рекомендаций по ролям: {len(result.role_recommendations)}")
+    print(f"  Рекомендаций по продуктам: {len(result.product_recommendations)}")
+    print(f"  RAG-чанков: {len(result.rag_chunks)}")
+    
+    print("\n" + "=" * 60)
+    print("✅ ТЕСТ ЗАВЕРШЕН!")
+    print("=" * 60)
 
-    competency_gaps: list[CompetencyGapAnalysis] = []
-
-    for row in gaps_raw:
-        topic_key = row.get("topic", "")
-        topic_label = row.get("topic_label", "")
-        platform_share = _safe_float(row.get("platform_share"))
-        opportunity = _safe_float(row.get("opportunity_score"))
-        interpretation = row.get("interpretation", "")
-
-        if not topic_key:
-            continue
-
-        internal_cov, experts, teams_count = _aggregate_internal_coverage(metrics, topic_key)
-
-        trend_strength = 0.0
-        for t in trends_raw:
-            if t.get("topic") == topic_key:
-                trend_strength = _safe_float(t.get("signal_strength"))
-                break
-
-        severity = _determine_gap_severity(opportunity, internal_cov)
-        recommendation = _determine_recommendation(severity, internal_cov)
-
-        gap = CompetencyGapAnalysis(
-            topic_key=topic_key,
-            topic_label=topic_label,
-            market_platform_share=platform_share,
-            market_opportunity_score=opportunity,
-            market_trend_strength=trend_strength,
-            internal_coverage=internal_cov,
-            internal_expert_count=experts,
-            internal_team_count=teams_count,
-            gap_severity=severity,
-            recommendation=recommendation,
-            priority=1 if severity == "critical" else (2 if severity == "significant" else (3 if severity == "moderate" else 4)),
-        )
-        gap.narrative = _build_narrative(gap)
-        competency_gaps.append(gap)
-
-    competency_gaps.sort(key=lambda g: g.priority)
-
-    role_recs = _generate_role_recommendations(competency_gaps, metrics)
-    product_recs = _generate_product_recommendations(metrics, competency_gaps)
-
-    critical_count = sum(1 for g in competency_gaps if g.gap_severity == "critical")
-    sig_count = sum(1 for g in competency_gaps if g.gap_severity == "significant")
-    hire_count = sum(1 for r in role_recs if r.urgency == "immediate")
-
-    executive_summary = (
-        f"Анализ рынка и внутренних метрик компании «{metrics.company_name}».\n"
-        f"Выявлено критических gap-зон: {critical_count}, значимых: {sig_count}.\n"
-        f"Рекомендуется немедленный наём по {hire_count} ролям.\n"
-        f"Продуктов: инвестировать в {sum(1 for p in product_recs if p.action == 'invest')}, "
-        f"поддерживать {sum(1 for p in product_recs if p.action == 'maintain')}."
-    )
-
-    generated_at = datetime.now(timezone.utc).isoformat()
-
-    output = PlannerOutput(
-        generated_at=generated_at,
-        executive_summary=executive_summary,
-        competency_gaps=competency_gaps,
-        role_recommendations=role_recs,
-        product_recommendations=product_recs,
-    )
-
-    output.rag_chunks = _build_rag_chunks(output)
-
-    return output
-
-
-# ---------------------------------------------------------------------------
-# Точка входа для тестирования
-# ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    metrics = load_sample_metrics()
-    metrics.teams = _build_teams_from_employees(metrics.employees)
-    metrics.total_teams = len(metrics.teams)
-
-    print("=" * 60)
-    print("БАЗА ДЛЯ СРАВНЕНИЯ — ВНУТРЕННИЕ МЕТРИКИ КОМПАНИИ")
-    print("=" * 60)
-    print(f"Компания: {metrics.company_name}")
-    print(f"Сотрудников: {metrics.total_headcount}")
-    print(f"Команд: {metrics.total_teams}")
-    print(f"Продуктов: {metrics.total_products}")
-    print()
-    print("--- Сотрудники ---")
-    for e in metrics.employees:
-        comps = ", ".join(f"{c}={e.competency_levels.get(c, 0):.2f}" for c in e.competencies)
-        print(f"  {e.role} ({e.grade}, {e.department}, team {e.team_id}): {comps}")
-    print()
-    print("--- Команды ---")
-    for t in metrics.teams:
-        coverage = ", ".join(f"{c}={v:.2f}" for c, v in sorted(t.competency_coverage.items()))
-        print(f"  Team {t.team_id} ({t.department}, {t.headcount} чел.): {coverage}")
-    print()
-    print("--- Продукты ---")
-    for p in metrics.products:
-        req = ", ".join(f"{c}={p.required_competency_levels.get(c, 0):.2f}" for c in p.required_competencies)
-        print(f"  {p.product_name} ({p.maturity}, rev_share={p.revenue_share}): требуется [{req}]")
-    print()
-    print("--- Стратегия ---")
-    print(f"  Приоритетные темы: {', '.join(metrics.strategy.priority_topics)}")
-    print(f"  Наём: {', '.join(metrics.strategy.hire_priority_roles)}")
-    print(f"  Upskill: {', '.join(metrics.strategy.upskill_priority_topics)}")
-    print(f"  Целевой рост выручки: {metrics.strategy.target_revenue_growth*100:.0f}%")
-    print()
-
-    result = run_planner(metrics=metrics)
-
-    print("=" * 60)
-    print("PLANNER AGENT — РЕЗУЛЬТАТ")
-    print("=" * 60)
-    print()
-    print(result.executive_summary)
-    print()
-
-    print("--- GAP-анализ (первые 10) ---")
-    for g in result.competency_gaps[:10]:
-        print(f"  {g.topic_label:35s} | severity={g.gap_severity:12s} | rec={g.recommendation:8s} | "
-              f"market_opp={g.market_opportunity_score:.2f} | internal_cov={g.internal_coverage:.2f}")
-
-    print()
-    print("--- Рекомендации по ролям ---")
-    for r in result.role_recommendations:
-        print(f"  {r.role} ({r.grade}) | urgency={r.urgency:10s} | headcount={r.suggested_headcount}")
-
-    print()
-    print("--- Рекомендации по продуктам ---")
-    for p in result.product_recommendations:
-        print(f"  {p.product_name:30s} | action={p.action:8s} | market={p.market_alignment_score:.2f} | "
-              f"internal={p.internal_capability_score:.2f}")
-
-    print()
-    print(f"RAG-чанков сгенерировано: {len(result.rag_chunks)}")
+    main()

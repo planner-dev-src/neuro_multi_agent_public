@@ -1,8 +1,16 @@
-from __future__ import annotations
+"""
+Smoke-тест для market_agent
+Проверяет сбор и анализ рыночных данных через MarketAgent
+"""
 
+import sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import TestCase
+
+# Добавляем корневую папку проекта в PYTHONPATH
+project_root = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(project_root))
 
 from src.agents.base.models import AgentResult
 from src.agents.market_agent.pipeline import MarketAgent
@@ -14,31 +22,59 @@ class TestMarketAgentSmoke(TestCase):
             snapshot_root = Path(tmp_dir) / "snapshots"
             snapshot_root.mkdir(parents=True, exist_ok=True)
 
-            html_path = snapshot_root / "example.com__catalog.html"
-            html_path.write_text(
+            # Создаем снапшоты для ВСЕХ страниц
+            html_content = """
+            <html>
+              <head><title>Platform One</title></head>
+              <body>
+                <main>
+                  <h1>AI Courses</h1>
+                  <section>
+                    <article>
+                      <h2>Machine Learning Basics</h2>
+                      <p>Beginner course with 12 lessons and 8 hours of content.</p>
+                      <a href="https://example.com/ml-basics">Open course</a>
+                    </article>
+                    <article>
+                      <h2>Deep Learning Advanced</h2>
+                      <p>Advanced specialization with 24 lessons and 18 hours.</p>
+                      <a href="https://example.com/dl-advanced">Open program</a>
+                    </article>
+                  </section>
+                </main>
+              </body>
+            </html>
+            """
+            (snapshot_root / "example.com__catalog.html").write_text(
+                html_content.strip(), encoding="utf-8"
+            )
+
+            # Снапшот для /ml-basics
+            (snapshot_root / "example.com__ml-basics.html").write_text(
                 """
                 <html>
-                  <head><title>Platform One</title></head>
+                  <head><title>ML Basics</title></head>
                   <body>
-                    <main>
-                      <h1>AI Courses</h1>
-                      <section>
-                        <article>
-                          <h2>Machine Learning Basics</h2>
-                          <p>Beginner course with 12 lessons and 8 hours of content.</p>
-                          <a href="https://example.com/ml-basics">Open course</a>
-                        </article>
-                        <article>
-                          <h2>Deep Learning Advanced</h2>
-                          <p>Advanced specialization with 24 lessons and 18 hours.</p>
-                          <a href="https://example.com/dl-advanced">Open program</a>
-                        </article>
-                      </section>
-                    </main>
+                    <h1>Machine Learning Basics</h1>
+                    <p>12 lessons, 8 hours of content.</p>
                   </body>
                 </html>
                 """.strip(),
-                encoding="utf-8",
+                encoding="utf-8"
+            )
+
+            # Снапшот для /dl-advanced
+            (snapshot_root / "example.com__dl-advanced.html").write_text(
+                """
+                <html>
+                  <head><title>DL Advanced</title></head>
+                  <body>
+                    <h1>Deep Learning Advanced</h1>
+                    <p>24 lessons, 18 hours of content.</p>
+                  </body>
+                </html>
+                """.strip(),
+                encoding="utf-8"
             )
 
             agent = MarketAgent()
@@ -90,7 +126,7 @@ class TestMarketAgentSmoke(TestCase):
             self.assertIn("proxy_hits", source_meta)
             self.assertIn("direct_hits", source_meta)
 
-            self.assertGreaterEqual(source_meta.get("snapshot_hits", 0), 1)
+            self.assertGreaterEqual(source_meta.get("snapshot_hits", 0), 3)
             self.assertEqual(source_meta.get("proxy_hits", 0), 0)
             self.assertEqual(source_meta.get("direct_hits", 0), 0)
 
@@ -98,20 +134,28 @@ class TestMarketAgentSmoke(TestCase):
             self.assertIn("pages_ok", source_meta)
             self.assertIn("pages_failed", source_meta)
 
-            self.assertEqual(source_meta["pages_total"], 1)
-            self.assertEqual(source_meta["pages_ok"], 1)
+            # Все 3 страницы успешно обработаны
+            self.assertEqual(source_meta["pages_total"], 3)
+            self.assertEqual(source_meta["pages_ok"], 3)
             self.assertEqual(source_meta["pages_failed"], 0)
 
             self.assertIn("page_results", source_meta)
             self.assertIsInstance(source_meta["page_results"], list)
-            self.assertEqual(len(source_meta["page_results"]), 1)
+            self.assertEqual(len(source_meta["page_results"]), 3)
 
+            # Проверяем первую страницу (каталог)
             page_result = source_meta["page_results"][0]
             self.assertEqual(page_result.get("status"), "ok")
             self.assertEqual(page_result.get("access_mode"), "offline_snapshot")
             self.assertEqual(page_result.get("url"), "https://example.com/catalog")
             self.assertIsNotNone(page_result.get("raw_html_path"))
             self.assertGreater(page_result.get("text_length", 0), 0)
+
+            # Проверяем, что все URL обработаны
+            urls = [p.get("url") for p in source_meta["page_results"]]
+            self.assertIn("https://example.com/catalog", urls)
+            self.assertIn("https://example.com/ml-basics", urls)
+            self.assertIn("https://example.com/dl-advanced", urls)
 
             files = payload["files"]
             self.assertIsInstance(files, dict)
@@ -129,3 +173,8 @@ class TestMarketAgentSmoke(TestCase):
             self.assertTrue(json_path.is_file())
             self.assertTrue(csv_path.exists())
             self.assertTrue(csv_path.is_file())
+
+
+if __name__ == "__main__":
+    import unittest
+    unittest.main()

@@ -3,6 +3,15 @@ from __future__ import annotations
 import re
 from urllib.parse import urlparse
 
+# Импортируем общие ключевые слова
+from src.agents.common.keywords import (
+    COMPANY_DIRECTIONS,
+    FILTER_KEYWORDS,
+    UNIQUE_KEYWORDS,
+    is_relevant_text,
+    get_direction_by_keyword
+)
+
 from .taxonomy import (
     AUDIENCE_RULES,
     COMPETENCY_FAMILY_RULES,
@@ -16,57 +25,64 @@ from .taxonomy import (
 from .types import CatalogItemInput, OfferFeatures, PlatformReportInput
 
 
-NOISE_TITLE_PATTERNS = [
-    "отзывы",
-    "review",
-    "reviews",
-    "faq",
-    "questions",
-    "вопросы",
-    "блог",
-    "blog",
-    "новости",
-    "news",
-    "статья",
-    "article",
-    "мероприят",
-    "event",
-    "подкаст",
-    "podcast",
-    "о компании",
-    "about",
-    "контакты",
-    "contacts",
-    "преподаватели",
-    "teachers",
+# ============================================================
+# АЛГОРИТМИЧЕСКАЯ ОЧИСТКА (вместо хардкода)
+# ============================================================
+
+# Технические ключевые слова для проверки
+TECH_KEYWORDS = [
+    # Языки программирования
+    "python", "pytorch", "tensorflow", "keras", "scikit-learn",
+    "numpy", "pandas", "sql", "r", "java", "cpp", "c++", "go", "rust",
+    "javascript", "typescript", "react", "node.js", "django", "flask",
+    "fastapi", "streamlit", "gradio",
+    # Инструменты и платформы
+    "docker", "kubernetes", "k8s", "mlops", "ci/cd", "devops",
+    "git", "github", "gitlab", "jupyter", "colab", "airflow",
+    "kubeflow", "mlflow", "jenkins", "ansible", "terraform",
+    # Библиотеки и фреймворки
+    "transformers", "huggingface", "langchain", "llamaindex",
+    "spacy", "nltk", "gensim", "openai", "anthropic",
+    # Облачные платформы
+    "aws", "gcp", "azure", "yandex cloud", "cloud",
+    # Базы данных
+    "postgresql", "mongodb", "redis", "elasticsearch",
+    # Русские термины
+    "алгоритм", "модель", "нейросеть", "машинное обучение",
+    "глубокое обучение", "обработка данных", "анализ данных",
+    "библиотека", "фреймворк", "инструмент", "платформа",
 ]
 
-NOISE_URL_PATTERNS = [
-    "/reviews",
-    "/review",
-    "/blog",
-    "/news",
-    "/articles",
-    "/media",
-    "/events",
-    "/podcast",
-    "/about",
-    "/contacts",
-    "/teachers",
+# Индикаторы программы/курса
+PROGRAM_INDICATORS = [
+    "курс", "программа", "профессия", "специализация",
+    "course", "program", "profession", "specialization",
+    "bootcamp", "track", "обучение", "тренинг",
+    "training", "workshop", "интенсив", "практикум",
 ]
 
-PROGRAM_HINTS = [
-    "курс",
-    "программа",
-    "профессия",
-    "специализац",
-    "career",
-    "course",
-    "program",
-    "bootcamp",
-    "track",
-    "learning path",
-    "обучение",
+# Индикаторы AI/ML/DS (для проверки близости к программе)
+AI_INDICATORS = [
+    "ai", "ml", "data", "analytics", "анализ", "аналитика",
+    "машинное обучение", "нейросеть", "искусственный интеллект",
+    "computer vision", "nlp", "llm", "gpt",
+    "компьютерное зрение", "обработка естественного языка",
+    "временные ряды", "обучение с подкреплением",
+    "генеративные сети", "генетические алгоритмы",
+]
+
+# CTA-заголовки (шум)
+CTA_TITLES = {
+    "подробнее", "читать далее", "узнать больше", "learn more",
+    "оставить заявку", "записаться", "регистрация",
+    "sign up", "enroll now", "start now", "get started",
+}
+
+# Паттерны для проверки структуры программы
+PROGRAM_PATTERNS = [
+    r"(?:курс|программа|профессия|специализация|обучение).{0,50}(?:ai|ml|data|анализ|нейросеть|машинное|искусственный)",
+    r"(?:course|program|profession|specialization|bootcamp).{0,50}(?:machine learning|deep learning|data science|ai|ml)",
+    r"(?:нейросеть|искусственный интеллект|ai|ml).{0,50}(?:курс|программа|обучение)",
 ]
 
 SPACE_RE = re.compile(r"\s+")
@@ -195,7 +211,7 @@ def _normalize_item_type(item: CatalogItemInput, text: str) -> str:
     if "track" in title:
         return "track"
 
-    if any(h in text for h in PROGRAM_HINTS):
+    if any(h in text for h in PROGRAM_INDICATORS):
         return "course"
 
     return raw or "unknown"
@@ -493,32 +509,102 @@ def _intensity_signals(
     return _dedupe_list(result)
 
 
+# ============================================================
+# АЛГОРИТМИЧЕСКАЯ ПРОВЕРКА НА ШУМ (вместо хардкода)
+# ============================================================
+
+def _is_ai_relevant(text: str) -> bool:
+    """Проверяет, релевантен ли текст AI/ML/DS тематике"""
+    text_lower = text.lower()
+    
+    # Проверка по общим ключевым словам
+    for keyword in UNIQUE_KEYWORDS:
+        if keyword.lower() in text_lower:
+            return True
+    
+    # Проверка по 12 направлениям компании
+    for direction in COMPANY_DIRECTIONS.values():
+        for keyword in direction.get("keywords", []):
+            if keyword.lower() in text_lower:
+                return True
+    
+    return False
+
+
+def _has_technical_keywords(text: str) -> bool:
+    """Проверяет наличие технических ключевых слов"""
+    text_lower = text.lower()
+    return any(kw.lower() in text_lower for kw in TECH_KEYWORDS)
+
+
+def _looks_like_ai_program(text: str) -> bool:
+    """Проверяет, похоже ли на AI/ML программу"""
+    text_lower = text.lower()
+    
+    # 1. Проверяем наличие индикаторов программы
+    if not any(ind in text_lower for ind in PROGRAM_INDICATORS):
+        return False
+    
+    # 2. Проверяем наличие AI/ML индикаторов
+    if not any(ind in text_lower for ind in AI_INDICATORS):
+        return False
+    
+    # 3. Проверяем близость AI-индикаторов к индикаторам программы
+    program_positions = []
+    ai_positions = []
+    
+    for ind in PROGRAM_INDICATORS:
+        for match in re.finditer(ind, text_lower):
+            program_positions.append(match.start())
+    
+    for ind in AI_INDICATORS:
+        for match in re.finditer(ind, text_lower):
+            ai_positions.append(match.start())
+    
+    for p_pos in program_positions:
+        for a_pos in ai_positions:
+            if abs(p_pos - a_pos) < 50:
+                return True
+    
+    # 4. Проверка по регулярным выражениям
+    for pattern in PROGRAM_PATTERNS:
+        if re.search(pattern, text_lower, re.IGNORECASE):
+            return True
+    
+    return False
+
+
 def _is_noise(item: CatalogItemInput, text: str) -> tuple[bool, list[str]]:
+    """
+    Определяет, является ли элемент шумом с использованием алгоритмической проверки
+    (без хардкода)
+    """
     reasons: list[str] = []
     title = _normalize_text(item.title or "")
-    url = _normalize_text(item.canonical_url or item.source_url or "")
+    description = _normalize_text(item.description or "")
 
+    # 1. Проверка по длине
     if len(title) < 4:
         reasons.append("title_too_short")
 
-    if len((item.description or "").strip()) < 20:
+    if len(description) < 20:
         reasons.append("description_too_short")
 
-    if any(p in title for p in NOISE_TITLE_PATTERNS):
-        reasons.append("noise_title_pattern")
-
-    if any(p in url for p in NOISE_URL_PATTERNS):
-        reasons.append("noise_url_pattern")
-
-    looks_like_program = any(h in text for h in PROGRAM_HINTS) or (
-        _normalize_text(item.item_type or "")
-        in {"course", "program", "profession", "specialization", "track", "bootcamp"}
-    )
-    if not looks_like_program:
-        reasons.append("no_program_hints")
-
-    if title in {"подробнее", "читать далее", "узнать больше", "learn more", "оставить заявку"}:
+    # 2. Проверка на CTA-заголовки
+    if title in CTA_TITLES:
         reasons.append("generic_cta_title")
+
+    # 3. Проверка на релевантность AI/ML/DS
+    if not _is_ai_relevant(text):
+        reasons.append("not_ai_relevant")
+
+    # 4. Проверка на технические ключевые слова
+    if not _has_technical_keywords(text):
+        reasons.append("no_technical_keywords")
+
+    # 5. Проверка на структуру программы/курса
+    if not _looks_like_ai_program(text):
+        reasons.append("not_program_like")
 
     return (len(reasons) > 0, reasons)
 
@@ -569,6 +655,9 @@ def _quality_score(
 
 
 def classify_catalog_items(platform_reports: list[PlatformReportInput]) -> list[OfferFeatures]:
+    """
+    Классифицирует элементы каталога, используя общие ключевые слова
+    """
     result: list[OfferFeatures] = []
 
     for report in platform_reports:
@@ -577,8 +666,16 @@ def classify_catalog_items(platform_reports: list[PlatformReportInput]) -> list[
             normalized_title = _normalize_title(item.title)
             normalized_item_type = _normalize_item_type(item, text)
 
+            # Используем общие ключевые слова для определения направлений
             topic_clusters = _dedupe_list(_match_rules(text, TOPIC_CLUSTER_RULES))
             topic_clusters = [t for t in topic_clusters if t in TOPIC_KEYS]
+
+            # Дополнительные топики из общих ключевых слов
+            for direction_key, direction in COMPANY_DIRECTIONS.items():
+                direction_name = direction["name"]
+                if direction_name in text or any(kw in text for kw in direction.get("keywords", [])):
+                    if direction_name not in topic_clusters:
+                        topic_clusters.append(direction_name)
 
             competency_families = _dedupe_list(_match_rules(text, COMPETENCY_FAMILY_RULES))
             audience_segments = _dedupe_list(_match_rules(text, AUDIENCE_RULES))

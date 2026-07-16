@@ -9,3 +9,18 @@ outputs/data/
 outputs/ 
 scratch/ 
 data/ 
+# Transcription results
+src/agents/secretary_agent/transcription_results/
+src/agents/secretary_agent/transcription_results/*
+
+# Audio extracted files
+*.wav
+*.mp3
+*.m4a
+
+# Video downloads
+downloads/
+*.mp4
+*.avi
+*.mkv
+*.mov

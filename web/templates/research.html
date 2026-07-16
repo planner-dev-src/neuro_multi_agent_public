@@ -1,0 +1,53 @@
+<!-- web/templates/research.html -->
+<div class="research-panel">
+    <h2>🔍 Исследовательский поиск</h2>
+    
+    <div class="search-form">
+        <input type="text" id="research-query" placeholder="Введите тему для исследования...">
+        <button onclick="runResearch()">Найти</button>
+    </div>
+    
+    <div id="research-results">
+        <!-- Результаты поиска -->
+    </div>
+</div>
+
+<script>
+async function runResearch() {
+    const query = document.getElementById('research-query').value;
+    if (!query) return;
+    
+    const response = await fetch('/api/research/search', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            query: query,
+            max_results: 10,
+            generate_report: true
+        })
+    });
+    
+    const data = await response.json();
+    displayResults(data);
+}
+
+function displayResults(data) {
+    const container = document.getElementById('research-results');
+    container.innerHTML = `
+        <div class="result-summary">
+            <p>Найдено источников: ${data.sources_count}</p>
+            <p>Чанков в RAG: ${data.rag_chunks_count}</p>
+        </div>
+        ${data.report ? `<div class="report">${data.report}</div>` : ''}
+        <div class="sources">
+            <h3>Источники:</h3>
+            ${data.sources.map(s => `
+                <div class="source">
+                    <a href="${s.url}" target="_blank">${s.title}</a>
+                    <p>${s.snippet}</p>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+</script>
