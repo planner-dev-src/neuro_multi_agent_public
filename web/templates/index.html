@@ -174,7 +174,7 @@
                     <div class="kpi-info">
                         <div class="kpi-value" id="kpi-strategic">--</div>
                         <div class="kpi-label">Стратегия</div>
-                        <div class="kpi-sub">AI-проектов (план/факт)</div>
+                        <div class="kpi-sub">AI-проектов</div>
                     </div>
                 </div>
             </div>
@@ -366,24 +366,15 @@
             if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
             const data = await resp.json();
             
-            // Стратегия: факт + отклонение от плана
-            const stratCurrent = data.strategic.current;
-            const stratTarget = data.strategic.target;
-            const stratDeviation = stratCurrent - stratTarget;
-            const stratDevText = stratDeviation < 0 ? `${stratDeviation}` : `+${stratDeviation}`;
-            const stratDevColor = stratDeviation < 0 ? '#dc3545' : '#198754';
+            // Стратегия: факт / план
             document.getElementById('kpi-strategic').innerHTML = 
-                `${stratCurrent} <span style="font-size:0.7em;color:${stratDevColor};">(${stratDevText})</span>`;
+                `${data.strategic.current} <span style="font-size:0.7em;color:#6c757d;">/ ${data.strategic.target}</span>`;
             
-            // Рынок: охвачено / всего
-            const marketCurrent = data.market.current;
-            const marketTotal = data.market.total;
+            // Рынок: охвачено из всего
             document.getElementById('kpi-market').innerHTML = 
-                `${marketCurrent} <span style="font-size:0.7em;color:#6c757d;">из ${marketTotal}</span>`;
+                `${data.market.current} <span style="font-size:0.7em;color:#6c757d;">из ${data.market.total}</span>`;
             
-            // Компетенции
             document.getElementById('kpi-competency').textContent = data.competency.critical;
-            
             document.getElementById('kpi-products').textContent = '8.9 млн ₽';
             document.getElementById('kpi-technical').textContent = '78.5%';
             document.getElementById('rag-chunks').textContent = data.rag.chunks || 0;
@@ -392,9 +383,7 @@
         }
     }
 
-    // Остальные функции без изменений...
     async function loadReports() {
-        console.log('loadReports вызван');
         const container = document.getElementById('reportList');
         const view = document.getElementById('reportView');
         container.innerHTML = '<div class="text-muted text-center py-3"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка...</div>';
@@ -415,7 +404,6 @@
                 view.innerHTML = '<p class="text-muted text-center py-5">Нет отчётов для отображения</p>';
             }
         } catch (e) {
-            console.error('Reports error:', e);
             container.innerHTML = '<p class="text-danger text-center py-3">Ошибка загрузки отчётов</p>';
             view.innerHTML = '<p class="text-danger text-center py-5">Не удалось загрузить список отчётов</p>';
         }
@@ -435,10 +423,8 @@
             if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
             const data = await resp.json();
             if (data.error) { view.innerHTML = `<p class="text-danger">${escapeHtml(data.error)}</p>`; return; }
-            let reportDate = data.header?.date || '';
-            let formattedDate = formatDate(reportDate);
             let html = `<h2>${escapeHtml(data.header?.title || 'Отчёт')}</h2>`;
-            html += `<p class="text-muted">${formattedDate || 'Дата не указана'}</p>`;
+            html += `<p class="text-muted">${formatDate(data.header?.date || '') || 'Дата не указана'}</p>`;
             if (data.executive_summary) html += `<h3>📋 Резюме</h3><p>${escapeHtml(data.executive_summary).replace(/\n/g, '<br>')}</p>`;
             if (data.narrative) html += `<h3>📝 Аналитический обзор</h3><p>${escapeHtml(data.narrative).replace(/\n/g, '<br>')}</p>`;
             const levels = ['strategic', 'market', 'products', 'competency', 'technical'];
@@ -485,7 +471,7 @@
             }
             if (data.conclusion) html += `<h3>📌 Заключение</h3><p>${escapeHtml(data.conclusion).replace(/\n/g, '<br>')}</p>`;
             view.innerHTML = html;
-        } catch (e) { console.error('Report content error:', e); view.innerHTML = '<p class="text-danger">Ошибка загрузки отчёта</p>'; }
+        } catch (e) { view.innerHTML = '<p class="text-danger">Ошибка загрузки отчёта</p>'; }
     }
 
     async function loadMetricsSummary() {
