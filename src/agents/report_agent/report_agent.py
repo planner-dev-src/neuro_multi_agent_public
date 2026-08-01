@@ -81,15 +81,38 @@ class ReportAgent:
         return text.strip()
     
     def _load_narrative(self) -> str:
-        """Загружает последний нарратив из файла market_narrative_agent"""
-        narrative_file = self.project_root / "src" / "agents" / "market_narrative_agent" / "results" / "narrative_latest.txt"
-        if narrative_file.exists():
+        """Загружает самый содержательный нарратив из всех сохранённых"""
+        results_dir = self.project_root / "src" / "agents" / "market_narrative_agent" / "results"
+        
+        if not results_dir.exists():
+            return ""
+        
+        # Собираем все narrative_*.txt файлы
+        narrative_files = list(results_dir.glob("narrative_*.txt"))
+        
+        if not narrative_files:
+            return ""
+        
+        # Выбираем самый длинный (как показатель детальности анализа)
+        best_file = max(narrative_files, key=lambda f: f.stat().st_size)
+        
+        try:
+            with open(best_file, 'r', encoding='utf-8') as f:
+                narrative = f.read()
+                print(f"📄 Загружен нарратив: {best_file.name} ({len(narrative)} символов)")
+                return self._clean_artifacts(narrative)
+        except Exception as e:
+            print(f"⚠️ Ошибка загрузки нарратива {best_file}: {e}")
+        
+        # Fallback: пробуем narrative_latest.txt
+        latest_file = results_dir / "narrative_latest.txt"
+        if latest_file.exists():
             try:
-                with open(narrative_file, 'r', encoding='utf-8') as f:
-                    narrative = f.read()
-                    return self._clean_artifacts(narrative)
-            except Exception as e:
-                print(f"⚠️ Ошибка загрузки нарратива: {e}")
+                with open(latest_file, 'r', encoding='utf-8') as f:
+                    return self._clean_artifacts(f.read())
+            except Exception:
+                pass
+        
         return ""
     
     def _calculate_strategic_plan(self, report_date: datetime) -> Dict:
@@ -172,7 +195,7 @@ class ReportAgent:
             "conclusion": self._generate_conclusion(data, vectors),
             "metadata": {
                 "generated_at": datetime.now().isoformat(),
-                "version": "3.4",
+                "version": "3.5",
                 "narrative_included": bool(narrative_text),
                 "research_included": bool(research_section)
             }
@@ -188,7 +211,7 @@ class ReportAgent:
             "title": "ИТОГОВЫЙ УПРАВЛЕНЧЕСКИЙ ОТЧЕТ",
             "project_id": product_metrics.get("project_id", "Не указан"),
             "date": datetime.now().strftime("%d.%m.%Y"),
-            "version": "3.4"
+            "version": "3.5"
         }
     
     def _generate_executive_summary(self, data: Dict, vectors: Dict, decisions: List) -> str:
@@ -268,13 +291,12 @@ class ReportAgent:
         
         deviation = current - plan
         
-        # Определяем статус: отрицательное отклонение — всегда проблема
         if deviation < -100:
             status = "critical"
         elif deviation < -50:
             status = "warning"
         elif deviation < 0:
-            status = "warning"  # любое отставание — предупреждение
+            status = "warning"
         elif deviation == 0:
             status = "normal"
         else:
@@ -293,7 +315,6 @@ class ReportAgent:
             "conclusion": ""
         }
         
-        # Формируем вывод
         if deviation < 0:
             if deviation < -100:
                 result["conclusion"] = f"Критическое отставание от плана: {abs(deviation)} проектов. Требуется ускорение."
@@ -314,8 +335,6 @@ class ReportAgent:
         return name.lower().replace("_", "-").replace(" ", "-")
     
     def _generate_market_level(self, market_analysis: Dict, vectors: Dict) -> Dict:
-        print(f"🔍 _generate_market_level: market_analysis keys = {list(market_analysis.keys()) if market_analysis else 'None'}")
-        
         platforms_analyzed = 0
         competitor_names = []
         trends = []
