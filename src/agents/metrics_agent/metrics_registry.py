@@ -6,7 +6,7 @@
 """
 
 import json
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Union
 from pathlib import Path
 from datetime import datetime
 from dataclasses import dataclass, field, asdict
@@ -30,6 +30,7 @@ class MetricLevel(Enum):
     PRODUCTS = "products"
     COMPETENCY = "competency"
     TECHNICAL = "technical"
+    OPERATIONAL = "operational"
 
 
 class DecisionSource(Enum):
@@ -153,7 +154,8 @@ class MetricsRegistry:
         "market": "🌍",
         "products": "📦",
         "competency": "🧠",
-        "technical": "⚙️"
+        "technical": "⚙️",
+        "operational": "📌"
     }
     
     LEVEL_NAMES_RU = {
@@ -161,7 +163,8 @@ class MetricsRegistry:
         "market": "Рыночный",
         "products": "Продуктовый",
         "competency": "Компетенции",
-        "technical": "Технический"
+        "technical": "Технический",
+        "operational": "Операционный"
     }
     
     def __init__(self, registry_path: Optional[str] = None):
@@ -191,8 +194,29 @@ class MetricsRegistry:
         self.registry_path.parent.mkdir(parents=True, exist_ok=True)
     
     def _is_numeric(self, value: Any) -> bool:
-        """Проверяет, является ли значение числовым"""
-        return isinstance(value, (int, float))
+        if value is None:
+            return False
+        if isinstance(value, (int, float)):
+            return True
+        if isinstance(value, str):
+            try:
+                float(value.replace(',', '.'))
+                return True
+            except (ValueError, TypeError):
+                return False
+        return False
+    
+    def _to_float(self, value: Any) -> Optional[float]:
+        if value is None:
+            return None
+        if isinstance(value, (int, float)):
+            return float(value)
+        if isinstance(value, str):
+            try:
+                return float(value.replace(',', '.'))
+            except (ValueError, TypeError):
+                return None
+        return None
     
     def load(self) -> bool:
         if not self.registry_path.exists():
@@ -211,6 +235,10 @@ class MetricsRegistry:
             print(f"❌ Ошибка загрузки реестра: {e}")
             self._create_default()
             return False
+    
+    def reload(self) -> None:
+        """Перезагружает реестр из файла, обновляя кэш"""
+        self.load()
     
     def save(self) -> bool:
         try:
@@ -261,6 +289,12 @@ class MetricsRegistry:
                 status = self._calculate_status(value, target, level_name, metric_value)
                 interpretation = self._generate_interpretation(metric_value, status, level_name)
                 
+                if isinstance(value, str):
+                    try:
+                        value = float(value.replace(',', '.'))
+                    except (ValueError, TypeError):
+                        pass
+                
                 self.metrics_cache[metric_id] = Metric(
                     id=metric_id,
                     name=self._get_russian_name(metric_key),
@@ -299,8 +333,10 @@ class MetricsRegistry:
                 break
         
         elif level == "competency":
-            value = metric_value.get("coverage")
-            target = None
+            value = metric_value.get("value") or metric_value.get("coverage")
+            if value is None:
+                pass
+            target = metric_value.get("target")
             unit = metric_value.get("unit", "%")
             ctx = metric_value.get("context", {})
             context = MetricContext(
@@ -335,23 +371,24 @@ class MetricsRegistry:
         return value, target, unit, context
     
     def _calculate_status(self, value: Any, target: Any, level: str, raw_data: Dict) -> str:
-        """Вычисляет статус метрики с безопасной проверкой типов"""
-        
         if value is None:
             return MetricStatus.DATA_MISSING.value
         
-        if level == "products" and raw_data.get("data_available") is False:
-            return MetricStatus.DATA_MISSING.value
-        
         if "status" in raw_data:
-            return raw_data["status"]
+            status_value = raw_data["status"]
+            if isinstance(status_value, str):
+                return status_value
+            if isinstance(status_value, MetricStatus):
+                return status_value.value
         
-        # ТОЛЬКО ЕСЛИ ОБА ЗНАЧЕНИЯ ЧИСЛОВЫЕ
-        if target is not None and self._is_numeric(value) and self._is_numeric(target):
-            if target == 0:
+        target_float = self._to_float(target)
+        value_float = self._to_float(value)
+        
+        if target_float is not None and value_float is not None:
+            if target_float == 0:
                 return MetricStatus.MET.value
             
-            ratio = value / target
+            ratio = value_float / target_float
             
             if ratio >= 1.1:
                 return MetricStatus.EXCEEDED.value
@@ -362,16 +399,14 @@ class MetricsRegistry:
             else:
                 return MetricStatus.CRITICAL.value
         
-        # Для покрытия компетенций
-        if level == "competency" and self._is_numeric(value):
-            if value >= 80:
+        if level == "competency" and value_float is not None:
+            if value_float >= 80:
                 return MetricStatus.MET.value
-            elif value >= 50:
+            elif value_float >= 50:
                 return MetricStatus.WARNING.value
             else:
                 return MetricStatus.CRITICAL.value
         
-        # Для нечисловых метрик — считаем выполненными
         if value is not None:
             return MetricStatus.MET.value
         
@@ -386,24 +421,37 @@ class MetricsRegistry:
             MetricStatus.DATA_MISSING.value: "Данные отсутствуют"
         }
         
+        if "interpretation" in metric_data and metric_data["interpretation"]:
+            return metric_data["interpretation"]
+        
         base = interpretations.get(status, "Статус не определён")
         
         if level == "competency":
-            coverage = metric_data.get("coverage", 0)
-            if status == MetricStatus.CRITICAL.value:
-                return f"Критический пробел в компетенции (покрытие: {coverage}%)"
-            elif status == MetricStatus.WARNING.value:
-                return f"Требуется усиление компетенции (покрытие: {coverage}%)"
-            elif status == MetricStatus.MET.value:
-                return f"Компетенция в норме (покрытие: {coverage}%)"
+            coverage = metric_data.get("coverage") or metric_data.get("value")
+            if coverage is not None:
+                try:
+                    cov_val = float(coverage.replace(',', '.')) if isinstance(coverage, str) else float(coverage)
+                    if status == MetricStatus.CRITICAL.value:
+                        return f"Критический пробел в компетенции (покрытие: {cov_val}%)"
+                    elif status == MetricStatus.WARNING.value:
+                        return f"Требуется усиление компетенции (покрытие: {cov_val}%)"
+                    elif status == MetricStatus.MET.value:
+                        return f"Компетенция в норме (покрытие: {cov_val}%)"
+                except (ValueError, TypeError):
+                    pass
         
         if level == "products":
             metrics = metric_data.get("metrics", {})
             for name, data in metrics.items():
                 value = data.get("value")
                 target = data.get("target")
-                if value is not None and target is not None and self._is_numeric(value) and self._is_numeric(target):
-                    return f"{base}. {self._get_russian_name(name)}: {value} (цель: {target})"
+                if value is not None and target is not None:
+                    try:
+                        v = float(value.replace(',', '.')) if isinstance(value, str) else float(value)
+                        t = float(target.replace(',', '.')) if isinstance(target, str) else float(target)
+                        return f"{base}. {self._get_russian_name(name)}: {v} (цель: {t})"
+                    except (ValueError, TypeError):
+                        pass
         
         return base
     
@@ -578,6 +626,18 @@ class MetricsRegistry:
     def get_level_name_ru(self, level: str) -> str:
         return self.LEVEL_NAMES_RU.get(level, level)
     
+    def _safe_float(self, value: Any) -> Optional[float]:
+        if value is None:
+            return None
+        if isinstance(value, (int, float)):
+            return float(value)
+        if isinstance(value, str):
+            try:
+                return float(value.replace(',', '.'))
+            except (ValueError, TypeError):
+                return None
+        return None
+    
     def build_state_vectors(self) -> Dict[str, Dict[str, Any]]:
         vectors = {}
         
@@ -590,20 +650,24 @@ class MetricsRegistry:
             interpretations = []
             
             for metric in metrics.values():
-                if metric.value is not None:
-                    deviation = None
-                    # ТОЛЬКО ЕСЛИ ОБА ЗНАЧЕНИЯ ЧИСЛОВЫЕ
-                    if metric.target is not None and self._is_numeric(metric.value) and self._is_numeric(metric.target):
-                        deviation = metric.target - metric.value
-                    
-                    vector.append({
-                        "id": metric.id,
-                        "name": metric.name,
-                        "value": metric.value,
-                        "target": metric.target,
-                        "deviation": deviation,
-                        "status": metric.status
-                    })
+                deviation = None
+                val_float = self._safe_float(metric.value)
+                target_float = self._safe_float(metric.target)
+                
+                if val_float is not None and target_float is not None:
+                    deviation = round(target_float - val_float, 2)
+                
+                vector.append({
+                    "id": metric.id,
+                    "name": metric.name,
+                    "value": metric.value,
+                    "target": metric.target,
+                    "deviation": deviation,
+                    "status": metric.status,
+                    "unit": metric.unit
+                })
+                
+                if metric.interpretation:
                     interpretations.append(metric.interpretation)
             
             vectors[level_name] = {

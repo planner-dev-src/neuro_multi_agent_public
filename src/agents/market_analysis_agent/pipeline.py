@@ -26,25 +26,42 @@ def run_market_analysis(
 ) -> dict[str, Any]:
     """
     Полный orchestration entrypoint для market analysis pipeline.
-
-    Шаги:
-    1. Загружает platform reports из market_agent JSON.
-    2. Классифицирует catalog items в offer-level feature objects.
-    3. Удаляет дубликаты и шум.
-    4. Собирает platform aggregates.
-    5. Строит positioning profiles, trend signals и competitive gaps.
-    6. Формирует финальный MarketAnalysisBundle и downstream report artifacts.
     """
 
+    # ============================================================
+    # ШАГ 1: Загрузка platform_reports
+    # ============================================================
     platform_reports = load_market_agent_reports(source_json_path=source_json_path)
+
+    print(f"\n🔍 [DEBUG] Загружено platform_reports: {len(platform_reports)}")
+    for pr in platform_reports:
+        print(f"    - {pr.platform_name}")
 
     raw_catalog_items_total = sum(len(platform.items) for platform in platform_reports)
 
+    # ============================================================
+    # ШАГ 2: Классификация в offer_features
+    # ============================================================
     raw_offer_features = classify_catalog_items(platform_reports)
 
+    print(f"\n🔍 [DEBUG] raw_offer_features: {len(raw_offer_features)}")
+    platform_names = set()
+    for of in raw_offer_features:
+        # ИСПРАВЛЕНО: platform_name вместо source_platform
+        platform_names.add(of.platform_name)
+    print(f"    Платформы в raw_offer_features: {sorted(platform_names)}")
+
+    # ============================================================
+    # ШАГ 3: Дедупликация
+    # ============================================================
     deduped_offer_features, deduped_removed_count = deduplicate_offer_features(raw_offer_features)
     after_dedup_count = len(deduped_offer_features)
 
+    print(f"\n🔍 [DEBUG] После дедупликации: {after_dedup_count}")
+
+    # ============================================================
+    # ШАГ 4: Фильтрация шума
+    # ============================================================
     filtered_offer_features, noise_count = filter_noise_offer_features(
         deduped_offer_features,
         min_quality_score=min_quality_score,
@@ -52,6 +69,16 @@ def run_market_analysis(
 
     kept_offer_features_count = len(filtered_offer_features)
 
+    print(f"\n🔍 [DEBUG] После фильтрации шума (min_quality_score={min_quality_score}): {kept_offer_features_count}")
+    platform_names_filtered = set()
+    for of in filtered_offer_features:
+        # ИСПРАВЛЕНО: platform_name вместо source_platform
+        platform_names_filtered.add(of.platform_name)
+    print(f"    Платформы после фильтрации: {sorted(platform_names_filtered)}")
+
+    # ============================================================
+    # ШАГ 5: Агрегация по платформам
+    # ============================================================
     platform_aggregates = aggregate_offer_features_by_platform(
         filtered_offer_features,
         raw_offer_features_total=len(raw_offer_features),
@@ -66,12 +93,26 @@ def run_market_analysis(
         filtered_items=filtered_offer_features,
     )
 
+    print(f"\n🔍 [DEBUG] platform_aggregates: {len(platform_aggregates)}")
+    for agg in platform_aggregates:
+        print(f"    - {agg.platform_name} (offers: {agg.offers_count})")
+
+    # ============================================================
+    # ШАГ 6: Построение позиционирования
+    # ============================================================
     platform_positioning = build_platform_positioning_profiles(
         platform_reports=platform_reports,
         platform_aggregates=platform_aggregates,
         offer_features=filtered_offer_features,
     )
 
+    print(f"\n🔍 [DEBUG] platform_positioning: {len(platform_positioning)}")
+    for pos in platform_positioning:
+        print(f"    - {pos.platform_name}")
+
+    # ============================================================
+    # ШАГ 7: Тренды и GAP-зоны
+    # ============================================================
     trend_signals = build_trend_signals(
         offer_features=filtered_offer_features,
         platform_aggregates=platform_aggregates,
@@ -82,6 +123,9 @@ def run_market_analysis(
         platform_aggregates=platform_aggregates,
     )
 
+    # ============================================================
+    # ШАГ 8: Формирование финального bundle
+    # ============================================================
     bundle = MarketAnalysisBundle(
         generated_at_utc=datetime.now(timezone.utc).isoformat(),
         source_run_path=source_json_path or "",
@@ -127,6 +171,18 @@ def run_market_analysis(
         },
     )
 
+    # ============================================================
+    # ШАГ 9: Финальная проверка
+    # ============================================================
+    print(f"\n🔍 [DEBUG] Финальный bundle:")
+    print(f"    platforms_total: {bundle.platforms_total}")
+    print(f"    platform_positioning: {len(bundle.platform_positioning)}")
+    final_platforms = [pos.platform_name for pos in bundle.platform_positioning]
+    print(f"    Платформы в финальном позиционировании: {final_platforms}")
+
+    # ============================================================
+    # ШАГ 10: Сохранение отчётов
+    # ============================================================
     files = build_market_analysis_report_bundle(bundle)
 
     return {

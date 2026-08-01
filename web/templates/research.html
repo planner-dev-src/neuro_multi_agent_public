@@ -1,53 +1,344 @@
-<!-- web/templates/research.html -->
-<div class="research-panel">
-    <h2>🔍 Исследовательский поиск</h2>
-    
-    <div class="search-form">
-        <input type="text" id="research-query" placeholder="Введите тему для исследования...">
-        <button onclick="runResearch()">Найти</button>
-    </div>
-    
-    <div id="research-results">
-        <!-- Результаты поиска -->
-    </div>
-</div>
-
-<script>
-async function runResearch() {
-    const query = document.getElementById('research-query').value;
-    if (!query) return;
-    
-    const response = await fetch('/api/research/search', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            query: query,
-            max_results: 10,
-            generate_report: true
-        })
-    });
-    
-    const data = await response.json();
-    displayResults(data);
-}
-
-function displayResults(data) {
-    const container = document.getElementById('research-results');
-    container.innerHTML = `
-        <div class="result-summary">
-            <p>Найдено источников: ${data.sources_count}</p>
-            <p>Чанков в RAG: ${data.rag_chunks_count}</p>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Исследование — AI-Ассистент</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { min-height: 100vh; display: flex; flex-direction: column; }
+        main { flex: 1; }
+        .card { border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .research-result { 
+            background: #f8f9fa; 
+            padding: 1rem; 
+            border-radius: 8px; 
+            max-height: 600px; 
+            overflow-y: auto; 
+            font-size: 0.9rem;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        .loading-spinner.show {
+            display: block;
+        }
+        .badge-custom {
+            font-size: 0.85rem;
+            padding: 0.5rem 0.8rem;
+        }
+        .depth-info {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-brain me-2"></i>AI-Ассистент
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-chart-pie me-1"></i> Обзор
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/research">
+                            <i class="fas fa-search me-1"></i> Исследование
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tasks">
+                            <i class="fas fa-tasks me-1"></i> Задачи
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/chat">
+                            <i class="fas fa-comment-dots me-1"></i> Чат
+                        </a>
+                    </li>
+                </ul>
+                <span class="navbar-text text-light-emphasis small">
+                    <i class="fas fa-circle text-success me-1" style="font-size: 8px;"></i>
+                    Система активна
+                </span>
+            </div>
         </div>
-        ${data.report ? `<div class="report">${data.report}</div>` : ''}
-        <div class="sources">
-            <h3>Источники:</h3>
-            ${data.sources.map(s => `
-                <div class="source">
-                    <a href="${s.url}" target="_blank">${s.title}</a>
-                    <p>${s.snippet}</p>
+    </nav>
+
+    <main class="container-fluid py-4">
+        <h1 class="mb-4"><i class="fas fa-search me-2"></i>Исследование</h1>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-microscope me-2"></i>Новое исследование
+                    </div>
+                    <div class="card-body">
+                        <form id="researchForm" onsubmit="runResearch(event)">
+                            <div class="mb-3">
+                                <label class="form-label">Запрос</label>
+                                <input type="text" class="form-control" id="queryInput" 
+                                       placeholder="Например: тренды AI в образовании 2026" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Глубина исследования</label>
+                                        <select class="form-select" id="depthSelect">
+                                            <option value="standard">Стандартный — профильные AI-источники</option>
+                                            <option value="deep" selected>Глубокий — авторитетные источники + блоги</option>
+                                            <option value="expert">Экспертный — все источники (кроме мусорных)</option>
+                                        </select>
+                                        <div class="depth-info" id="depthInfo">
+                                            🔍 <strong>Глубокий:</strong> поиск по 10 источникам, краулинг 3 страниц. Фильтрация: исключены соцсети и развлекательные сайты.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Ожидаемое время</label>
+                                        <div class="form-control bg-light" id="estimatedTime">
+                                            ~2-3 минуты
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg w-100" id="submitBtn">
+                                <i class="fas fa-rocket me-2"></i>Начать исследование
+                            </button>
+                        </form>
+
+                        <div class="loading-spinner" id="loadingSpinner">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Загрузка...</span>
+                            </div>
+                            <p class="mt-2">Исследование выполняется... Это может занять несколько минут.</p>
+                            <p class="text-muted small">Поиск, фильтрация, краулинг страниц, генерация отчёта.</p>
+                        </div>
+                    </div>
                 </div>
-            `).join('')}
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle me-2"></i>Информация
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Research Agent</strong> выполняет:</p>
+                        <ul>
+                            <li>Поиск в DuckDuckGo</li>
+                            <li>🔍 Фильтрация источников по уровню</li>
+                            <li>Краулинг страниц</li>
+                            <li>Создание RAG-чанков</li>
+                            <li>Сохранение в RAG</li>
+                        </ul>
+                        <hr>
+                        <p class="text-muted small"><strong>Уровни фильтрации:</strong></p>
+                        <ul class="text-muted small">
+                            <li><strong>Стандартный:</strong> только AI/ML источники (arXiv, GitHub, HuggingFace и др.)</li>
+                            <li><strong>Глубокий:</strong> + технические блоги, новостные сайты</li>
+                            <li><strong>Экспертный:</strong> все источники, кроме Wikipedia, соцсетей, развлекательных</li>
+                        </ul>
+                        <p class="text-muted small">Время выполнения: ~1-5 минут</p>
+                    </div>
+                </div>
+            </div>
         </div>
-    `;
-}
-</script>
+
+        <div class="row mt-4" id="resultContainer" style="display: none;">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-file-alt me-2"></i>Результаты исследования
+                    </div>
+                    <div class="card-body">
+                        <div id="resultMeta"></div>
+                        <div id="resultContent" class="research-result"></div>
+                        <div class="mt-3 text-end">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="copyReport()">
+                                <i class="fas fa-copy me-1"></i>Копировать
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="downloadReport()">
+                                <i class="fas fa-download me-1"></i>Скачать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light border-top">
+        <div class="container text-center">
+            <span class="text-muted small">AI-Ассистент Руководителя v1.0 · 2026</span>
+            <br>
+            <span class="text-muted small">Мультиагентная система поддержки управленческих решений для AI/IT-компании • © Дипломный проект В.Н. Мишина</span>
+        </div>
+    </footer>
+
+    <script>
+    let currentReport = '';
+
+    const depthConfig = {
+        standard: {
+            label: 'Стандартный — профильные AI-источники',
+            info: '🔍 <strong>Стандартный:</strong> поиск по 5 профильным AI-источникам, краулинг 2 страниц. Только авторитетные AI/ML ресурсы.',
+            time: '~1-2 минуты',
+            sources: 5,
+            crawl: 2
+        },
+        deep: {
+            label: 'Глубокий — авторитетные источники + блоги',
+            info: '🔍 <strong>Глубокий:</strong> поиск по 10 источникам, краулинг 3 страниц. Авторитетные источники + технические блоги.',
+            time: '~2-3 минуты',
+            sources: 10,
+            crawl: 3
+        },
+        expert: {
+            label: 'Экспертный — все источники (кроме мусорных)',
+            info: '🔍 <strong>Экспертный:</strong> поиск по 20 источникам, краулинг 5 страниц. Все источники кроме Wikipedia, соцсетей и развлекательных сайтов.',
+            time: '~3-5 минут',
+            sources: 20,
+            crawl: 5
+        }
+    };
+
+    document.getElementById('depthSelect').addEventListener('change', function() {
+        const depth = this.value;
+        const config = depthConfig[depth];
+        document.getElementById('depthInfo').innerHTML = config.info;
+        document.getElementById('estimatedTime').textContent = config.time;
+    });
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function copyReport() {
+        if (!currentReport) return;
+        navigator.clipboard.writeText(currentReport)
+            .then(() => alert('Отчёт скопирован в буфер обмена'))
+            .catch(() => alert('Не удалось скопировать отчёт'));
+    }
+
+    function downloadReport() {
+        if (!currentReport) return;
+        const blob = new Blob([currentReport], {type: 'text/plain;charset=utf-8'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `research_report_${new Date().toISOString().slice(0,10)}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    async function runResearch(e) {
+        e.preventDefault();
+        
+        const query = document.getElementById('queryInput').value.trim();
+        if (!query) return;
+        
+        const depth = document.getElementById('depthSelect').value;
+        
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Выполняется...';
+        document.getElementById('loadingSpinner').classList.add('show');
+        document.getElementById('resultContainer').style.display = 'none';
+        currentReport = '';
+        
+        try {
+            const formData = new URLSearchParams();
+            formData.append('query', query);
+            formData.append('depth', depth);
+            
+            const response = await fetch('/api/research/run', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData
+            });
+            
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
+            const data = await response.json();
+            console.log('Ответ от сервера:', data);
+            
+            document.getElementById('loadingSpinner').classList.remove('show');
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('submitBtn').innerHTML = '<i class="fas fa-rocket me-2"></i>Начать исследование';
+            
+            if (data.status === 'completed') {
+                document.getElementById('resultContainer').style.display = 'block';
+                
+                const result = data.result || {};
+                currentReport = result.report || '';
+                
+                const depthLabel = {
+                    'standard': 'Стандартный',
+                    'deep': 'Глубокий',
+                    'expert': 'Экспертный'
+                }[result.depth || depth] || depth;
+                
+                const meta = document.getElementById('resultMeta');
+                meta.innerHTML = `
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-3">
+                            <span class="badge bg-info badge-custom">📚 Источников: ${result.sources_count || 0}</span>
+                        </div>
+                        <div class="col-md-3">
+                            <span class="badge bg-success badge-custom">📄 Чанков: ${result.chunks_count || 0}</span>
+                        </div>
+                        <div class="col-md-2">
+                            <span class="badge bg-warning text-dark badge-custom">🌐 Страниц: ${result.crawled_count || 0}</span>
+                        </div>
+                        <div class="col-md-2">
+                            <span class="badge bg-secondary badge-custom">🎯 ${depthLabel}</span>
+                        </div>
+                        <div class="col-md-2">
+                            ${result.report_path ? `<a href="${result.report_path}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                <i class="fas fa-file-alt me-1"></i>Открыть файл
+                            </a>` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                const content = document.getElementById('resultContent');
+                if (currentReport) {
+                    content.innerHTML = currentReport.replace(/\n/g, '<br>');
+                } else {
+                    content.textContent = 'Отчёт не сгенерирован.';
+                }
+            } else {
+                alert('Ошибка: ' + (data.message || 'Неизвестная ошибка'));
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            document.getElementById('loadingSpinner').classList.remove('show');
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('submitBtn').innerHTML = '<i class="fas fa-rocket me-2"></i>Начать исследование';
+            alert('Ошибка при выполнении запроса: ' + error.message);
+        }
+    }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

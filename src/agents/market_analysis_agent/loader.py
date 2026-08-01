@@ -97,7 +97,7 @@ def _build_catalog_item(raw_item: dict[str, Any], *, platform_name: str) -> Cata
         "parent_program_id": raw_item.get("parent_program_id"),
         "child_course_ids": raw_item.get("child_course_ids"),
         "crawl_depth": raw_item.get("crawl_depth"),
-        "source_platform": raw_item.get("source_platform"),
+        "platform_name": raw_item.get("platform_name") or raw_item.get("source_platform"),
     }
     # Убираем None-значения, чтобы не засорять metadata
     extra_fields = {k: v for k, v in extra_fields.items() if v is not None}

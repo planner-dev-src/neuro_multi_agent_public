@@ -1,0 +1,425 @@
+{
+  "actions": [
+    {
+      "id": "reg_crit_strat_strategic_ai_projects",
+      "type": "strategic",
+      "description": "[Стратегический] Достичь стратегической цели: AI проекты (текущее 247 из 1000)",
+      "priority": "critical",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "metric_id": "strategic_ai_projects",
+        "value": 247,
+        "target": 1000
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "стратегическая цель компании"
+    },
+    {
+      "id": "reg_crit_comp_competency_mlops",
+      "type": "hire",
+      "description": "[Компетенции] Закрыть критический пробел в компетенции: MLOps (покрытие 25%)",
+      "priority": "critical",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "skill": "MLOps",
+        "coverage": 25
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "задачи: Настройка CI/CD, Мониторинг моделей"
+    },
+    {
+      "id": "reg_crit_comp_competency_docker",
+      "type": "hire",
+      "description": "[Компетенции] Закрыть критический пробел в компетенции: Docker (покрытие 25%)",
+      "priority": "critical",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "skill": "Docker",
+        "coverage": 25
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "компетенция Docker"
+    },
+    {
+      "id": "comp_mlops",
+      "type": "hire",
+      "description": "[Компетенции] Нанять специалиста по MLOps",
+      "priority": "critical",
+      "status": "pending",
+      "source": "competency_gap",
+      "details": {
+        "skill": "MLOps",
+        "coverage": 0
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "компетенция MLOps"
+    },
+    {
+      "id": "risk_mitigation",
+      "type": "process",
+      "description": "[Выводы] Устранить риск: ⚠️ Покрытие кода ниже 80% - это увеличивает риски качества",
+      "priority": "critical",
+      "status": "pending",
+      "source": "finding",
+      "details": {
+        "finding": "⚠️ Покрытие кода ниже 80% - это увеличивает риски качества"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "управление рисками"
+    },
+    {
+      "id": "reg_crit_market_market_competitors",
+      "type": "market",
+      "description": "[Рыночный] Расширить анализ: Конкуренты (охвачено 6 из 14)",
+      "priority": "high",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "metric_id": "market_competitors",
+        "value": 6,
+        "target": 14
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "рыночный анализ"
+    },
+    {
+      "id": "reg_crit_market_market_directions",
+      "type": "market",
+      "description": "[Рыночный] Расширить анализ: Направления (охвачено 6 из 12)",
+      "priority": "high",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "metric_id": "market_directions",
+        "value": 6,
+        "target": 12
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "рыночный анализ"
+    },
+    {
+      "id": "train_mlops",
+      "type": "training",
+      "description": "[Компетенции] Организовать обучение команды по MLOps",
+      "priority": "high",
+      "status": "pending",
+      "source": "competency_gap_alternative",
+      "details": {
+        "skill": "MLOps",
+        "type": "internal_training"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "компетенция MLOps"
+    },
+    {
+      "id": "comp_docker",
+      "type": "hire",
+      "description": "[Компетенции] Нанять специалиста по Docker",
+      "priority": "high",
+      "status": "pending",
+      "source": "competency_gap",
+      "details": {
+        "skill": "Docker",
+        "coverage": 0
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "компетенция Docker"
+    },
+    {
+      "id": "focus_driver",
+      "type": "process",
+      "description": "[Выводы] Сфокусироваться на ключевом драйвере: 🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)",
+      "priority": "high",
+      "status": "pending",
+      "source": "finding",
+      "details": {
+        "finding": "🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "анализ влияния"
+    },
+    {
+      "id": "advantage_2",
+      "type": "market",
+      "description": "[Рынок] Усилить конкурентное преимущество: Скорость разработки",
+      "priority": "high",
+      "status": "pending",
+      "source": "competitive_advantage",
+      "details": {
+        "advantage": "Скорость разработки"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "конкурентные преимущества"
+    },
+    {
+      "id": "advantage_3",
+      "type": "market",
+      "description": "[Рынок] Усилить конкурентное преимущество: Гибкость",
+      "priority": "high",
+      "status": "pending",
+      "source": "competitive_advantage",
+      "details": {
+        "advantage": "Гибкость"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "конкурентные преимущества"
+    },
+    {
+      "id": "train_docker",
+      "type": "training",
+      "description": "[Компетенции] Организовать обучение команды по Docker",
+      "priority": "medium",
+      "status": "pending",
+      "source": "competency_gap_alternative",
+      "details": {
+        "skill": "Docker",
+        "type": "internal_training"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "компетенция Docker"
+    },
+    {
+      "id": "criteria_точность_модели_>=_95%_partial",
+      "type": "improve",
+      "description": "[Критерии] Довести до выполнения: Точность модели >= 95%",
+      "priority": "medium",
+      "status": "pending",
+      "source": "criteria_partial",
+      "details": {
+        "name": "Точность модели >= 95%",
+        "status": "partially_met",
+        "target": 95,
+        "current": 94.2,
+        "gap": 0.8
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "Точность модели >= 95%"
+    },
+    {
+      "id": "criteria_покрытие_кода_>=_80%_partial",
+      "type": "improve",
+      "description": "[Критерии] Довести до выполнения: Покрытие кода >= 80%",
+      "priority": "medium",
+      "status": "pending",
+      "source": "criteria_partial",
+      "details": {
+        "name": "Покрытие кода >= 80%",
+        "status": "partially_met",
+        "target": 80,
+        "current": 78.5,
+        "gap": 1.5
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "Покрытие кода >= 80%"
+    },
+    {
+      "id": "criteria_интеграция_с_источниками",
+      "type": "improve",
+      "description": "[Критерии] Улучшить: Интеграция с источниками (текущее 2 при цели 3)",
+      "priority": "medium",
+      "status": "pending",
+      "source": "criteria_gap",
+      "details": {
+        "name": "Интеграция с источниками",
+        "status": "not_met",
+        "target": 3,
+        "current": 2,
+        "gap": 1
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "Интеграция с источниками"
+    },
+    {
+      "id": "rec_2",
+      "type": "process",
+      "description": "[Рекомендации] 📈 Увеличьте покрытие кода до 80%",
+      "priority": "medium",
+      "status": "pending",
+      "source": "recommendation",
+      "details": {
+        "recommendation": "📈 Увеличьте покрытие кода до 80%"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "рекомендация из метрик"
+    },
+    {
+      "id": "rec_3",
+      "type": "process",
+      "description": "[Рекомендации] 🔧 Снизьте технический долг",
+      "priority": "medium",
+      "status": "pending",
+      "source": "recommendation",
+      "details": {
+        "recommendation": "🔧 Снизьте технический долг"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "рекомендация из метрик"
+    },
+    {
+      "id": "market_0",
+      "type": "market",
+      "description": "[Рынок] Усилить маркетинг",
+      "priority": "medium",
+      "status": "pending",
+      "source": "market_analysis",
+      "details": {
+        "recommendation": "Усилить маркетинг"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "рыночный анализ"
+    },
+    {
+      "id": "market_1",
+      "type": "market",
+      "description": "[Рынок] Сфокусироваться на Enterprise",
+      "priority": "medium",
+      "status": "pending",
+      "source": "market_analysis",
+      "details": {
+        "recommendation": "Сфокусироваться на Enterprise"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "рыночный анализ"
+    },
+    {
+      "id": "narrative_0",
+      "type": "process",
+      "description": "[Аналитический обзор] Анализ показывает, что проекту необходимо срочно усилить MLOps-компетенции",
+      "priority": "medium",
+      "status": "pending",
+      "source": "narrative",
+      "details": {
+        "keyword": "необходимо"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "из аналитического обзора"
+    },
+    {
+      "id": "narrative_1",
+      "type": "process",
+      "description": "[Аналитический обзор] Рекомендуется нанять специалиста по MLOps и организовать обучение команды",
+      "priority": "medium",
+      "status": "pending",
+      "source": "narrative",
+      "details": {
+        "keyword": "рекомендуется"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "из аналитического обзора"
+    },
+    {
+      "id": "narrative_2",
+      "type": "process",
+      "description": "[Аналитический обзор] Также важно улучшить покрытие кода до 80%",
+      "priority": "medium",
+      "status": "pending",
+      "source": "narrative",
+      "details": {
+        "keyword": "важно"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "из аналитического обзора"
+    }
+  ],
+  "summary": "Всего действий: 23\nКритические: 5, Высокий приоритет: 7, Средний: 11, Низкий: 0\nТипы действий: strategic: 1, hire: 4, process: 7, market: 6, training: 2, improve: 3",
+  "priorities": {
+    "critical": [
+      "[Стратегический] Достичь стратегической цели: AI проекты (текущее 247 из 1000)",
+      "[Компетенции] Закрыть критический пробел в компетенции: MLOps (покрытие 25%)",
+      "[Компетенции] Закрыть критический пробел в компетенции: Docker (покрытие 25%)",
+      "[Компетенции] Нанять специалиста по MLOps",
+      "[Выводы] Устранить риск: ⚠️ Покрытие кода ниже 80% - это увеличивает риски качества"
+    ],
+    "high": [
+      "[Рыночный] Расширить анализ: Конкуренты (охвачено 6 из 14)",
+      "[Рыночный] Расширить анализ: Направления (охвачено 6 из 12)",
+      "[Компетенции] Организовать обучение команды по MLOps",
+      "[Компетенции] Нанять специалиста по Docker",
+      "[Выводы] Сфокусироваться на ключевом драйвере: 🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)",
+      "[Рынок] Усилить конкурентное преимущество: Скорость разработки",
+      "[Рынок] Усилить конкурентное преимущество: Гибкость"
+    ],
+    "medium": [
+      "[Компетенции] Организовать обучение команды по Docker",
+      "[Критерии] Довести до выполнения: Точность модели >= 95%",
+      "[Критерии] Довести до выполнения: Покрытие кода >= 80%",
+      "[Критерии] Улучшить: Интеграция с источниками (текущее 2 при цели 3)",
+      "[Рекомендации] 📈 Увеличьте покрытие кода до 80%",
+      "[Рекомендации] 🔧 Снизьте технический долг",
+      "[Рынок] Усилить маркетинг",
+      "[Рынок] Сфокусироваться на Enterprise",
+      "[Аналитический обзор] Анализ показывает, что проекту необходимо срочно усилить MLOps-компетенции",
+      "[Аналитический обзор] Рекомендуется нанять специалиста по MLOps и организовать обучение команды",
+      "[Аналитический обзор] Также важно улучшить покрытие кода до 80%"
+    ],
+    "low": []
+  },
+  "timeline": {
+    "immediate": [
+      "[Стратегический] Достичь стратегической цели: AI проекты (текущее 247 из 1000)",
+      "[Компетенции] Закрыть критический пробел в компетенции: MLOps (покрытие 25%)",
+      "[Компетенции] Закрыть критический пробел в компетенции: Docker (покрытие 25%)",
+      "[Компетенции] Нанять специалиста по MLOps",
+      "[Выводы] Устранить риск: ⚠️ Покрытие кода ниже 80% - это увеличивает риски качества"
+    ],
+    "1-2 weeks": [
+      "[Рыночный] Расширить анализ: Конкуренты (охвачено 6 из 14)",
+      "[Рыночный] Расширить анализ: Направления (охвачено 6 из 12)",
+      "[Компетенции] Организовать обучение команды по MLOps",
+      "[Компетенции] Нанять специалиста по Docker",
+      "[Выводы] Сфокусироваться на ключевом драйвере: 🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)",
+      "[Рынок] Усилить конкурентное преимущество: Скорость разработки",
+      "[Рынок] Усилить конкурентное преимущество: Гибкость"
+    ],
+    "1 month": [
+      "[Компетенции] Организовать обучение команды по Docker",
+      "[Критерии] Довести до выполнения: Точность модели >= 95%",
+      "[Критерии] Довести до выполнения: Покрытие кода >= 80%",
+      "[Критерии] Улучшить: Интеграция с источниками (текущее 2 при цели 3)",
+      "[Рекомендации] 📈 Увеличьте покрытие кода до 80%",
+      "[Рекомендации] 🔧 Снизьте технический долг",
+      "[Рынок] Усилить маркетинг",
+      "[Рынок] Сфокусироваться на Enterprise",
+      "[Аналитический обзор] Анализ показывает, что проекту необходимо срочно усилить MLOps-компетенции",
+      "[Аналитический обзор] Рекомендуется нанять специалиста по MLOps и организовать обучение команды",
+      "[Аналитический обзор] Также важно улучшить покрытие кода до 80%"
+    ],
+    "2-3 months": []
+  },
+  "risks": [
+    "⚠️ Покрытие кода ниже 80% - это увеличивает риски качества",
+    "Отсутствие экспертизы в: MLOps, Docker",
+    "Отставание от конкурентов"
+  ],
+  "success_criteria": [
+    "Выполнить все 5 критериев качества",
+    "Закрыть пробелы в компетенциях: MLOps, Docker"
+  ],
+  "generated_at": "2026-07-11T18:36:50.594918"
+}

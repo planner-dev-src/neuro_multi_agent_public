@@ -1,0 +1,164 @@
+{
+  "market_trends": [
+    "Популярные направления: artificial_intelligence, classical_ml, deep_learning"
+  ],
+  "competitors": [
+    {
+      "name": "hse",
+      "market_share": 0,
+      "strengths": [
+        "Большой каталог: 352 курсов",
+        "Высокая доступность: 98%"
+      ],
+      "weaknesses": [
+        "Проблемы с доступом: 2 страниц не загружено"
+      ],
+      "skills": [],
+      "catalog_size": 352,
+      "pages_ok": 120,
+      "pages_total": 122,
+      "access_mode": "live_direct"
+    },
+    {
+      "name": "karpov-courses",
+      "market_share": 0,
+      "strengths": [
+        "Большой каталог: 63 курсов",
+        "Высокая доступность: 99%"
+      ],
+      "weaknesses": [
+        "Проблемы с доступом: 1 страниц не загружено"
+      ],
+      "skills": [
+        "artificial_intelligence",
+        "deep_learning",
+        "classical_ml",
+        "ai_pm_sales"
+      ],
+      "catalog_size": 63,
+      "pages_ok": 95,
+      "pages_total": 96,
+      "access_mode": "live_direct"
+    },
+    {
+      "name": "otus",
+      "market_share": 0,
+      "strengths": [
+        "Большой каталог: 109 курсов",
+        "Высокая доступность: 99%"
+      ],
+      "weaknesses": [
+        "Проблемы с доступом: 1 страниц не загружено"
+      ],
+      "skills": [
+        "artificial_intelligence"
+      ],
+      "catalog_size": 109,
+      "pages_ok": 120,
+      "pages_total": 121,
+      "access_mode": "live_direct"
+    },
+    {
+      "name": "skillbox",
+      "market_share": 0,
+      "strengths": [
+        "Большой каталог: 216 курсов",
+        "Высокая доступность: 98%"
+      ],
+      "weaknesses": [
+        "Проблемы с доступом: 3 страниц не загружено"
+      ],
+      "skills": [
+        "artificial_intelligence"
+      ],
+      "catalog_size": 216,
+      "pages_ok": 120,
+      "pages_total": 123,
+      "access_mode": "live_direct"
+    },
+    {
+      "name": "yandex-practicum",
+      "market_share": 0,
+      "strengths": [
+        "Большой каталог: 135 курсов",
+        "Высокая доступность: 100%"
+      ],
+      "weaknesses": [],
+      "skills": [],
+      "catalog_size": 135,
+      "pages_ok": 120,
+      "pages_total": 120,
+      "access_mode": "live_direct"
+    },
+    {
+      "name": "netology",
+      "market_share": 0,
+      "strengths": [
+        "Большой каталог: 180 курсов",
+        "Высокая доступность: 100%"
+      ],
+      "weaknesses": [],
+      "skills": [],
+      "catalog_size": 180,
+      "pages_ok": 120,
+      "pages_total": 120,
+      "access_mode": "live_direct"
+    }
+  ],
+  "market_position": {
+    "segment": "AI/ML Education Platforms",
+    "stage": "Growth",
+    "competitive_intensity": "High",
+    "trend_alignment": 12.5,
+    "top_topics": [
+      "artificial_intelligence",
+      "classical_ml",
+      "deep_learning",
+      "ai_pm_sales"
+    ]
+  },
+  "impact_from_metrics": {
+    "competency_impact": {
+      "status": "good",
+      "message": "Все ключевые компетенции присутствуют в команде",
+      "impact": "neutral"
+    },
+    "criteria_position": {
+      "position": "laggard",
+      "message": "Продукт отстает от рыночных требований",
+      "progress": 0,
+      "met_criteria": 0,
+      "total_criteria": 0,
+      "trend_alignment": [
+        {
+          "trend": "Популярные направления: artificial_intelligence, classical_ml, deep_learning",
+          "aligned": false
+        }
+      ],
+      "recommendation": "Срочно догоняйте по базовым критериям"
+    },
+    "competitive_advantages": [
+      "Большой каталог (352 курсов) у hse",
+      "Большой каталог (109 курсов) у otus",
+      "Большой каталог (216 курсов) у skillbox",
+      "Большой каталог (135 курсов) у yandex-practicum",
+      "Большой каталог (180 курсов) у netology"
+    ],
+    "market_risks": []
+  },
+  "findings": [],
+  "recommendations": [
+    "📌 Срочно догоняйте по базовым критериям",
+    "📊 У конкурента hse большой каталог (352 курсов). Рекомендуется расширить собственный каталог."
+  ],
+  "competency_gaps": [],
+  "criteria_coverage": {},
+  "platforms_analyzed": 6,
+  "top_topics": [
+    "artificial_intelligence",
+    "classical_ml",
+    "deep_learning",
+    "ai_pm_sales"
+  ],
+  "timestamp": "2026-07-12T17:55:24.546753"
+}

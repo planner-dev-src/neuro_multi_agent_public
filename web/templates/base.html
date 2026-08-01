@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI-Ассистент Руководителя{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { min-height: 100vh; display: flex; flex-direction: column; }
+        main { flex: 1; }
+        .navbar-brand { font-weight: 600; }
+        .card { border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .nav-link.active { font-weight: 600; }
+        .status-badge { font-size: 0.7rem; padding: 0.3rem 0.6rem; }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-brain me-2"></i>AI-Ассистент
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'dashboard' %}active{% endif %}" href="/">
+                            <i class="fas fa-chart-pie me-1"></i> Обзор
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'research' %}active{% endif %}" href="/research">
+                            <i class="fas fa-search me-1"></i> Исследование
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'tasks' %}active{% endif %}" href="/tasks">
+                            <i class="fas fa-tasks me-1"></i> Задачи
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_page == 'chat' %}active{% endif %}" href="/chat">
+                            <i class="fas fa-comment-dots me-1"></i> Чат
+                        </a>
+                    </li>
+                </ul>
+                <span class="navbar-text text-light-emphasis small">
+                    <i class="fas fa-circle text-success me-1" style="font-size: 8px;"></i>
+                    Система активна
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid py-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light border-top">
+        <div class="container text-center">
+            <span class="text-muted small">AI-Ассистент Руководителя v1.0 · 2026</span>
+            <br>
+            <span class="text-muted" style="font-size: 0.7rem;">
+                Мультиагентная система поддержки управленческих решений для AI/IT-компании • © Дипломный проект В.Н. Мишина
+            </span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

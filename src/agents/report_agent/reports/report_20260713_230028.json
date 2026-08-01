@@ -1,0 +1,235 @@
+{
+  "header": {
+    "title": "ИТОГОВЫЙ УПРАВЛЕНЧЕСКИЙ ОТЧЕТ",
+    "project_id": "neuro_bot_2025",
+    "date": "13.07.2026",
+    "version": "3.3"
+  },
+  "executive_summary": "🎯 Стратегическая цель: 1000 AI-проектов за 2025-2026\n   План на 13.07.2026: 750 проектов\n   Фактически: 247 проектов\n   Отставание от плана: 503 проектов\n🌍 Проанализировано 6 платформ\n🧠 Критические пробелы в компетенциях: MLOps",
+  "secretary_input": {
+    "main_theses": [],
+    "decisions": [],
+    "action_items": [],
+    "risks": []
+  },
+  "narrative": {
+    "available": false,
+    "full_text": "",
+    "word_count": 0
+  },
+  "level_analysis": {
+    "strategic": {
+      "metrics": [
+        {
+          "name": "AI проекты",
+          "current": 247,
+          "target": 1000,
+          "plan": 750,
+          "deviation": -503,
+          "months_passed": 18,
+          "status": "critical"
+        }
+      ],
+      "conclusion": "Критическое отставание от плана: 503 проектов. Требуется ускорение."
+    },
+    "market": {
+      "company_position": "Лидер (сочетание разработки и обучения)",
+      "competitors_analyzed": 6,
+      "competitors_total": 14,
+      "competitors_list": [
+        "Яндекс Практикум",
+        "Karpov Courses",
+        "OTUS",
+        "Нетология",
+        "Skillbox",
+        "HSE"
+      ],
+      "directions_covered": 6,
+      "directions_total": 12,
+      "directions_covered_list": [
+        "Компьютерное зрение (CV)",
+        "NLP",
+        "ML",
+        "GAN",
+        "RL",
+        "S2T"
+      ],
+      "directions_not_covered": [
+        "Обработка естественного языка (NLP)",
+        "Временные ряды (TS)",
+        "Обучение с подкреплением (RL)",
+        "Аудио и распознавание речи (S2T)",
+        "Генеративно-состязательные нейросети (GAN)",
+        "Классическое машинное обучение (ML)",
+        "Генетические алгоритмы (GA)",
+        "Управление AI проектами",
+        "Интеграция в PRODUCTION / MLOps",
+        "AI-агенты на базе LLM",
+        "AUTOML"
+      ],
+      "trends": [
+        "AI growth",
+        "MLOps adoption",
+        "Edge AI"
+      ],
+      "conclusion": "Проанализировано 6 из 14 конкурентов. Охвачено 6 из 12 направлений."
+    },
+    "products": {
+      "products": [
+        {
+          "name": "Нейро-продажник",
+          "revenue": 2500000,
+          "profit": 750000
+        },
+        {
+          "name": "Нейро-HR",
+          "revenue": 1800000,
+          "profit": 540000
+        },
+        {
+          "name": "Нейро-проверка заданий",
+          "revenue": 1200000,
+          "profit": 360000
+        },
+        {
+          "name": "Обучающие курсы",
+          "revenue": 3400000,
+          "profit": 1020000
+        }
+      ],
+      "total_revenue": 8900000,
+      "total_profit": 2670000,
+      "growth": "+12%",
+      "conclusion": "Все продукты показывают рост, курсы — основной источник дохода."
+    },
+    "competency": {
+      "competencies": [
+        {
+          "name": "GAN",
+          "orders": 3,
+          "specialists": 1,
+          "load": 300,
+          "status": "critical",
+          "action": "Нанять 3 специалистов"
+        },
+        {
+          "name": "GA",
+          "orders": 2,
+          "specialists": 1,
+          "load": 200,
+          "status": "warning",
+          "action": "Нанять 1 специалиста"
+        },
+        {
+          "name": "MLOps",
+          "orders": 3,
+          "specialists": 1,
+          "load": 300,
+          "status": "critical",
+          "action": "Нанять 3 специалистов"
+        },
+        {
+          "name": "NLP",
+          "orders": 2,
+          "specialists": 2,
+          "load": 100,
+          "status": "good",
+          "action": "Поддерживать"
+        },
+        {
+          "name": "CV",
+          "orders": 4,
+          "specialists": 3,
+          "load": 133,
+          "status": "warning",
+          "action": "Нанять 1 специалиста"
+        }
+      ],
+      "conclusion": "Критическая нехватка: GAN, MLOps. Требуется срочный найм."
+    },
+    "technical": {
+      "product": "Нейро-куратор",
+      "metrics": [
+        {
+          "name": "Покрытие кода",
+          "current": 78.5,
+          "target": 80.0,
+          "unit": "",
+          "status": "warning"
+        },
+        {
+          "name": "Neuro Curator Response Time",
+          "current": 8.0,
+          "target": 7.5,
+          "unit": "",
+          "status": "warning"
+        },
+        {
+          "name": "Качество ответов",
+          "current": 9.6,
+          "target": 9.5,
+          "unit": "/10",
+          "status": "exceeded"
+        },
+        {
+          "name": "Доступность",
+          "current": "24/7",
+          "target": "24/7",
+          "unit": "",
+          "status": "met"
+        }
+      ],
+      "conclusion": "Требуется доработка по: Покрытие кода, Neuro Curator Response Time"
+    }
+  },
+  "gap_analysis": {
+    "gaps": [
+      {
+        "level": "Стратегический",
+        "metric": "AI проекты",
+        "current": 247,
+        "target": 750,
+        "gap": 503
+      },
+      {
+        "level": "Рыночный",
+        "metric": "Конкуренты",
+        "current": 6,
+        "target": 14,
+        "gap": 8
+      }
+    ]
+  },
+  "recommendations": {
+    "strategic": [
+      "Ускорить реализацию AI-проектов"
+    ],
+    "market": [
+      "Проанализировать оставшиеся 8 конкурентов"
+    ],
+    "products": [],
+    "competency": [
+      "Нанять специалистов по MLOps"
+    ],
+    "technical": [
+      "Улучшить Покрытие кода до 80.0",
+      "Улучшить Neuro Curator Response Time до 7.5"
+    ]
+  },
+  "plan": {
+    "tasks": [
+      {
+        "task": "Нанять специалиста по MLOps",
+        "level": "Компетенции",
+        "assignee": "HR",
+        "deadline": "31.07",
+        "priority": "critical"
+      }
+    ]
+  },
+  "conclusion": "## ЗАКЛЮЧЕНИЕ\n\nКомпания является безусловным лидером в области AI в России, сочетая разработку и обучение.\n\nОсновные точки роста:\n- **Стратегия:** отставание по AI-проектам (247 из 750)\n- **Компетенции:** найм специалистов по MLOps\n- **Рынок:** расширение анализа (не охвачено 8 конкурентов)\n\nРекомендуется сосредоточиться на устранении пробелов в компетенциях и расширении рыночного анализа.",
+  "metadata": {
+    "generated_at": "2026-07-13T23:00:28.453647",
+    "version": "3.3"
+  }
+}

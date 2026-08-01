@@ -1,0 +1,30 @@
+{
+  "market_trends": [],
+  "competitors": [],
+  "market_position": {},
+  "impact_from_metrics": {
+    "competency_impact": {
+      "status": "good",
+      "message": "Все ключевые компетенции присутствуют в команде",
+      "impact": "neutral"
+    },
+    "criteria_position": {
+      "position": "laggard",
+      "message": "Продукт отстает от рыночных требований",
+      "progress": 0,
+      "met_criteria": 0,
+      "total_criteria": 0,
+      "trend_alignment": [],
+      "recommendation": "Срочно догоняйте по базовым критериям"
+    },
+    "competitive_advantages": [],
+    "market_risks": []
+  },
+  "findings": [],
+  "recommendations": [
+    "📌 Срочно догоняйте по базовым критериям"
+  ],
+  "competency_gaps": [],
+  "criteria_coverage": {},
+  "timestamp": "2026-07-12T16:13:42.974341"
+}

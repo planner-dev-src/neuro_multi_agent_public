@@ -9,6 +9,14 @@ from pathlib import Path
 from datetime import datetime
 from dataclasses import dataclass, field
 
+# Импорт единого реестра направлений и ключевых слов
+from src.common.keywords import (
+    COMPANY_DIRECTIONS,
+    get_direction_by_keyword,
+    get_all_direction_names,
+    is_relevant_text
+)
+
 
 @dataclass
 class CompetitorAnalysis:
@@ -42,23 +50,12 @@ class MarketAnalysisAgent:
     - Выявление рыночных трендов
     - Определение gap-зон
     - Формирование аналитических выводов
+
+    Использует единый реестр направлений из keywords.py.
     """
 
-    # Базовые направления компании (12 направлений)
-    COMPANY_DIRECTIONS = [
-        "Компьютерное зрение (CV)",
-        "Обработка естественного языка (NLP)",
-        "Временные ряды (TS)",
-        "Обучение с подкреплением (RL)",
-        "Аудио и распознавание речи (S2T)",
-        "Генеративно-состязательные нейросети (GAN)",
-        "Классическое машинное обучение (ML)",
-        "Генетические алгоритмы (GA)",
-        "Управление AI проектами",
-        "Интеграция в PRODUCTION / MLOps",
-        "AI-агенты на базе LLM",
-        "AUTOML"
-    ]
+    # Базовые направления компании (из keywords.py)
+    COMPANY_DIRECTIONS = get_all_direction_names()
 
     def __init__(self):
         self.project_root = self._get_project_root()
@@ -80,24 +77,12 @@ class MarketAnalysisAgent:
         market_data: Dict[str, Any],
         metrics_data: Optional[Dict[str, Any]] = None
     ) -> MarketAnalysisResult:
-        """
-        Выполняет анализ рыночных данных
-
-        Args:
-            market_data: Данные от market_agent (платформы, курсы) или результат run_market_analysis
-            metrics_data: Данные от metrics_agent (опционально)
-
-        Returns:
-            MarketAnalysisResult: Результаты анализа
-        """
+        """Выполняет анализ рыночных данных"""
         print("📊 Запуск анализа рыночных данных...")
 
-        # Если передан результат от run_market_analysis, извлекаем данные
         if "summary" in market_data:
-            # Это результат от run_market_analysis
             summary = market_data.get("summary", {})
             platforms = summary.get("platforms", [])
-            # Также можем извлечь из bundle
             bundle = market_data.get("bundle")
             if bundle and hasattr(bundle, "platforms"):
                 platforms = bundle.platforms if hasattr(bundle, "platforms") else platforms
@@ -106,39 +91,25 @@ class MarketAnalysisAgent:
             else:
                 total_courses = 0
         else:
-            # Обычный формат: {"platforms": [...]}
             platforms = market_data.get("platforms", [])
             total_courses = 0
 
-        result = MarketAnalysisResult(
-            generated_at=datetime.now().isoformat()
-        )
-
-        # 1. Анализ платформ
+        result = MarketAnalysisResult(generated_at=datetime.now().isoformat())
         result.platforms_analyzed = len(platforms)
 
-        # 2. Подсчёт курсов
         if total_courses == 0:
             for platform in platforms:
                 courses = platform.get("courses", [])
                 total_courses += len(courses)
         result.total_courses = total_courses
 
-        # 3. Анализ конкурентов
         result.competitors = self._analyze_competitors(platforms)
-
-        # 4. Анализ трендов
         result.trends = self._analyze_trends(platforms)
-
-        # 5. Анализ gap-зон
         result.gaps = self._analyze_gaps(platforms, metrics_data)
-
-        # 6. Формирование выводов
         result.findings = self._generate_findings(result)
 
         print(f"✅ Анализ завершён: {result.platforms_analyzed} платформ, "
-              f"{result.total_courses} курсов, "
-              f"{len(result.competitors)} конкурентов, "
+              f"{result.total_courses} курсов, {len(result.competitors)} конкурентов, "
               f"{len(result.gaps)} gap-зон")
 
         return result
@@ -149,22 +120,22 @@ class MarketAnalysisAgent:
 
         for platform in platforms:
             name = platform.get("name", "Неизвестная платформа")
-            # Если courses нет, пробуем catalog_items
-            courses = platform.get("courses", [])
-            if not courses:
-                courses = platform.get("catalog_items", [])
+            courses = platform.get("courses", platform.get("catalog_items", []))
 
-            # Определяем направления
-            directions = self._extract_directions(courses)
+            # Определяем направления через keywords.py
+            directions = []
+            for course in courses:
+                title = course.get("title", course.get("name", ""))
+                description = course.get("description", "")
+                combined = f"{title} {description}"
+                direction = get_direction_by_keyword(combined)
+                if direction and direction not in directions:
+                    directions.append(direction)
 
-            # Анализируем сильные и слабые стороны
-            strengths, weaknesses = self._analyze_strengths_weaknesses(
-                platform, courses
-            )
-
-            # Если нет направлений, пропускаем
             if not directions:
                 continue
+
+            strengths, weaknesses = self._analyze_strengths_weaknesses(platform, courses)
 
             competitor = CompetitorAnalysis(
                 name=name,
@@ -176,54 +147,16 @@ class MarketAnalysisAgent:
             )
             competitors.append(competitor)
 
-        # Сортируем по количеству курсов (по убыванию)
         competitors.sort(key=lambda x: x.courses_count, reverse=True)
-
         return competitors
 
-    def _extract_directions(self, courses: List[Dict]) -> List[str]:
-        """Извлекает направления из курсов"""
-        directions = []
-        direction_keywords = {
-            "Компьютерное зрение (CV)": ["computer vision", "opencv", "image", "cv", "зрение"],
-            "Обработка естественного языка (NLP)": ["nlp", "natural language", "text", "bert", "язык"],
-            "Временные ряды (TS)": ["time series", "forecast", "predict", "ts", "ряды"],
-            "Обучение с подкреплением (RL)": ["reinforcement", "rl", "q-learning", "подкрепление"],
-            "Аудио и распознавание речи (S2T)": ["speech", "audio", "whisper", "s2t", "аудио", "речь"],
-            "Генеративно-состязательные нейросети (GAN)": ["gan", "generative", "diffusion", "генератив"],
-            "Классическое машинное обучение (ML)": ["ml", "regression", "classification", "машинное обучение"],
-            "Генетические алгоритмы (GA)": ["genetic", "ga", "evolutionary", "генетич"],
-            "Управление AI проектами": ["project management", "pm", "agile", "управление проектами"],
-            "Интеграция в PRODUCTION / MLOps": ["mlops", "production", "deployment", "интеграция"],
-            "AI-агенты на базе LLM": ["llm", "gpt", "agent", "langchain", "агенты"],
-            "AUTOML": ["automl", "auto ml", "hyperopt"]
-        }
-
-        for course in courses:
-            title = course.get("title", "").lower()
-            description = course.get("description", "").lower()
-            name = course.get("name", "").lower()
-            combined = f"{title} {description} {name}"
-
-            for direction, keywords in direction_keywords.items():
-                if any(kw in combined for kw in keywords):
-                    if direction not in directions:
-                        directions.append(direction)
-
-        return directions
-
     def _analyze_strengths_weaknesses(
-        self,
-        platform: Dict,
-        courses: List[Dict]
+        self, platform: Dict, courses: List[Dict]
     ) -> tuple[List[str], List[str]]:
         """Анализирует сильные и слабые стороны платформы"""
-        strengths = []
-        weaknesses = []
-
+        strengths, weaknesses = [], []
         courses_count = len(courses)
 
-        # Сильные стороны
         if courses_count > 50:
             strengths.append("Большой выбор курсов")
         elif courses_count > 20:
@@ -231,13 +164,12 @@ class MarketAnalysisAgent:
         elif courses_count > 10:
             strengths.append("Достаточный выбор курсов")
 
-        # Проверяем наличие AI-специализации
         ai_courses = 0
         for course in courses:
-            title = course.get("title", "").lower()
-            description = course.get("description", "").lower()
+            title = course.get("title", course.get("name", ""))
+            description = course.get("description", "")
             combined = f"{title} {description}"
-            if any(kw in combined for kw in ["ai", "artificial intelligence", "нейросет", "машинное", "machine learning", "deep learning"]):
+            if is_relevant_text(combined):
                 ai_courses += 1
 
         ai_ratio = ai_courses / max(courses_count, 1)
@@ -246,14 +178,13 @@ class MarketAnalysisAgent:
         if ai_ratio > 0.5:
             strengths.append("Глубокая AI-специализация")
 
-        # Слабые стороны
         if courses_count < 10:
             weaknesses.append("Малый выбор курсов")
-
         if ai_ratio < 0.1:
             weaknesses.append("Недостаточно AI-специализации")
-
-        if courses_count > 0 and len(self._extract_directions(courses)) < 2:
+        if courses_count > 0 and len([c for c in courses if get_direction_by_keyword(
+            c.get("title", "") + " " + c.get("description", "")
+        )]) < 2:
             weaknesses.append("Узкая специализация")
 
         return strengths, weaknesses
@@ -270,25 +201,21 @@ class MarketAnalysisAgent:
             return "Российский лидер"
         elif any(kw in combined for kw in ["школа", "анализ", "академия"]):
             return "Экспертное образование"
-        else:
-            return "Нишевый игрок"
+        return "Нишевый игрок"
 
     def _analyze_trends(self, platforms: List[Dict]) -> List[Dict[str, Any]]:
         """Анализирует тренды на основе данных платформ"""
-        trends = []
-
-        # Собираем все направления
         all_directions = {}
         for platform in platforms:
-            courses = platform.get("courses", [])
-            if not courses:
-                courses = platform.get("catalog_items", [])
-            platform_directions = self._extract_directions(courses)
+            courses = platform.get("courses", platform.get("catalog_items", []))
+            for course in courses:
+                title = course.get("title", course.get("name", ""))
+                description = course.get("description", "")
+                direction = get_direction_by_keyword(f"{title} {description}")
+                if direction:
+                    all_directions[direction] = all_directions.get(direction, 0) + 1
 
-            for direction in platform_directions:
-                all_directions[direction] = all_directions.get(direction, 0) + 1
-
-        # Формируем тренды
+        trends = []
         for direction, count in sorted(all_directions.items(), key=lambda x: x[1], reverse=True)[:10]:
             if count >= 2:
                 trend_level = "high" if count >= 4 else "medium" if count >= 2 else "low"
@@ -296,38 +223,31 @@ class MarketAnalysisAgent:
                     "direction": direction,
                     "platforms_count": count,
                     "trend_level": trend_level,
-                    "description": f"Направление {direction} представлено на {count} платформах"
+                    "description": f"Направление представлено на {count} платформах"
                 })
 
         return trends
 
     def _analyze_gaps(
-        self,
-        platforms: List[Dict],
-        metrics_data: Optional[Dict] = None
+        self, platforms: List[Dict], metrics_data: Optional[Dict] = None
     ) -> List[Dict[str, Any]]:
         """Анализирует gap-зоны"""
-        gaps = []
-
-        # 1. Направления, которые не представлены на рынке
         all_directions = set()
         for platform in platforms:
-            courses = platform.get("courses", [])
-            if not courses:
-                courses = platform.get("catalog_items", [])
-            directions = self._extract_directions(courses)
-            all_directions.update(directions)
+            courses = platform.get("courses", platform.get("catalog_items", []))
+            for course in courses:
+                title = course.get("title", course.get("name", ""))
+                description = course.get("description", "")
+                direction = get_direction_by_keyword(f"{title} {description}")
+                if direction:
+                    all_directions.add(direction)
 
-        # Находим отсутствующие направления
-        missing_directions = [
-            d for d in self.COMPANY_DIRECTIONS
-            if d not in all_directions
-        ]
+        gaps = []
+        missing = [d for d in self.COMPANY_DIRECTIONS if d not in all_directions]
 
-        # Приоритет для отсутствующих направлений
-        high_priority = ["LLM", "MLOps", "AUTOML", "AI-агенты", "GAN"]
-        for direction in missing_directions:
-            is_high = any(kw in direction for kw in high_priority)
+        high_priority_kw = ["LLM", "MLOps", "AUTOML", "AI-агенты", "GAN"]
+        for direction in missing:
+            is_high = any(kw in direction for kw in high_priority_kw)
             gaps.append({
                 "type": "missing_direction",
                 "direction": direction,
@@ -335,15 +255,11 @@ class MarketAnalysisAgent:
                 "priority": "high" if is_high else "medium"
             })
 
-        # 2. Если есть метрики, учитываем их
         if metrics_data:
             competency_map = metrics_data.get("competency_map", {})
-            gaps_from_metrics = competency_map.get("gaps", [])
-            for gap in gaps_from_metrics:
+            for gap in competency_map.get("gaps", []):
                 if isinstance(gap, str) and gap.strip():
-                    # Проверяем, не дублируется ли уже
-                    existing = [g for g in gaps if g.get("direction") == gap]
-                    if not existing:
+                    if not any(g.get("direction") == gap for g in gaps):
                         gaps.append({
                             "type": "competency_gap",
                             "direction": gap,
@@ -354,102 +270,52 @@ class MarketAnalysisAgent:
         return gaps
 
     def _generate_findings(self, result: MarketAnalysisResult) -> List[str]:
-        """Генерирует ключевые выводы на основе анализа"""
+        """Генерирует ключевые выводы"""
         findings = []
 
-        # 1. О рынке
         if result.platforms_analyzed > 0:
             findings.append(f"Проанализировано {result.platforms_analyzed} платформ, "
                           f"всего {result.total_courses} курсов")
         else:
             findings.append("Анализ рынка не выполнен — нет данных о платформах")
 
-        # 2. О конкурентах
         if result.competitors:
-            top_competitor = result.competitors[0]
-            findings.append(f"Основной конкурент: {top_competitor.name} "
-                          f"({top_competitor.courses_count} курсов)")
-
+            findings.append(f"Основной конкурент: {result.competitors[0].name} "
+                          f"({result.competitors[0].courses_count} курсов)")
             if len(result.competitors) > 1:
-                second = result.competitors[1]
-                findings.append(f"Второй конкурент: {second.name} "
-                              f"({second.courses_count} курсов)")
+                findings.append(f"Второй конкурент: {result.competitors[1].name} "
+                              f"({result.competitors[1].courses_count} курсов)")
 
-            # Направления конкурентов
-            all_directions = set()
-            for comp in result.competitors[:3]:
-                all_directions.update(comp.directions)
-            if all_directions:
-                findings.append(f"Ключевые направления конкурентов: {', '.join(list(all_directions)[:5])}")
-        else:
-            findings.append("Конкуренты не выявлены — возможно, недостаточно данных")
-
-        # 3. О трендах
         if result.trends:
-            top_trend = result.trends[0]
-            findings.append(f"Ключевой тренд: {top_trend['direction']} "
-                          f"(представлен на {top_trend['platforms_count']} платформах)")
-            if len(result.trends) > 1:
-                findings.append(f"Всего выявлено {len(result.trends)} трендов")
+            findings.append(f"Ключевой тренд: {result.trends[0]['direction']} "
+                          f"(представлен на {result.trends[0]['platforms_count']} платформах)")
 
-        # 4. О gap-зонах
-        high_priority_gaps = [g for g in result.gaps if g.get("priority") == "high"]
-        if high_priority_gaps:
-            gap_directions = [g.get("direction", "") for g in high_priority_gaps]
-            findings.append(f"Выявлено {len(high_priority_gaps)} приоритетных gap-зон: "
-                          f"{', '.join(gap_directions[:3])}"
-                          f"{'...' if len(gap_directions) > 3 else ''}")
-
-        if result.gaps and not high_priority_gaps:
-            findings.append(f"Выявлено {len(result.gaps)} gap-зон для дальнейшего анализа")
+        high_gaps = [g for g in result.gaps if g.get("priority") == "high"]
+        if high_gaps:
+            gap_names = [g.get("direction", "") for g in high_gaps]
+            findings.append(f"Выявлено {len(high_gaps)} приоритетных gap-зон: "
+                          f"{', '.join(gap_names[:3])}"
+                          f"{'...' if len(gap_names) > 3 else ''}")
 
         return findings
 
     def analyze_from_file(self, filepath: str) -> MarketAnalysisResult:
-        """
-        Выполняет анализ из JSON-файла
-
-        Args:
-            filepath: Путь к JSON-файлу с данными от market_agent
-
-        Returns:
-            MarketAnalysisResult: Результаты анализа
-        """
         with open(filepath, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-
-        return self.analyze(data)
+            return self.analyze(json.load(f))
 
     def save_results(self, result: MarketAnalysisResult, filename: Optional[str] = None) -> str:
-        """
-        Сохраняет результаты анализа в JSON
-
-        Args:
-            result: Результаты анализа
-            filename: Имя файла (опционально)
-
-        Returns:
-            str: Путь к сохраненному файлу
-        """
         if not filename:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"market_analysis_{timestamp}.json"
 
         filepath = self.results_dir / filename
-
-        # Конвертируем в словарь
         data = {
             "platforms_analyzed": result.platforms_analyzed,
             "total_courses": result.total_courses,
             "competitors": [
-                {
-                    "name": c.name,
-                    "courses_count": c.courses_count,
-                    "directions": c.directions,
-                    "strengths": c.strengths,
-                    "weaknesses": c.weaknesses,
-                    "positioning": c.positioning
-                }
+                {"name": c.name, "courses_count": c.courses_count,
+                 "directions": c.directions, "strengths": c.strengths,
+                 "weaknesses": c.weaknesses, "positioning": c.positioning}
                 for c in result.competitors
             ],
             "trends": result.trends,
@@ -457,94 +323,26 @@ class MarketAnalysisAgent:
             "findings": result.findings,
             "generated_at": result.generated_at
         }
-
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
-
         print(f"💾 Результаты анализа сохранены: {filepath}")
         return str(filepath)
 
-    def load_latest_results(self) -> Optional[MarketAnalysisResult]:
-        """Загружает последние результаты анализа"""
-        files = sorted(
-            self.results_dir.glob("market_analysis_*.json"),
-            key=lambda p: p.stat().st_mtime,
-            reverse=True
-        )
-
-        if not files:
-            return None
-
-        with open(files[0], 'r', encoding='utf-8') as f:
-            data = json.load(f)
-
-        # Конвертируем обратно в MarketAnalysisResult
-        competitors = [
-            CompetitorAnalysis(
-                name=c.get("name", ""),
-                courses_count=c.get("courses_count", 0),
-                directions=c.get("directions", []),
-                strengths=c.get("strengths", []),
-                weaknesses=c.get("weaknesses", []),
-                positioning=c.get("positioning", "")
-            )
-            for c in data.get("competitors", [])
-        ]
-
-        return MarketAnalysisResult(
-            platforms_analyzed=data.get("platforms_analyzed", 0),
-            total_courses=data.get("total_courses", 0),
-            competitors=competitors,
-            trends=data.get("trends", []),
-            gaps=data.get("gaps", []),
-            findings=data.get("findings", []),
-            generated_at=data.get("generated_at", "")
-        )
-
 
 def main():
-    """Тестовый запуск"""
     print("=" * 60)
-    print("📊 MARKET ANALYSIS AGENT - ТЕСТ")
+    print("📊 MARKET ANALYSIS AGENT - ТЕСТ (с keywords.py)")
     print("=" * 60)
 
     agent = MarketAnalysisAgent()
+    print(f"Направлений компании: {len(agent.COMPANY_DIRECTIONS)}")
+    print(f"Пример: {agent.COMPANY_DIRECTIONS[:3]}...")
 
-    # Тестовые данные
-    test_data = {
-        "platforms": [
-            {
-                "name": "Coursera",
-                "courses": [
-                    {"title": "Machine Learning", "description": "ML course"},
-                    {"title": "Deep Learning", "description": "DL course"},
-                    {"title": "NLP with Transformers", "description": "NLP course"},
-                ]
-            },
-            {
-                "name": "OTUS",
-                "courses": [
-                    {"title": "Computer Vision", "description": "CV course"},
-                    {"title": "MLOps", "description": "MLOps course"},
-                ]
-            }
-        ]
-    }
-
-    result = agent.analyze(test_data)
-    agent.save_results(result)
-
-    print("\n📋 Результаты анализа:")
-    print(f"  Платформ: {result.platforms_analyzed}")
-    print(f"  Курсов: {result.total_courses}")
-    print(f"  Конкурентов: {len(result.competitors)}")
-    print(f"  Трендов: {len(result.trends)}")
-    print(f"  Gap-зон: {len(result.gaps)}")
-
-    if result.findings:
-        print("\n📌 Ключевые выводы:")
-        for finding in result.findings:
-            print(f"  • {finding}")
+    # Тест get_direction_by_keyword
+    test_kw = ["computer vision", "nlp", "mlops", "кулинария"]
+    for kw in test_kw:
+        direction = get_direction_by_keyword(kw)
+        print(f"  '{kw}' → {direction or 'не найдено'}")
 
     print("\n" + "=" * 60)
     print("✅ ТЕСТ ЗАВЕРШЁН")

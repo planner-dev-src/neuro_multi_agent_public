@@ -314,6 +314,12 @@ class ReportAgent:
         
         return result
     
+    def _normalize_platform_name(self, name: str) -> str:
+        """Нормализует имя платформы для сравнения (убирает подчёркивания и дефисы)"""
+        if not name:
+            return ""
+        return name.lower().replace("_", "-").replace(" ", "-")
+    
     def _generate_market_level(self, market_analysis: Dict, vectors: Dict) -> Dict:
         """
         Генерирует рыночный уровень отчета.
@@ -323,7 +329,7 @@ class ReportAgent:
         
         # Инициализируем значения по умолчанию
         platforms_analyzed = 0
-        competitor_names = []
+        competitor_names = []  # будем хранить уникальные нормализованные имена
         trends = []
         covered_list = []
         
@@ -349,21 +355,43 @@ class ReportAgent:
         if "bundle" in market_analysis:
             bundle = market_analysis.get("bundle")
             if bundle is not None:
+                print(f"🔍 DEBUG: bundle type = {type(bundle)}")
+                print(f"🔍 DEBUG: bundle attributes = {dir(bundle)}")
+                
                 # Из platform_positioning
                 if hasattr(bundle, "platform_positioning"):
-                    for pos in bundle.platform_positioning:
+                    print(f"🔍 DEBUG: platform_positioning exists, count = {len(bundle.platform_positioning)}")
+                    for idx, pos in enumerate(bundle.platform_positioning):
                         name = getattr(pos, "platform_name", "")
-                        if name and name not in competitor_names:
-                            competitor_names.append(name)
+                        print(f"    - pos[{idx}].platform_name = '{name}'")
+                        if name:
+                            normalized = self._normalize_platform_name(name)
+                            if normalized and normalized not in competitor_names:
+                                competitor_names.append(normalized)
+                                print(f"      ✅ Добавлен: '{normalized}'")
+                            else:
+                                print(f"      ⚠️ Пропущен (уже есть): '{normalized}'")
+                else:
+                    print("🔍 DEBUG: platform_positioning NOT found in bundle")
+                
                 # Из platform_aggregates
                 if hasattr(bundle, "platform_aggregates"):
+                    print(f"🔍 DEBUG: platform_aggregates exists, count = {len(bundle.platform_aggregates)}")
                     for agg in bundle.platform_aggregates:
                         name = getattr(agg, "platform_name", "")
-                        if name and name not in competitor_names:
-                            competitor_names.append(name)
+                        if name:
+                            normalized = self._normalize_platform_name(name)
+                            if normalized and normalized not in competitor_names:
+                                competitor_names.append(normalized)
+                                print(f"      ✅ Добавлен (из aggregates): '{normalized}'")
+                else:
+                    print("🔍 DEBUG: platform_aggregates NOT found in bundle")
+                
                 # Из platforms_total
                 if hasattr(bundle, "platforms_total"):
                     platforms_analyzed = getattr(bundle, "platforms_total", platforms_analyzed)
+        else:
+            print("🔍 DEBUG: bundle NOT found in market_analysis")
         
         # ============================================================
         # 3. ИЗВЛЕКАЕМ КОНКУРЕНТОВ ИЗ ДРУГИХ МЕСТ (если bundle не дал)
@@ -375,8 +403,10 @@ class ReportAgent:
                 for pos in positioning:
                     if isinstance(pos, dict):
                         name = pos.get("platform_name") or pos.get("name")
-                        if name and name not in competitor_names:
-                            competitor_names.append(name)
+                        if name:
+                            normalized = self._normalize_platform_name(name)
+                            if normalized and normalized not in competitor_names:
+                                competitor_names.append(normalized)
             
             # Из competitors
             if "competitors" in market_analysis:
@@ -384,10 +414,14 @@ class ReportAgent:
                 for comp in comps:
                     if isinstance(comp, dict):
                         name = comp.get("name") or comp.get("platform_name")
-                        if name and name not in competitor_names:
-                            competitor_names.append(name)
-                    elif isinstance(comp, str) and comp not in competitor_names:
-                        competitor_names.append(comp)
+                        if name:
+                            normalized = self._normalize_platform_name(name)
+                            if normalized and normalized not in competitor_names:
+                                competitor_names.append(normalized)
+                    elif isinstance(comp, str):
+                        normalized = self._normalize_platform_name(comp)
+                        if normalized and normalized not in competitor_names:
+                            competitor_names.append(normalized)
             
             # Из summary
             if "summary" in market_analysis:
@@ -396,10 +430,14 @@ class ReportAgent:
                 for comp in comps:
                     if isinstance(comp, dict):
                         name = comp.get("name") or comp.get("platform_name")
-                        if name and name not in competitor_names:
-                            competitor_names.append(name)
-                    elif isinstance(comp, str) and comp not in competitor_names:
-                        competitor_names.append(comp)
+                        if name:
+                            normalized = self._normalize_platform_name(name)
+                            if normalized and normalized not in competitor_names:
+                                competitor_names.append(normalized)
+                    elif isinstance(comp, str):
+                        normalized = self._normalize_platform_name(comp)
+                        if normalized and normalized not in competitor_names:
+                            competitor_names.append(normalized)
             
             # Из platform_reports (если есть)
             if "platform_reports" in market_analysis:
@@ -407,8 +445,10 @@ class ReportAgent:
                 for report in reports:
                     if isinstance(report, dict):
                         name = report.get("platform_name")
-                        if name and name not in competitor_names:
-                            competitor_names.append(name)
+                        if name:
+                            normalized = self._normalize_platform_name(name)
+                            if normalized and normalized not in competitor_names:
+                                competitor_names.append(normalized)
         
         # ============================================================
         # 4. ИЗВЛЕКАЕМ ТРЕНДЫ
@@ -473,7 +513,7 @@ class ReportAgent:
         # ============================================================
         print(f"🔍 Найдено конкурентов: {len(competitor_names)}")
         print(f"🔍 Найдено платформ: {platforms_analyzed}")
-        print(f"🔍 Конкуренты: {competitor_names[:5]}")
+        print(f"🔍 Конкуренты: {competitor_names}")
         
         result = {
             "company_position": "Лидер (сочетание разработки и обучения)",
@@ -636,14 +676,18 @@ class ReportAgent:
                 if hasattr(bundle, "platform_positioning"):
                     for pos in bundle.platform_positioning:
                         name = getattr(pos, "platform_name", "")
-                        if name and name not in competitors:
-                            competitors.append(name)
+                        if name:
+                            normalized = self._normalize_platform_name(name)
+                            if normalized and normalized not in competitors:
+                                competitors.append(normalized)
                 # Из platform_aggregates
                 if hasattr(bundle, "platform_aggregates"):
                     for agg in bundle.platform_aggregates:
                         name = getattr(agg, "platform_name", "")
-                        if name and name not in competitors:
-                            competitors.append(name)
+                        if name:
+                            normalized = self._normalize_platform_name(name)
+                            if normalized and normalized not in competitors:
+                                competitors.append(normalized)
         
         # 2. Прямой список конкурентов
         if not competitors and "competitors" in market_analysis:
@@ -651,10 +695,14 @@ class ReportAgent:
             for comp in comps:
                 if isinstance(comp, dict):
                     name = comp.get("name") or comp.get("platform_name")
-                    if name and name not in competitors:
-                        competitors.append(name)
-                elif isinstance(comp, str) and comp not in competitors:
-                    competitors.append(comp)
+                    if name:
+                        normalized = self._normalize_platform_name(name)
+                        if normalized and normalized not in competitors:
+                            competitors.append(normalized)
+                elif isinstance(comp, str):
+                    normalized = self._normalize_platform_name(comp)
+                    if normalized and normalized not in competitors:
+                        competitors.append(normalized)
         
         # 3. Из summary
         if not competitors and "summary" in market_analysis:
@@ -663,10 +711,14 @@ class ReportAgent:
             for comp in comps:
                 if isinstance(comp, dict):
                     name = comp.get("name") or comp.get("platform_name")
-                    if name and name not in competitors:
-                        competitors.append(name)
-                elif isinstance(comp, str) and comp not in competitors:
-                    competitors.append(comp)
+                    if name:
+                        normalized = self._normalize_platform_name(name)
+                        if normalized and normalized not in competitors:
+                            competitors.append(normalized)
+                elif isinstance(comp, str):
+                    normalized = self._normalize_platform_name(comp)
+                    if normalized and normalized not in competitors:
+                        competitors.append(normalized)
         
         # 4. Из platform_positioning
         if not competitors and "platform_positioning" in market_analysis:
@@ -674,8 +726,10 @@ class ReportAgent:
             for pos in positioning:
                 if isinstance(pos, dict):
                     name = pos.get("platform_name") or pos.get("name")
-                    if name and name not in competitors:
-                        competitors.append(name)
+                    if name:
+                        normalized = self._normalize_platform_name(name)
+                        if normalized and normalized not in competitors:
+                            competitors.append(normalized)
         
         # 5. Из platform_reports
         if not competitors and "platform_reports" in market_analysis:
@@ -683,10 +737,11 @@ class ReportAgent:
             for report in reports:
                 if isinstance(report, dict):
                     name = report.get("platform_name")
-                    if name and name not in competitors:
-                        competitors.append(name)
+                    if name:
+                        normalized = self._normalize_platform_name(name)
+                        if normalized and normalized not in competitors:
+                            competitors.append(normalized)
         
-        # Удаляем дубликаты
         return list(dict.fromkeys(competitors))
     
     def _generate_recommendations(self, data: Dict, vectors: Dict) -> Dict:

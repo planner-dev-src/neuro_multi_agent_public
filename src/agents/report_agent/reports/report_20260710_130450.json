@@ -1,0 +1,613 @@
+{
+  "header": {
+    "title": "ИТОГОВЫЙ АНАЛИТИЧЕСКИЙ ОТЧЕТ",
+    "project_id": "neuro_bot_2025",
+    "date": "10.07.2026",
+    "version": "2.0"
+  },
+  "executive_summary": "\n## КРАТКАЯ СВОДКА\n\n### Общая информация\n- **Прогресс по критериям**: 20.0%\n- **Рыночная позиция**: laggard\n- **Планов действий**: 11\n\n### Ключевые результаты\n- 🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)\n- 📊 Текущее значение: 15\n- 📊 code_coverage снижает bugs_count (сила влияния: 0.7)\n\n### Основные рекомендации\n- 📈 Увеличьте покрытие кода до 80% - это снизит количество ошибок и ускорит разработку\n",
+  "transcript_analysis": {
+    "summary": "",
+    "key_topics": [],
+    "decisions": [],
+    "action_items": []
+  },
+  "metrics_analysis": {
+    "product": {
+      "project_id": "neuro_bot_2025",
+      "velocity": 42,
+      "cycle_time": 12.5,
+      "lead_time": 18.3,
+      "throughput": 8,
+      "sprint_count": 6,
+      "epics_completed": 3
+    },
+    "component": {
+      "code_coverage": 78.5,
+      "tech_debt": 4.2,
+      "complexity": 12.8,
+      "bugs_count": 15,
+      "test_count": 342,
+      "build_success_rate": 94.7
+    },
+    "team": {
+      "team_size": 8,
+      "engagement_score": 4.2,
+      "retro_scores": [
+        4.5,
+        4.8,
+        4.2,
+        5.0,
+        4.6
+      ],
+      "avg_hours": 38.5,
+      "turnover_rate": 12.5,
+      "satisfaction": 4.0
+    }
+  },
+  "competency_map": {
+    "required_skills": [
+      "NLP",
+      "Python",
+      "Docker",
+      "PyTorch",
+      "MLOps"
+    ],
+    "team_skills": {
+      "Python": 4,
+      "NLP": 2,
+      "MLOps": 1,
+      "Docker": 1,
+      "K8s": 1,
+      "PyTorch": 2,
+      "FastAPI": 1,
+      "SQL": 1,
+      "Django": 1,
+      "React": 1,
+      "TensorFlow": 1
+    },
+    "gaps": [],
+    "coverage": {
+      "NLP": 50.0,
+      "Python": 100.0,
+      "Docker": 25.0,
+      "PyTorch": 50.0,
+      "MLOps": 25.0
+    }
+  },
+  "criteria_coverage": {
+    "total": 5,
+    "met": 1,
+    "partially_met": 2,
+    "not_met": 2,
+    "progress": 20.0,
+    "details": [
+      {
+        "name": "Точность модели >= 95%",
+        "target": 95.0,
+        "current": 94.2,
+        "gap": 0.7999999999999972,
+        "status": "partially_met",
+        "progress": 99.15789473684211
+      },
+      {
+        "name": "Время инференса < 100ms",
+        "target": 100,
+        "current": 85,
+        "gap": 15,
+        "status": "not_met",
+        "progress": 85.0
+      },
+      {
+        "name": "Покрытие кода >= 80%",
+        "target": 80.0,
+        "current": 78.5,
+        "gap": 1.5,
+        "status": "partially_met",
+        "progress": 98.125
+      },
+      {
+        "name": "API доступность 99.9%",
+        "target": 99.9,
+        "current": 99.95,
+        "gap": -0.04999999999999716,
+        "status": "met",
+        "progress": 100.05005005005006
+      },
+      {
+        "name": "Интеграция с источниками",
+        "target": 3,
+        "current": 2,
+        "gap": 1,
+        "status": "not_met",
+        "progress": 66.66666666666666
+      }
+    ]
+  },
+  "impact_map": {
+    "nodes": [
+      {
+        "id": "code_coverage",
+        "label": "Покрытие кода",
+        "type": "quality",
+        "value": 78.5,
+        "unit": "%"
+      },
+      {
+        "id": "tech_debt",
+        "label": "Технический долг",
+        "type": "quality",
+        "value": 4.2,
+        "unit": "дней"
+      },
+      {
+        "id": "velocity",
+        "label": "Скорость разработки",
+        "type": "productivity",
+        "value": 42,
+        "unit": "SP"
+      },
+      {
+        "id": "bugs_count",
+        "label": "Количество ошибок",
+        "type": "quality",
+        "value": 15,
+        "unit": "шт"
+      },
+      {
+        "id": "team_satisfaction",
+        "label": "Удовлетворенность команды",
+        "type": "people",
+        "value": 4.0,
+        "unit": "из 5"
+      },
+      {
+        "id": "cycle_time",
+        "label": "Время цикла",
+        "type": "productivity",
+        "value": 12.5,
+        "unit": "дней"
+      },
+      {
+        "id": "coverage",
+        "label": "Покрытие критериев",
+        "type": "project",
+        "value": 20.0,
+        "unit": "%"
+      }
+    ],
+    "edges": [
+      {
+        "from": "code_coverage",
+        "to": "bugs_count",
+        "strength": -0.7,
+        "direction": "negative"
+      },
+      {
+        "from": "tech_debt",
+        "to": "velocity",
+        "strength": -0.5,
+        "direction": "negative"
+      },
+      {
+        "from": "code_coverage",
+        "to": "tech_debt",
+        "strength": -0.4,
+        "direction": "negative"
+      },
+      {
+        "from": "team_satisfaction",
+        "to": "velocity",
+        "strength": 0.6,
+        "direction": "positive"
+      },
+      {
+        "from": "bugs_count",
+        "to": "cycle_time",
+        "strength": 0.6,
+        "direction": "positive"
+      },
+      {
+        "from": "velocity",
+        "to": "coverage",
+        "strength": 0.5,
+        "direction": "positive"
+      },
+      {
+        "from": "cycle_time",
+        "to": "coverage",
+        "strength": -0.4,
+        "direction": "negative"
+      },
+      {
+        "from": "bugs_count",
+        "to": "coverage",
+        "strength": -0.6,
+        "direction": "negative"
+      }
+    ],
+    "findings": [
+      "🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)",
+      "📊 Текущее значение: 15",
+      "📊 code_coverage снижает bugs_count (сила влияния: 0.7)",
+      "⚠️ Покрытие кода ниже 80% - это увеличивает риски качества"
+    ],
+    "recommendations": [
+      "📈 Увеличьте покрытие кода до 80% - это снизит количество ошибок и ускорит разработку"
+    ]
+  },
+  "findings_recommendations": {
+    "findings": [
+      "🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)",
+      "📊 Текущее значение: 15",
+      "📊 code_coverage снижает bugs_count (сила влияния: 0.7)",
+      "⚠️ Покрытие кода ниже 80% - это увеличивает риски качества"
+    ],
+    "recommendations": [
+      "📈 Увеличьте покрытие кода до 80% - это снизит количество ошибок и ускорит разработку"
+    ]
+  },
+  "market_analysis": {
+    "trends": [
+      "AI and machine learning integration in business processes",
+      "Growth of MLOps and DevOps practices",
+      "Rise of open-source LLM models (Llama, Mistral)",
+      "Increased focus on AI safety and ethics",
+      "Edge AI and on-device machine learning",
+      "Generative AI in enterprise software",
+      "AI-powered automation and RPA",
+      "Demand for AI talent and specialized skills"
+    ],
+    "competitors": [
+      {
+        "name": "OpenAI",
+        "strengths": [
+          "Research",
+          "LLM models",
+          "API ecosystem"
+        ],
+        "weaknesses": [
+          "Closed source",
+          "High costs",
+          "Limited customization"
+        ],
+        "market_share": 35,
+        "skills": [
+          "NLP",
+          "Deep Learning",
+          "Reinforcement Learning"
+        ]
+      },
+      {
+        "name": "Google AI",
+        "strengths": [
+          "Infrastructure",
+          "Data",
+          "Research"
+        ],
+        "weaknesses": [
+          "Bureaucracy",
+          "Slow productization"
+        ],
+        "market_share": 25,
+        "skills": [
+          "NLP",
+          "Computer Vision",
+          "MLOps",
+          "TensorFlow"
+        ]
+      },
+      {
+        "name": "Microsoft AI",
+        "strengths": [
+          "Integration",
+          "Enterprise",
+          "Azure"
+        ],
+        "weaknesses": [
+          "Dependency on OpenAI",
+          "Complexity"
+        ],
+        "market_share": 20,
+        "skills": [
+          "Azure ML",
+          "NLP",
+          "Computer Vision"
+        ]
+      },
+      {
+        "name": "Anthropic",
+        "strengths": [
+          "Safety",
+          "Reliability",
+          "Claude"
+        ],
+        "weaknesses": [
+          "Limited API",
+          "Smaller ecosystem"
+        ],
+        "market_share": 10,
+        "skills": [
+          "NLP",
+          "AI Safety",
+          "Reinforcement Learning"
+        ]
+      },
+      {
+        "name": "Cohere",
+        "strengths": [
+          "Enterprise focus",
+          "Multilingual"
+        ],
+        "weaknesses": [
+          "Smaller team",
+          "Less funding"
+        ],
+        "market_share": 8,
+        "skills": [
+          "NLP",
+          "LLM",
+          "Enterprise AI"
+        ]
+      }
+    ],
+    "position": {
+      "segment": "AI/ML Development Tools",
+      "stage": "Growth",
+      "competitive_intensity": "High",
+      "trend_alignment": 100.0
+    },
+    "impact": {
+      "competency_impact": {
+        "status": "good",
+        "message": "Все ключевые компетенции присутствуют в команде",
+        "impact": "neutral"
+      },
+      "criteria_position": {
+        "position": "laggard",
+        "message": "Продукт отстает от рыночных требований",
+        "progress": 20.0,
+        "met_criteria": 0,
+        "total_criteria": 0,
+        "trend_alignment": [
+          {
+            "trend": "AI and machine learning integration in business processes",
+            "aligned": false
+          },
+          {
+            "trend": "Growth of MLOps and DevOps practices",
+            "aligned": false
+          },
+          {
+            "trend": "Rise of open-source LLM models (Llama, Mistral)",
+            "aligned": false
+          }
+        ],
+        "recommendation": "Срочно догоняйте по базовым критериям. Критические критерии: Время инференса < 100ms, Интеграция с источниками"
+      },
+      "competitive_advantages": [
+        "Сильное управление ключевыми метриками: 🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)"
+      ],
+      "market_risks": [
+        "⚠️ Покрытие кода ниже 80% - это увеличивает риски качества",
+        "Невыполнение критерия: Время инференса < 100ms",
+        "Невыполнение критерия: Интеграция с источниками"
+      ]
+    },
+    "recommendations": [
+      "📈 Увеличьте покрытие кода до 80% - это снизит количество ошибок и ускорит разработку",
+      "📌 Срочно догоняйте по базовым критериям. Критические критерии: Время инференса < 100ms, Интеграция с источниками"
+    ]
+  },
+  "market_narrative": {
+    "full_text": "\n# АНАЛИТИЧЕСКИЙ НАРРАТИВ: РЫНОЧНОЕ ПОЗИЦИОНИРОВАНИЕ ПРОЕКТА\n\n## 1. Введение\n\nНастоящий отчет представляет собой комплексный анализ рыночного позиционирования проекта \nс учетом актуальных метрик разработки, рыночных трендов и конкурентной среды.\n\n### Ключевые параметры анализа:\n- **Стадия проекта**: Разработка и внедрение\n- **Рыночная позиция**: отстающие позиции\n- **Прогресс по критериям**: 20.0%\n- **Дата анализа**: 10.07.2026\n\nВ ходе анализа были выявлены ключевые драйверы, влияющие на успешность проекта, \nа также сформулированы рекомендации по улучшению рыночного позиционирования.\n\n\n\n## 2. Текущее состояние проекта\n\n⚠️ **Общий прогресс**: 20.0% (0 из 0 критериев выполнено)\n\n### Ключевые выводы по проекту:\n- 🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)\n- 📊 Текущее значение: 15\n- 📊 code_coverage снижает bugs_count (сила влияния: 0.7)\n\n### Анализ критических точек:\n- **Покрытие кода**: Требует улучшения (влияет на качество)\n- **Технический долг**: В пределах нормы\n- **Скорость разработки**: Стабильна\n\n\n\n## 3. Анализ компетенций\n\n✅ **Статус**: Все ключевые компетенции присутствуют в команде\n\nКоманда полностью укомплектована необходимыми специалистами. \nРекомендуется поддерживать текущий уровень экспертизы.\n\n\n## 4. Анализ покрытия критериев\n\n### ✅ Выполненные критерии:\n- API доступность 99.9%: достигнут\n\n### 🔄 Частично выполненные критерии:\n- Точность модели >= 95%: 99.2% от цели\n- Покрытие кода >= 80%: 98.1% от цели\n\n### ❌ Невыполненные критерии:\n- Время инференса < 100ms: отставание на 15.0\n- Интеграция с источниками: отставание на 1.0\n\n## 5. Влияние метрик на рыночное позиционирование\n\n✅ **Влияние компетенций**: Команда готова к рыночным вызовам\n\n📊 **Рыночная позиция**: Отстающий\n   Продукт отстает от рыночных требований\n\n### 🏆 Конкурентные преимущества:\n- Сильное управление ключевыми метриками: 🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)\n\n### ⚠️ Рыночные риски:\n- ⚠️ Покрытие кода ниже 80% - это увеличивает риски качества\n- Невыполнение критерия: Время инференса < 100ms\n- Невыполнение критерия: Интеграция с источниками\n\n## 6. Анализ конкурентов\n\n### OpenAI\n- **Доля рынка**: 35%\n- **Сильные стороны**: Research, LLM models\n- **Слабые стороны**: Closed source, High costs\n\n### Google AI\n- **Доля рынка**: 25%\n- **Сильные стороны**: Infrastructure, Data\n- **Слабые стороны**: Bureaucracy, Slow productization\n\n### Microsoft AI\n- **Доля рынка**: 20%\n- **Сильные стороны**: Integration, Enterprise\n- **Слабые стороны**: Dependency on OpenAI, Complexity\n\n\n## 7. Ключевые выводы и рекомендации\n\n### 📌 Выводы\n- 🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)\n- 📊 Текущее значение: 15\n- 📊 code_coverage снижает bugs_count (сила влияния: 0.7)\n- ⚠️ Покрытие кода ниже 80% - это увеличивает риски качества\n\n### 💡 Рекомендации на основе метрик\n- 📈 Увеличьте покрытие кода до 80% - это снизит количество ошибок и ускорит разработку\n\n### 💡 Рекомендации на основе рыночного анализа\n- 📈 Увеличьте покрытие кода до 80% - это снизит количество ошибок и ускорит разработку\n- 📌 Срочно догоняйте по базовым критериям. Критические критерии: Время инференса < 100ms, Интеграция с источниками\n\n\n## 8. Заключение\n\n### Общий вывод\n\nАнализ показывает, что проект находится на требующей внимания траектории развития.\n\n**Ключевые факторы успеха:**\n- 🔄 Прогресс по критериям: 20.0%\n- ✅ Выявлены ключевые драйверы\n- ✅ Сформулированы рекомендации\n\n### Рекомендации по дальнейшим действиям\n\n1. Сосредоточиться на выполнении критических критериев\n2. Устранить выявленные пробелы в компетенциях\n3. Следить за рыночными трендами и конкурентами\n4. Регулярно обновлять метрики и пересматривать стратегию\n\n---\n*Нарратив сгенерирован автоматически на основе данных от агентов системы.*\n"
+  },
+  "planner_plan": {
+    "actions": [
+      {
+        "id": "risk_mitigation",
+        "type": "process",
+        "description": "Устранить риск: ⚠️ Покрытие кода ниже 80% - это увеличивает риски качества",
+        "priority": "critical",
+        "status": "pending",
+        "source": "finding",
+        "details": {
+          "finding": "⚠️ Покрытие кода ниже 80% - это увеличивает риски качества"
+        },
+        "deadline": null,
+        "assignee": null
+      },
+      {
+        "id": "criteria_время_инференса_<_100ms",
+        "type": "improve",
+        "description": "Улучшить Время инференса < 100ms",
+        "priority": "high",
+        "status": "pending",
+        "source": "criteria_gap",
+        "details": {
+          "name": "Время инференса < 100ms",
+          "target": 100,
+          "current": 85,
+          "gap": 15
+        },
+        "deadline": null,
+        "assignee": null
+      },
+      {
+        "id": "focus_driver",
+        "type": "process",
+        "description": "Сфокусироваться на ключевом драйвере: 🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)",
+        "priority": "high",
+        "status": "pending",
+        "source": "finding",
+        "details": {
+          "finding": "🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)"
+        },
+        "deadline": null,
+        "assignee": null
+      },
+      {
+        "id": "advantage_2",
+        "type": "market",
+        "description": "Усилить конкурентное преимущество: Сильное управление ключевыми метриками: 🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)",
+        "priority": "high",
+        "status": "pending",
+        "source": "competitive_advantage",
+        "details": {
+          "advantage": "Сильное управление ключевыми метриками: 🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)"
+        },
+        "deadline": null,
+        "assignee": null
+      },
+      {
+        "id": "criteria_точность_модели_>=_95%_partial",
+        "type": "improve",
+        "description": "Довести до выполнения Точность модели >= 95%",
+        "priority": "medium",
+        "status": "pending",
+        "source": "criteria_partial",
+        "details": {
+          "name": "Точность модели >= 95%",
+          "target": 95.0,
+          "current": 94.2,
+          "gap": 0.7999999999999972
+        },
+        "deadline": null,
+        "assignee": null
+      },
+      {
+        "id": "criteria_покрытие_кода_>=_80%_partial",
+        "type": "improve",
+        "description": "Довести до выполнения Покрытие кода >= 80%",
+        "priority": "medium",
+        "status": "pending",
+        "source": "criteria_partial",
+        "details": {
+          "name": "Покрытие кода >= 80%",
+          "target": 80.0,
+          "current": 78.5,
+          "gap": 1.5
+        },
+        "deadline": null,
+        "assignee": null
+      },
+      {
+        "id": "criteria_интеграция_с_источниками",
+        "type": "improve",
+        "description": "Улучшить Интеграция с источниками",
+        "priority": "medium",
+        "status": "pending",
+        "source": "criteria_gap",
+        "details": {
+          "name": "Интеграция с источниками",
+          "target": 3,
+          "current": 2,
+          "gap": 1
+        },
+        "deadline": null,
+        "assignee": null
+      },
+      {
+        "id": "rec_2",
+        "type": "process",
+        "description": "📈 Увеличьте покрытие кода до 80% - это снизит количество ошибок и ускорит разработку",
+        "priority": "medium",
+        "status": "pending",
+        "source": "recommendation",
+        "details": {
+          "recommendation": "📈 Увеличьте покрытие кода до 80% - это снизит количество ошибок и ускорит разработку"
+        },
+        "deadline": null,
+        "assignee": null
+      },
+      {
+        "id": "market_0",
+        "type": "market",
+        "description": "📈 Увеличьте покрытие кода до 80% - это снизит количество ошибок и ускорит разработку",
+        "priority": "medium",
+        "status": "pending",
+        "source": "market_analysis",
+        "details": {
+          "recommendation": "📈 Увеличьте покрытие кода до 80% - это снизит количество ошибок и ускорит разработку"
+        },
+        "deadline": null,
+        "assignee": null
+      },
+      {
+        "id": "market_1",
+        "type": "market",
+        "description": "📌 Срочно догоняйте по базовым критериям. Критические критерии: Время инференса < 100ms, Интеграция с источниками",
+        "priority": "medium",
+        "status": "pending",
+        "source": "market_analysis",
+        "details": {
+          "recommendation": "📌 Срочно догоняйте по базовым критериям. Критические критерии: Время инференса < 100ms, Интеграция с источниками"
+        },
+        "deadline": null,
+        "assignee": null
+      },
+      {
+        "id": "narrative_0",
+        "type": "process",
+        "description": "Рекомендуется поддерживать текущий уровень экспертизы",
+        "priority": "medium",
+        "status": "pending",
+        "source": "narrative",
+        "details": {
+          "keyword": "рекомендуется"
+        },
+        "deadline": null,
+        "assignee": null
+      }
+    ],
+    "summary": "Всего действий: 11\nКритические: 1, Высокий приоритет: 3, Средний: 7, Низкий: 0\nТипы действий: process: 4, improve: 4, market: 3",
+    "priorities": {
+      "critical": [
+        "Устранить риск: ⚠️ Покрытие кода ниже 80% - это увеличивает риски качества"
+      ],
+      "high": [
+        "Улучшить Время инференса < 100ms",
+        "Сфокусироваться на ключевом драйвере: 🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)",
+        "Усилить конкурентное преимущество: Сильное управление ключевыми метриками: 🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)"
+      ],
+      "medium": [
+        "Довести до выполнения Точность модели >= 95%",
+        "Довести до выполнения Покрытие кода >= 80%",
+        "Улучшить Интеграция с источниками",
+        "📈 Увеличьте покрытие кода до 80% - это снизит количество ошибок и ускорит разработку",
+        "📈 Увеличьте покрытие кода до 80% - это снизит количество ошибок и ускорит разработку",
+        "📌 Срочно догоняйте по базовым критериям. Критические критерии: Время инференса < 100ms, Интеграция с источниками",
+        "Рекомендуется поддерживать текущий уровень экспертизы"
+      ],
+      "low": []
+    },
+    "risks": [
+      "⚠️ Покрытие кода ниже 80% - это увеличивает риски качества",
+      "Невыполнение 2 критических критериев",
+      "⚠️ Покрытие кода ниже 80% - это увеличивает риски качества",
+      "Невыполнение критерия: Время инференса < 100ms",
+      "Невыполнение критерия: Интеграция с источниками"
+    ],
+    "success_criteria": [
+      "Выполнить все 5 критериев качества",
+      "Увеличить покрытие кода до 80%",
+      "Снизить количество ошибок на 20%",
+      "Улучшить удовлетворенность команды",
+      "Достичь целевых показателей продукта"
+    ]
+  },
+  "conclusion": "\n## ЗАКЛЮЧЕНИЕ\n\n### Общие выводы\n\nАнализ проекта показывает требующую внимания динамику.\n\n- **Прогресс по критериям**: 20.0%\n- **Плановых действий**: 11\n- **Дата отчета**: 10.07.2026\n\n### Следующие шаги\n\n1. Выполнить приоритетные задачи из плана\n2. Устранить выявленные риски\n3. Провести повторный анализ через 2 недели\n\n---\n*Отчет сгенерирован автоматически.*\n",
+  "appendix": {
+    "sources": [
+      "metrics",
+      "market_analysis",
+      "market_narrative",
+      "planner"
+    ],
+    "generated_at": "2026-07-10T13:04:50.457845"
+  },
+  "metadata": {
+    "generated_at": "2026-07-10T13:04:50.457845",
+    "version": "2.0"
+  }
+}

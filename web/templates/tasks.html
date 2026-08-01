@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Задачи — AI-Ассистент</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { min-height: 100vh; display: flex; flex-direction: column; background: #f8f9fa; }
+        main { flex: 1; }
+        .card { border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .task-item {
+            padding: 0.6rem 0.8rem;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .task-item:last-child { border-bottom: none; }
+        .task-item .task-info { flex: 1; }
+        .task-item .task-actions { display: flex; gap: 0.5rem; align-items: center; }
+        .priority-critical { border-left: 4px solid #dc3545; padding-left: 10px; }
+        .priority-high { border-left: 4px solid #ffc107; padding-left: 10px; }
+        .priority-medium { border-left: 4px solid #17a2b8; padding-left: 10px; }
+        .priority-low { border-left: 4px solid #28a745; padding-left: 10px; }
+        .task-list { max-height: 400px; overflow-y: auto; }
+        .btn-delete { color: #dc3545; background: none; border: none; cursor: pointer; }
+        .btn-delete:hover { color: #a71d2a; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><i class="fas fa-brain me-2"></i>AI-Ассистент</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-chart-pie me-1"></i>Обзор</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/research"><i class="fas fa-search me-1"></i>Исследование</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/tasks"><i class="fas fa-tasks me-1"></i>Задачи</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/chat"><i class="fas fa-comment-dots me-1"></i>Чат</a></li>
+                </ul>
+                <span class="navbar-text text-light-emphasis small">
+                    <i class="fas fa-circle text-success me-1" style="font-size:8px;"></i>Система активна
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid py-4">
+        <h1 class="mb-4"><i class="fas fa-tasks me-2"></i>Задачи</h1>
+
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-plus me-2"></i>Новая задача
+                    </div>
+                    <div class="card-body">
+                        <form id="taskForm" onsubmit="createTask(event)">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" id="taskTitle" 
+                                       placeholder="Название задачи" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" id="taskAssignee" 
+                                       placeholder="Исполнитель">
+                            </div>
+                            <div class="mb-3">
+                                <select class="form-select" id="taskPriority">
+                                    <option value="low">Низкий</option>
+                                    <option value="medium" selected>Средний</option>
+                                    <option value="high">Высокий</option>
+                                    <option value="critical">Критический</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <input type="date" class="form-control" id="taskDeadline">
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary w-100" id="submitBtn">
+                                    <i class="fas fa-plus me-2"></i>Создать задачу
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="loadTasks()">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-list me-2"></i>Список задач
+                        <span class="badge bg-secondary ms-2" id="taskCount">0</span>
+                        <button type="button" class="btn btn-sm btn-outline-secondary float-end" onclick="loadTasks()">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="card-body task-list" id="taskListContainer">
+                        <p class="text-muted text-center py-3" id="emptyMessage">Нет задач. Создайте первую!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light border-top">
+        <div class="container text-center">
+            <span class="text-muted small">AI-Ассистент Руководителя v1.0 · 2026</span>
+            <br>
+            <span class="text-muted small">Мультиагентная система поддержки управленческих решений для AI/IT-компании • © Дипломный проект В.Н. Мишина</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    function escapeHtml(text) {
+        if (text === null || text === undefined) return '';
+        const div = document.createElement('div');
+        div.textContent = String(text);
+        return div.innerHTML;
+    }
+
+    function safeString(value) {
+        if (value === null || value === undefined) return '';
+        return String(value);
+    }
+
+    function getPriorityBadge(priority) {
+        const map = {
+            'critical': '<span class="badge bg-danger">Критический</span>',
+            'high': '<span class="badge bg-warning text-dark">Высокий</span>',
+            'medium': '<span class="badge bg-info">Средний</span>',
+            'low': '<span class="badge bg-success">Низкий</span>'
+        };
+        return map[priority] || '<span class="badge bg-secondary">Неизвестно</span>';
+    }
+
+    function getPriorityClass(priority) {
+        const map = {
+            'critical': 'priority-critical',
+            'high': 'priority-high',
+            'medium': 'priority-medium',
+            'low': 'priority-low'
+        };
+        return map[priority] || '';
+    }
+
+    async function loadTasks() {
+        try {
+            const resp = await fetch('/api/tasks/list');
+            if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
+            const data = await resp.json();
+            
+            const container = document.getElementById('taskListContainer');
+            const countBadge = document.getElementById('taskCount');
+
+            if (data.tasks && data.tasks.length > 0) {
+                let html = '';
+                for (const t of data.tasks) {
+                    const title = safeString(t.title) || 'Без названия';
+                    const assignee = safeString(t.assignee);
+                    const deadline = safeString(t.deadline);
+                    const priority = safeString(t.priority) || 'medium';
+                    const taskId = safeString(t.id) || '';
+                    
+                    html += `
+                        <div class="task-item ${getPriorityClass(priority)}">
+                            <div class="task-info">
+                                <strong>${escapeHtml(title)}</strong>
+                                <div class="small text-muted">
+                                    ${assignee ? '👤 ' + escapeHtml(assignee) : ''}
+                                    ${deadline ? ' | 📅 ' + escapeHtml(deadline) : ''}
+                                </div>
+                            </div>
+                            <div class="task-actions">
+                                ${getPriorityBadge(priority)}
+                                <button class="btn-delete" onclick="deleteTask('${taskId}')" title="Удалить задачу">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+                container.innerHTML = html;
+                if (countBadge) countBadge.textContent = data.tasks.length;
+            } else {
+                container.innerHTML = '<p class="text-muted text-center py-3">Нет задач. Создайте первую!</p>';
+                if (countBadge) countBadge.textContent = '0';
+            }
+            return true;
+        } catch (e) {
+            console.error('Ошибка загрузки задач:', e);
+            const container = document.getElementById('taskListContainer');
+            if (container) container.innerHTML = '<p class="text-danger text-center py-3">Ошибка загрузки задач</p>';
+            return false;
+        }
+    }
+
+    async function deleteTask(taskId) {
+        if (!taskId) {
+            alert('❌ Ошибка: идентификатор задачи не найден');
+            return;
+        }
+        if (!confirm('Вы уверены, что хотите удалить эту задачу?')) return;
+        
+        try {
+            const resp = await fetch(`/api/tasks/${taskId}`, { method: 'DELETE' });
+            const data = await resp.json();
+            if (data.status === 'deleted') {
+                alert('✅ Задача удалена');
+                setTimeout(() => loadTasks(), 300);
+            } else {
+                alert('❌ Ошибка: ' + (data.message || 'Неизвестная ошибка'));
+            }
+        } catch (e) {
+            console.error('Ошибка удаления задачи:', e);
+            alert('❌ Ошибка при удалении задачи');
+        }
+    }
+
+    async function createTask(e) {
+        e.preventDefault();
+        const title = document.getElementById('taskTitle').value.trim();
+        if (!title) return;
+        
+        const assignee = document.getElementById('taskAssignee').value.trim();
+        const priority = document.getElementById('taskPriority').value;
+        const deadline = document.getElementById('taskDeadline').value;
+        
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Создание...';
+        
+        try {
+            const formData = new URLSearchParams();
+            formData.append('title', title);
+            if (assignee) formData.append('assignee', assignee);
+            formData.append('priority', priority);
+            if (deadline) formData.append('deadline', deadline);
+            
+            const resp = await fetch('/api/tasks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData
+            });
+            const data = await resp.json();
+            
+            if (data.status === 'created') {
+                document.getElementById('taskTitle').value = '';
+                document.getElementById('taskAssignee').value = '';
+                document.getElementById('taskDeadline').value = '';
+                alert('✅ Задача создана: ' + title);
+                setTimeout(() => loadTasks(), 500);
+            } else {
+                alert('❌ Ошибка: ' + (data.message || 'Неизвестная ошибка'));
+            }
+        } catch (e) {
+            console.error('Ошибка создания задачи:', e);
+            alert('❌ Ошибка при создании задачи');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-plus me-2"></i>Создать задачу';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadTasks();
+    });
+    </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "last_updated": "2026-07-16T17:13:50.354320",
+  "last_updated": "2026-07-30T15:09:23.144650",
   "levels": {
     "strategic": {
       "data": {
@@ -458,6 +458,14 @@
           "unit": "%",
           "status": "warning",
           "interpretation": "Семейство компетенций уже стало близким к рыночному стандарту и даёт ограниченный потенциал для отличия."
+        },
+        "time_series": {
+          "name": "Time Series",
+          "value": "0.5592",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем представлен ограниченно и может рассматриваться как заметная зона конкурентного роста."
         }
       }
     },
@@ -492,14 +500,80 @@
       }
     }
   },
+  "decisions": [
+    {
+      "id": "dec_001",
+      "level": "operational",
+      "description": "Настроить CI/CD",
+      "source": "system",
+      "status": "pending",
+      "priority": "high",
+      "timestamp": "2026-07-30T12:00:00",
+      "metric_id": null,
+      "details": {},
+      "assignee": "DevOps",
+      "deadline": "31.08"
+    },
+    {
+      "id": "dec_002",
+      "level": "operational",
+      "description": "Обновить документацию",
+      "source": "system",
+      "status": "pending",
+      "priority": "medium",
+      "timestamp": "2026-07-30T12:00:00",
+      "metric_id": null,
+      "details": {},
+      "assignee": "Tech Writer",
+      "deadline": "15.09"
+    },
+    {
+      "id": "dec_003",
+      "level": "operational",
+      "description": "Согласовать список метрик",
+      "source": "web_interface",
+      "status": "pending",
+      "priority": "medium",
+      "timestamp": "2026-07-30T13:31:11.696500",
+      "metric_id": null,
+      "details": {},
+      "assignee": "Д.Р.",
+      "deadline": "Не указан"
+    },
+    {
+      "id": "dec_004",
+      "level": "operational",
+      "description": "Согласовать список метрик (повторно)",
+      "source": "web_interface",
+      "status": "pending",
+      "priority": "high",
+      "timestamp": "2026-07-30T13:45:46.362334",
+      "metric_id": null,
+      "details": {},
+      "assignee": "Дмитрий Романов",
+      "deadline": "2026-08-18"
+    },
+    {
+      "id": "dec_005",
+      "level": "operational",
+      "description": "Написать материал по Этапу № 4",
+      "source": "web_interface",
+      "status": "pending",
+      "priority": "medium",
+      "timestamp": "2026-07-30T13:57:30.664675",
+      "metric_id": null,
+      "details": {},
+      "assignee": "ВНМ",
+      "deadline": "2026-07-31"
+    }
+  ],
   "summary": {
-    "total_metrics": 50,
-    "total_decisions": 0,
+    "total_metrics": 51,
+    "total_decisions": 5,
     "status_distribution": {
       "critical": 3,
-      "warning": 5,
-      "met": 2,
-      "data_missing": 40
+      "warning": 46,
+      "met": 2
     }
   }
 }

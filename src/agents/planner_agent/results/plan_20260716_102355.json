@@ -1,0 +1,115 @@
+{
+  "actions": [
+    {
+      "id": "reg_crit_strat_strategic_ai_projects",
+      "type": "strategic",
+      "description": "🎯 Уровень стратегический: Достичь стратегической цели: AI проекты (текущее 750 из 1000)",
+      "priority": "critical",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "metric_id": "strategic_ai_projects",
+        "value": 750,
+        "target": 1000
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "стратегическая цель компании"
+    },
+    {
+      "id": "reg_crit_comp_competency_mlops",
+      "type": "hire",
+      "description": "🧠 Уровень компетенций: Закрыть критический пробел в компетенции: MLOps (покрытие 25%)",
+      "priority": "critical",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "skill": "MLOps",
+        "coverage": 25
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "задачи: Настройка CI/CD, Мониторинг моделей"
+    },
+    {
+      "id": "reg_crit_market_market_directions",
+      "type": "market",
+      "description": "🌍 Уровень рыночный: Расширить анализ: Направления (охвачено 0 из 12)",
+      "priority": "high",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "metric_id": "market_directions",
+        "value": 0,
+        "target": 12
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "рыночный анализ"
+    },
+    {
+      "id": "reg_warn_tech_technical_code_coverage",
+      "type": "improve",
+      "description": "⚙️ Уровень технический: Улучшить: Покрытие кода (текущее 78.5 при цели 80.0)",
+      "priority": "medium",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "metric_id": "technical_code_coverage",
+        "value": 78.5,
+        "target": 80.0
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "продукт: Нейро-куратор"
+    },
+    {
+      "id": "reg_warn_tech_technical_neuro_curator_response_time",
+      "type": "improve",
+      "description": "⚙️ Уровень технический: Улучшить: Neuro Curator Response Time (текущее 8.0 при цели 7.5)",
+      "priority": "medium",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "metric_id": "technical_neuro_curator_response_time",
+        "value": 8.0,
+        "target": 7.5
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "продукт: Нейро-куратор"
+    }
+  ],
+  "summary": "Всего действий: 5\nКритические: 2, Высокий приоритет: 1, Средний: 2, Низкий: 0\nТипы действий: strategic: 1, hire: 1, market: 1, improve: 2",
+  "priorities": {
+    "critical": [
+      "🎯 Уровень стратегический: Достичь стратегической цели: AI проекты (текущее 750 из 1000)",
+      "🧠 Уровень компетенций: Закрыть критический пробел в компетенции: MLOps (покрытие 25%)"
+    ],
+    "high": [
+      "🌍 Уровень рыночный: Расширить анализ: Направления (охвачено 0 из 12)"
+    ],
+    "medium": [
+      "⚙️ Уровень технический: Улучшить: Покрытие кода (текущее 78.5 при цели 80.0)",
+      "⚙️ Уровень технический: Улучшить: Neuro Curator Response Time (текущее 8.0 при цели 7.5)"
+    ],
+    "low": []
+  },
+  "timeline": {
+    "immediate": [
+      "🎯 Уровень стратегический: Достичь стратегической цели: AI проекты (текущее 750 из 1000)",
+      "🧠 Уровень компетенций: Закрыть критический пробел в компетенции: MLOps (покрытие 25%)"
+    ],
+    "1-2 weeks": [
+      "🌍 Уровень рыночный: Расширить анализ: Направления (охвачено 0 из 12)"
+    ],
+    "1 month": [
+      "⚙️ Уровень технический: Улучшить: Покрытие кода (текущее 78.5 при цели 80.0)",
+      "⚙️ Уровень технический: Улучшить: Neuro Curator Response Time (текущее 8.0 при цели 7.5)"
+    ],
+    "2-3 months": []
+  },
+  "risks": [],
+  "success_criteria": [],
+  "generated_at": "2026-07-16T10:23:55.458177"
+}

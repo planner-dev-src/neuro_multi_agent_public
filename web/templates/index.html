@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Ассистент Руководителя</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { min-height: 100vh; display: flex; flex-direction: column; background: #f8f9fa; }
+        main { flex: 1; }
+        .navbar-brand { font-weight: 600; }
+        
+        .kpi-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-left: 4px solid #6c757d;
+        }
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        .kpi-card .kpi-icon { font-size: 2rem; width: 3rem; text-align: center; flex-shrink: 0; }
+        .kpi-card .kpi-info { flex: 1; min-width: 0; }
+        .kpi-card .kpi-value { font-size: 1.6rem; font-weight: 700; line-height: 1.2; }
+        .kpi-card .kpi-label { font-size: 0.75rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.3px; }
+        .kpi-card .kpi-sub { font-size: 0.7rem; color: #6c757d; }
+        .kpi-strategic { border-left-color: #0d6efd; }
+        .kpi-strategic .kpi-icon { color: #0d6efd; }
+        .kpi-market { border-left-color: #0dcaf0; }
+        .kpi-market .kpi-icon { color: #0dcaf0; }
+        .kpi-competency { border-left-color: #ffc107; }
+        .kpi-competency .kpi-icon { color: #ffc107; }
+        .kpi-products { border-left-color: #198754; }
+        .kpi-products .kpi-icon { color: #198754; }
+        .kpi-technical { border-left-color: #6f42c1; }
+        .kpi-technical .kpi-icon { color: #6f42c1; }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #6c757d;
+            padding: 0.6rem 1.2rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .nav-tabs .nav-link:hover { color: #0d6efd; }
+        .nav-tabs .nav-link.active {
+            border-bottom-color: #0d6efd;
+            color: #0d6efd;
+            background: none;
+        }
+        .tab-pane { display: none; padding-top: 1.5rem; }
+        .tab-pane.active { display: block; }
+        
+        .report-view {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            max-height: 600px;
+            overflow-y: auto;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .report-view h2 { font-size: 1.3rem; margin-top: 1.5rem; }
+        .report-view h3 { font-size: 1.1rem; margin-top: 1rem; }
+        .report-view table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+        .report-view th, .report-view td { padding: 0.4rem 0.6rem; border: 1px solid #dee2e6; }
+        .report-view th { background: #f8f9fa; }
+        
+        .report-item {
+            padding: 0.6rem 1rem;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .report-item:hover { background: #f8f9fa; }
+        .report-item .date { font-size: 0.75rem; color: #6c757d; }
+        .report-item.active { 
+            background: #0d6efd !important; 
+            color: white !important;
+            border-left: 4px solid #0a58ca;
+        }
+        .report-item.active .date { color: rgba(255,255,255,0.7) !important; }
+        .report-item.active i { color: white !important; }
+        .report-item.active strong { color: white !important; }
+        .report-item.active strong i { color: rgba(255,255,255,0.8) !important; }
+        .scrollable-list { max-height: 400px; overflow-y: auto; }
+        
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.3rem 0.5rem;
+            border-bottom: 1px solid #f8f9fa;
+            font-size: 0.85rem;
+        }
+        .metric-row .status-badge { font-size: 0.65rem; padding: 0.15rem 0.5rem; }
+        .metric-summary-table td, .metric-summary-table th { padding: 0.3rem 0.6rem; font-size: 0.85rem; }
+        .expand-btn {
+            background: none;
+            border: none;
+            color: #0d6efd;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .expand-btn:hover { text-decoration: underline; }
+        .hidden { display: none; }
+        
+        .task-item { padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0; }
+        .task-item:last-child { border-bottom: none; }
+        .priority-critical { border-left: 4px solid #dc3545; padding-left: 10px; }
+        .priority-high { border-left: 4px solid #ffc107; padding-left: 10px; }
+        .priority-medium { border-left: 4px solid #17a2b8; padding-left: 10px; }
+        .priority-low { border-left: 4px solid #28a745; padding-left: 10px; }
+        .status-system { font-size: 0.85rem; }
+
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+            border-width: 0.15em;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><i class="fas fa-brain me-2"></i>AI-Ассистент</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link active" href="/"><i class="fas fa-chart-pie me-1"></i>Обзор</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/research"><i class="fas fa-search me-1"></i>Исследование</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/tasks"><i class="fas fa-tasks me-1"></i>Задачи</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/chat"><i class="fas fa-comment-dots me-1"></i>Чат</a></li>
+                </ul>
+                <span class="navbar-text text-light-emphasis small">
+                    <i class="fas fa-circle text-success me-1" style="font-size:8px;"></i>Система активна
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-chart-pie me-2"></i>Обзор</h1>
+            <div>
+                <button class="btn btn-outline-secondary btn-sm me-2" onclick="refreshAll()">
+                    <i class="fas fa-sync-alt me-1"></i>Обновить
+                </button>
+                <button class="btn btn-outline-primary btn-sm" onclick="window.location.href='/research'">
+                    <i class="fas fa-search me-1"></i>Новое исследование
+                </button>
+            </div>
+        </div>
+
+        <!-- KPI -->
+        <div class="row g-3 mb-4" id="kpiContainer">
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="kpi-card kpi-strategic">
+                    <div class="kpi-icon"><i class="fas fa-flag-checkered"></i></div>
+                    <div class="kpi-info">
+                        <div class="kpi-value" id="kpi-strategic">--</div>
+                        <div class="kpi-label">Стратегия</div>
+                        <div class="kpi-sub">AI-проектов</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="kpi-card kpi-market">
+                    <div class="kpi-icon"><i class="fas fa-globe"></i></div>
+                    <div class="kpi-info">
+                        <div class="kpi-value" id="kpi-market">--</div>
+                        <div class="kpi-label">Рынок</div>
+                        <div class="kpi-sub">конкурентов</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="kpi-card kpi-competency">
+                    <div class="kpi-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="kpi-info">
+                        <div class="kpi-value" id="kpi-competency">--</div>
+                        <div class="kpi-label">Компетенции</div>
+                        <div class="kpi-sub">критических</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="kpi-card kpi-products">
+                    <div class="kpi-icon"><i class="fas fa-boxes"></i></div>
+                    <div class="kpi-info">
+                        <div class="kpi-value" id="kpi-products">--</div>
+                        <div class="kpi-label">Продукты</div>
+                        <div class="kpi-sub">выручка</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-4 col-6">
+                <div class="kpi-card kpi-technical">
+                    <div class="kpi-icon"><i class="fas fa-code"></i></div>
+                    <div class="kpi-info">
+                        <div class="kpi-value" id="kpi-technical">--</div>
+                        <div class="kpi-label">Техника</div>
+                        <div class="kpi-sub">покрытие кода</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Вкладки -->
+        <div class="card">
+            <div class="card-header bg-white border-bottom-0 pt-3">
+                <ul class="nav nav-tabs card-header-tabs" id="mainTabs" role="tablist">
+                    <li class="nav-item"><button class="nav-link active" data-tab="reports">📋 Отчёты</button></li>
+                    <li class="nav-item"><button class="nav-link" data-tab="metrics">📊 Метрики</button></li>
+                    <li class="nav-item"><button class="nav-link" data-tab="tasks">📌 Задачи</button></li>
+                    <li class="nav-item"><button class="nav-link" data-tab="research">🔍 Исследования</button></li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-pane active" id="tab-reports">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="list-group scrollable-list" id="reportList">
+                                <div class="text-muted text-center py-3"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка...</div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div id="reportView" class="report-view">
+                                <p class="text-muted text-center py-5"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab-metrics">
+                    <div id="metricsSummary"><p class="text-muted text-center py-3">Нажмите "Метрики" для загрузки</p></div>
+                    <div class="mt-3">
+                        <button class="expand-btn" onclick="toggleAllMetrics()">
+                            <i class="fas fa-plus me-1" id="expandIcon"></i> Полная сводка всех метрик
+                        </button>
+                        <div id="allMetricsContainer" class="hidden mt-2">
+                            <div id="allMetricsList" class="scrollable-list" style="max-height:300px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab-tasks">
+                    <div id="tasksList"><p class="text-muted text-center py-3">Нажмите "Задачи" для загрузки</p></div>
+                </div>
+                <div class="tab-pane" id="tab-research">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="list-group scrollable-list" id="researchList">
+                                <div class="text-muted text-center py-3">Нажмите "Исследования" для загрузки</div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div id="researchView" class="report-view">
+                                <p class="text-muted text-center py-5">Выберите исследование из списка слева</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Статус -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body py-2">
+                        <div class="row text-center status-system">
+                            <div class="col-md-3"><i class="fas fa-check-circle text-success me-1"></i> Research Agent: <span id="status-research">готов</span></div>
+                            <div class="col-md-3"><i class="fas fa-check-circle text-success me-1"></i> Metrics Agent: <span id="status-metrics">готов</span></div>
+                            <div class="col-md-3"><i class="fas fa-check-circle text-success me-1"></i> Task Manager: <span id="status-tasks">готов</span></div>
+                            <div class="col-md-3"><i class="fas fa-database text-success me-1"></i> RAG: <span id="rag-chunks">--</span> чанков</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light border-top">
+        <div class="container text-center">
+            <span class="text-muted small">AI-Ассистент Руководителя v1.0 · 2026</span>
+            <br>
+            <span class="text-muted small">
+                Мультиагентная система поддержки управленческих решений для AI/IT-компании • © Дипломный проект В.Н. Мишина
+            </span>
+        </div>
+    </footer>
+
+    <script>
+    // ============================================================
+    // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+    // ============================================================
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function formatDate(isoString) {
+        if (!isoString) return '';
+        try {
+            const d = new Date(isoString);
+            if (!isNaN(d.getTime())) {
+                return d.toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            }
+        } catch (e) {}
+        return isoString;
+    }
+
+    function getStatusBadge(status) {
+        const map = {
+            'critical': '<span class="badge bg-danger status-badge">Критический</span>',
+            'warning': '<span class="badge bg-warning text-dark status-badge">Предупреждение</span>',
+            'met': '<span class="badge bg-success status-badge">Выполнен</span>',
+            'exceeded': '<span class="badge bg-success status-badge">Превышен</span>',
+            'data_missing': '<span class="badge bg-secondary status-badge">Нет данных</span>'
+        };
+        return map[status] || '<span class="badge bg-secondary status-badge">Неизвестно</span>';
+    }
+
+    function getPriorityBadge(priority) {
+        const map = {
+            'critical': '<span class="badge bg-danger">Критический</span>',
+            'high': '<span class="badge bg-warning text-dark">Высокий</span>',
+            'medium': '<span class="badge bg-info">Средний</span>',
+            'low': '<span class="badge bg-success">Низкий</span>'
+        };
+        return map[priority] || '<span class="badge bg-secondary">Неизвестно</span>';
+    }
+
+    // ============================================================
+    // ВКЛАДКИ (ЛЕНИВАЯ ЗАГРУЗКА)
+    // ============================================================
+    const tabsLoaded = {
+        reports: false,
+        metrics: false,
+        tasks: false,
+        research: false
+    };
+
+    tabsLoaded.reports = true;
+
+    document.querySelectorAll('[data-tab]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('[data-tab]').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const tabId = this.dataset.tab;
+            document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            
+            if (tabId === 'reports' && !tabsLoaded.reports) {
+                loadReports();
+                tabsLoaded.reports = true;
+            }
+            if (tabId === 'metrics' && !tabsLoaded.metrics) {
+                loadMetricsSummary();
+                tabsLoaded.metrics = true;
+            }
+            if (tabId === 'tasks' && !tabsLoaded.tasks) {
+                loadTasks();
+                tabsLoaded.tasks = true;
+            }
+            if (tabId === 'research' && !tabsLoaded.research) {
+                loadResearchList();
+                tabsLoaded.research = true;
+            }
+        });
+    });
+
+    // ============================================================
+    // KPI
+    // ============================================================
+    async function loadKPI() {
+        try {
+            const resp = await fetch('/api/dashboard');
+            if (!resp.ok) {
+                throw new Error(`HTTP error! status: ${resp.status}`);
+            }
+            const data = await resp.json();
+            document.getElementById('kpi-strategic').textContent = data.strategic.current;
+            document.getElementById('kpi-market').textContent = data.market.current;
+            document.getElementById('kpi-competency').textContent = data.competency.critical;
+            document.getElementById('kpi-products').textContent = '8.9 млн ₽';
+            document.getElementById('kpi-technical').textContent = '78.5%';
+            document.getElementById('rag-chunks').textContent = data.rag.chunks || 0;
+        } catch (e) {
+            console.error('KPI error:', e);
+        }
+    }
+
+    // ============================================================
+    // 1. ОТЧЁТЫ
+    // ============================================================
+    async function loadReports() {
+        console.log('loadReports вызван');
+        const container = document.getElementById('reportList');
+        const view = document.getElementById('reportView');
+        
+        container.innerHTML = '<div class="text-muted text-center py-3"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка...</div>';
+        view.innerHTML = '<p class="text-muted text-center py-5"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка...</p>';
+        
+        try {
+            const resp = await fetch('/api/reports/list');
+            if (!resp.ok) {
+                throw new Error(`HTTP error! status: ${resp.status}`);
+            }
+            const data = await resp.json();
+            console.log('Отчёты:', data);
+            if (data.reports && data.reports.length > 0) {
+                container.innerHTML = data.reports.map(r => `
+                    <div class="list-group-item list-group-item-action report-item" onclick="loadReportContent('${r.name.replace(/'/g, "\\'")}', this)">
+                        <div>
+                            <strong>${escapeHtml(r.title)}</strong>
+                            <div class="date">${formatDate(r.date)}</div>
+                        </div>
+                        <i class="fas fa-chevron-right text-muted"></i>
+                    </div>
+                `).join('');
+                view.innerHTML = '<p class="text-muted text-center py-5">Выберите отчёт из списка слева</p>';
+            } else {
+                container.innerHTML = '<p class="text-muted text-center py-3">Нет сохранённых отчётов</p>';
+                view.innerHTML = '<p class="text-muted text-center py-5">Нет отчётов для отображения</p>';
+            }
+        } catch (e) {
+            console.error('Reports error:', e);
+            container.innerHTML = '<p class="text-danger text-center py-3">Ошибка загрузки отчётов</p>';
+            view.innerHTML = '<p class="text-danger text-center py-5">Не удалось загрузить список отчётов</p>';
+        }
+    }
+
+    async function loadReportContent(reportName, clickedElement = null) {
+        const view = document.getElementById('reportView');
+        view.innerHTML = '<p class="text-muted text-center py-5"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка отчёта...</p>';
+        
+        document.querySelectorAll('#reportList .report-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        if (clickedElement) {
+            clickedElement.classList.add('active');
+        } else {
+            const activeItem = document.querySelector(`#reportList .report-item[onclick*="${reportName.replace(/'/g, "\\'")}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+            }
+        }
+        
+        try {
+            const resp = await fetch(`/api/reports/content/${reportName}`);
+            if (!resp.ok) {
+                throw new Error(`HTTP error! status: ${resp.status}`);
+            }
+            const data = await resp.json();
+            if (data.error) {
+                view.innerHTML = `<p class="text-danger">${escapeHtml(data.error)}</p>`;
+                return;
+            }
+            
+            let reportDate = data.header?.date || '';
+            let formattedDate = formatDate(reportDate);
+            
+            let html = `<h2>${escapeHtml(data.header?.title || 'Отчёт')}</h2>`;
+            html += `<p class="text-muted">${formattedDate || 'Дата не указана'}</p>`;
+            
+            if (data.executive_summary) {
+                html += `<h3>📋 Резюме</h3><p>${escapeHtml(data.executive_summary).replace(/\n/g, '<br>')}</p>`;
+            }
+            if (data.narrative) {
+                html += `<h3>📝 Аналитический обзор</h3><p>${escapeHtml(data.narrative).replace(/\n/g, '<br>')}</p>`;
+            }
+            const levels = ['strategic', 'market', 'products', 'competency', 'technical'];
+            const levelNames = {'strategic':'Стратегический','market':'Рыночный','products':'Продуктовый','competency':'Компетенции','technical':'Технический'};
+            levels.forEach(l => {
+                const levelData = data.level_analysis?.[l];
+                if (levelData) {
+                    html += `<h3>${levelNames[l]}</h3>`;
+                    if (l === 'products' && levelData.products) {
+                        html += `<table><tr><th>Продукт</th><th>Выручка</th><th>Прибыль</th></tr>`;
+                        levelData.products.forEach(p => {
+                            html += `<tr><td>${p.name}</td><td>${p.revenue?.toLocaleString()} руб.</td><td>${p.profit?.toLocaleString()} руб.</td></tr>`;
+                        });
+                        html += `</table>`;
+                        html += `<p><strong>Итого:</strong> ${levelData.total_revenue?.toLocaleString()} руб. (${levelData.growth})</p>`;
+                    } else if (l === 'competency' && levelData.competencies) {
+                        html += `<table><tr><th>Компетенция</th><th>Заказов</th><th>Специалистов</th><th>Загрузка</th><th>Статус</th></tr>`;
+                        levelData.competencies.forEach(c => {
+                            const statusEmoji = {critical:'🔴', warning:'🟡', good:'🟢', excess:'⚪'}[c.status] || '⚪';
+                            html += `<tr><td>${c.name}</td><td>${c.orders}</td><td>${c.specialists}</td><td>${c.load}%</td><td>${statusEmoji}</td></tr>`;
+                        });
+                        html += `</table>`;
+                    } else if (l === 'technical' && levelData.metrics) {
+                        html += `<table><tr><th>Метрика</th><th>Текущее</th><th>Цель</th><th>Статус</th></tr>`;
+                        levelData.metrics.forEach(m => {
+                            const statusEmoji = {critical:'🔴', warning:'🟡', met:'🟢', exceeded:'🟢'}[m.status] || '⚪';
+                            html += `<tr><td>${m.name}</td><td>${m.current}</td><td>${m.target}</td><td>${statusEmoji}</td></tr>`;
+                        });
+                        html += `</table>`;
+                    } else if (l === 'market') {
+                        html += `<p><strong>Позиция:</strong> ${levelData.company_position}</p>`;
+                        html += `<p><strong>Конкуренты:</strong> ${levelData.competitors_analyzed} из ${levelData.competitors_total}</p>`;
+                        if (levelData.trends) html += `<p><strong>Тренды:</strong> ${levelData.trends.join(', ')}</p>`;
+                    } else if (l === 'strategic' && levelData.metrics) {
+                        levelData.metrics.forEach(m => {
+                            html += `<p><strong>${m.name}:</strong> ${m.current} из ${m.target} (${m.status})</p>`;
+                        });
+                    }
+                    if (levelData.conclusion) html += `<p><em>${levelData.conclusion}</em></p>`;
+                }
+            });
+            if (data.recommendations) {
+                html += `<h3>💡 Рекомендации</h3>`;
+                const recs = data.recommendations;
+                if (recs.strategic?.length) html += `<p><strong>Стратегические:</strong> ${recs.strategic.join(', ')}</p>`;
+                if (recs.market?.length) html += `<p><strong>Рыночные:</strong> ${recs.market.join(', ')}</p>`;
+                if (recs.competency?.length) html += `<p><strong>Компетенции:</strong> ${recs.competency.join(', ')}</p>`;
+                if (recs.technical?.length) html += `<p><strong>Технические:</strong> ${recs.technical.join(', ')}</p>`;
+            }
+            if (data.conclusion) {
+                html += `<h3>📌 Заключение</h3><p>${escapeHtml(data.conclusion).replace(/\n/g, '<br>')}</p>`;
+            }
+            view.innerHTML = html;
+        } catch (e) {
+            console.error('Report content error:', e);
+            view.innerHTML = '<p class="text-danger">Ошибка загрузки отчёта</p>';
+        }
+    }
+
+    // ============================================================
+    // 2. МЕТРИКИ
+    // ============================================================
+    async function loadMetricsSummary() {
+        console.log('loadMetricsSummary вызван');
+        const container = document.getElementById('metricsSummary');
+        container.innerHTML = '<p class="text-muted text-center py-3"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка...</p>';
+        try {
+            const resp = await fetch('/api/metrics/summary');
+            if (!resp.ok) {
+                throw new Error(`HTTP error! status: ${resp.status}`);
+            }
+            const data = await resp.json();
+            console.log('Метрики (сводка):', data);
+            if (data.summary && data.summary.length > 0) {
+                let html = `<table class="table table-bordered metric-summary-table"><thead><tr>
+                    <th>Уровень</th><th>Всего</th><th>🔴 Критических</th><th>🟡 Предупреждений</th><th>🟢 Выполнено</th>
+                </tr></thead><tbody>`;
+                data.summary.forEach(s => {
+                    html += `<tr><td>${s.icon} ${s.name}</td><td>${s.total}</td><td>${s.critical}</td><td>${s.warning}</td><td>${s.met}</td></tr>`;
+                });
+                html += `</tbody></table>`;
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<p class="text-muted text-center py-3">Нет данных по метрикам</p>';
+            }
+        } catch (e) {
+            console.error('Metrics summary error:', e);
+            container.innerHTML = '<p class="text-muted text-center py-3">Ошибка загрузки метрик</p>';
+        }
+        loadAllMetrics();
+    }
+
+    async function loadAllMetrics() {
+        const container = document.getElementById('allMetricsList');
+        container.innerHTML = '<p class="text-muted text-center py-3">Загрузка...</p>';
+        try {
+            const resp = await fetch('/api/metrics/all');
+            if (!resp.ok) {
+                throw new Error(`HTTP error! status: ${resp.status}`);
+            }
+            const data = await resp.json();
+            console.log('Все метрики:', data);
+            if (data.metrics && data.metrics.length > 0) {
+                let html = `<div class="metric-row"><strong>Название</strong><strong>Значение</strong><strong>Статус</strong></div>`;
+                data.metrics.forEach(m => {
+                    const statusBadge = getStatusBadge(m.status);
+                    html += `<div class="metric-row">
+                        <span>${escapeHtml(m.name)} <small class="text-muted">(${m.level})</small></span>
+                        <span>${m.value} ${m.unit || ''}</span>
+                        <span>${statusBadge}</span>
+                    </div>`;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<p class="text-muted text-center py-3">Нет метрик</p>';
+            }
+        } catch (e) {
+            console.error('All metrics error:', e);
+            container.innerHTML = '<p class="text-muted text-center py-3">Ошибка загрузки метрик</p>';
+        }
+    }
+
+    let allMetricsVisible = false;
+    function toggleAllMetrics() {
+        allMetricsVisible = !allMetricsVisible;
+        const container = document.getElementById('allMetricsContainer');
+        const icon = document.getElementById('expandIcon');
+        if (allMetricsVisible) {
+            container.style.display = 'block';
+            icon.className = 'fas fa-minus me-1';
+        } else {
+            container.style.display = 'none';
+            icon.className = 'fas fa-plus me-1';
+        }
+    }
+
+    // ============================================================
+    // 3. ЗАДАЧИ
+    // ============================================================
+    async function loadTasks() {
+        console.log('loadTasks вызван');
+        const container = document.getElementById('tasksList');
+        container.innerHTML = '<p class="text-muted text-center py-3"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка...</p>';
+        try {
+            const resp = await fetch('/api/tasks/list');
+            if (!resp.ok) {
+                throw new Error(`HTTP error! status: ${resp.status}`);
+            }
+            const data = await resp.json();
+            console.log('Задачи:', data);
+            if (data.tasks && data.tasks.length > 0) {
+                container.innerHTML = data.tasks.map(t => `
+                    <div class="task-item priority-${t.priority || 'low'} d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${escapeHtml(t.title)}</strong>
+                            <div class="small text-muted">${t.assignee ? '👤 ' + escapeHtml(t.assignee) : ''} ${t.deadline ? '| 📅 ' + escapeHtml(t.deadline) : ''}</div>
+                        </div>
+                        ${getPriorityBadge(t.priority)}
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<p class="text-muted text-center py-3">Нет активных задач</p>';
+            }
+        } catch (e) {
+            console.error('Tasks error:', e);
+            container.innerHTML = '<p class="text-muted text-center py-3">Ошибка загрузки задач</p>';
+        }
+    }
+
+    // ============================================================
+    // 4. ИССЛЕДОВАНИЯ (как в Отчётах)
+    // ============================================================
+    async function loadResearchList() {
+        console.log('loadResearchList вызван');
+        const container = document.getElementById('researchList');
+        container.innerHTML = '<div class="text-muted text-center py-3"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка...</div>';
+        try {
+            const resp = await fetch('/api/research/list');
+            if (!resp.ok) {
+                throw new Error(`HTTP error! status: ${resp.status}`);
+            }
+            const data = await resp.json();
+            console.log('Исследования:', data);
+            
+            if (data.research && data.research.length > 0) {
+                container.innerHTML = data.research.map((r, index) => `
+                    <div class="list-group-item list-group-item-action report-item" 
+                         onclick="loadResearchContent(this)" 
+                         data-path="${escapeHtml(r.path)}">
+                        <div>
+                            <strong><i class="fas fa-search text-primary me-1"></i> ${escapeHtml(r.query)}</strong>
+                            <div class="date">${formatDate(r.date)}</div>
+                        </div>
+                        <i class="fas fa-chevron-right text-muted"></i>
+                    </div>
+                `).join('');
+                
+                if (data.research[0]) {
+                    const firstItem = container.querySelector('.report-item');
+                    loadResearchContent(firstItem);
+                } else {
+                    document.getElementById('researchView').innerHTML = '<p class="text-muted text-center py-5">Нет исследований</p>';
+                }
+            } else {
+                container.innerHTML = '<p class="text-muted text-center py-3">Нет исследований</p>';
+                document.getElementById('researchView').innerHTML = '<p class="text-muted text-center py-5">Нет исследований для отображения</p>';
+            }
+        } catch (e) {
+            console.error('Research list error:', e);
+            container.innerHTML = '<p class="text-muted text-center py-3">Ошибка загрузки исследований</p>';
+        }
+    }
+
+    async function loadResearchContent(element) {
+        const path = element.getAttribute('data-path');
+        console.log('loadResearchContent вызван, path:', path);
+        
+        const view = document.getElementById('researchView');
+        view.innerHTML = '<p class="text-muted text-center py-5"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка исследования...</p>';
+        
+        document.querySelectorAll('#researchList .report-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        element.classList.add('active');
+        
+        try {
+            const resp = await fetch(`/api/research/content?path=${encodeURIComponent(path)}`);
+            if (!resp.ok) {
+                const errorData = await resp.json().catch(() => ({}));
+                throw new Error(errorData.error || `HTTP error! status: ${resp.status}`);
+            }
+            const data = await resp.json();
+            console.log('Содержимое исследования:', data);
+            
+            if (data.error) {
+                view.innerHTML = `<p class="text-danger">${escapeHtml(data.error)}</p>`;
+                return;
+            }
+            
+            let html = `<h2>🔍 Исследование</h2>`;
+            html += `<p class="text-muted">Запрос: ${escapeHtml(data.query || 'Без запроса')}</p>`;
+            html += `<p class="text-muted">Дата: ${formatDate(data.timestamp)}</p>`;
+            html += `<p><strong>Источников:</strong> ${data.sources_count || 0}</p>`;
+            html += `<hr>`;
+            
+            if (data.report) {
+                html += `<div style="white-space: pre-wrap; font-family: monospace; background: #f8f9fa; padding: 1rem; border-radius: 8px; font-size: 0.9rem;">`;
+                html += escapeHtml(data.report);
+                html += `</div>`;
+            } else {
+                html += `<p class="text-muted">Отчёт не найден</p>`;
+            }
+            
+            view.innerHTML = html;
+        } catch (e) {
+            console.error('Ошибка загрузки исследования:', e);
+            view.innerHTML = `<p class="text-danger">Ошибка загрузки исследования: ${escapeHtml(e.message)}</p>`;
+        }
+    }
+
+    function refreshAll() {
+        console.log('refreshAll вызван');
+        loadKPI();
+        const activeTab = document.querySelector('[data-tab].active');
+        if (activeTab) {
+            const tabId = activeTab.dataset.tab;
+            if (tabId === 'reports') loadReports();
+            if (tabId === 'metrics') loadMetricsSummary();
+            if (tabId === 'tasks') loadTasks();
+            if (tabId === 'research') loadResearchList();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM загружен');
+        loadKPI();
+        loadReports();
+    });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

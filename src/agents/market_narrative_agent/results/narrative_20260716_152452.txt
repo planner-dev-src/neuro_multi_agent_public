@@ -1,0 +1,82 @@
+Введение обзор рынка AI-образования в России
+
+Рынок искусственного интеллекта (AI) в образовании в России быстро развивается благодаря увеличению спроса на профессиональные навыки и знания по данной области. Среди ключевых факторов роста являются инвестиции в образование со стороны государства, развитие цифровых технологий и повышенный интерес к AI со стороны работодателей. В последнее время наблюдается активное внедрение AI-технологий в различные сферы образования, что требует специализированного обучения и подготовки кадров.
+
+ Анализ конкурентов кто основные игроки, их специализация, сильные и слабые стороны
+
+На рынке AI-образования в России выделяются шесть ключевых платформ:
+
+1. HSE (High School of Economics):
+ - Направления: классическое машинное обучение (classicalml), обработка естественного языка (nlp), кибербезопасность (cybersecurity).
+ - Компетенции: генеративный искусственный интеллект (generativeai), аналитика бизнес-инсайтов (analyticsbi), основы AI и ML (aimlcore).
+ - Сигналы: независимые задания (independentassignments).
+
+2. Карпов курсы:
+ - Направления: генеративно-состязательные нейросети (GAN), генетические алгоритмы (GA).
+ - Компетенции: аналитика бизнес-инсайтов (analyticsbi), основы AI и ML (aimlcore), облачное развертывание и DevOps (clouddevops).
+
+3. Netology:
+ - Направления: обработка естественного языка (nlp), временные ряды, классическое машинное обучение (classicalml).
+ - Компетенции: основы AI и ML (aimlcore), генеративный искусственный интеллект (generativeai), программирование (softwareengineering).
+ - Сигналы: поддержка трудоустройства (jobsupport), независимые задания (independentassignments), вебинары и бесплатное контентное предложение (webinarsandfreecontent).
+
+4. Otus:
+ - Направления: обработка естественного языка (nlp), классическое машинное обучение (classicalml).
+ - Компетенции: основы AI и ML (aimlcore), безопасность качества и безопасности (qualitysecurity), облачное развертывание и DevOps (clouddevops).
+
+5. Skillbox:
+ - Направления: обработка естественного языка (nlp), классическое машинное обучение (classicalml), временные ряды.
+ - Компетенции: основы AI и ML (aimlcore), программирование (softwareengineering), аналитика бизнес-инсайтов (analyticsbi).
+
+6. Yandex Practicum:
+ - Направления: обработка естественного языка (nlp), DevOps, фронтенд-разработка.
+ - Компетенции: облачное развертывание и DevOps (clouddevops), аналитика бизнес-инсайтов (analyticsbi), основы AI и ML (aimlcore).
+
+Все эти платформы специализируются на обучении, но лишь компания УИИ занимается одновременно разработкой и обучением. Это уникальное сочетание предоставляет ей значительные преимущества перед конкурентами.
+
+ Позиционирование компании УИИ на рынке её место среди конкурентов
+
+Компания УИИ выделяется среди других игроков рынка своей уникальной моделью
+
+AIAIAI
+
+ 
+
+AI
+
+1. HSE
+ - (classicalml)(nlp)(cybersecurity)
+ - (generativeai)(analyticsbi)AIML(aimlcore)
+ - (independentassignments)
+
+2. Karpov Courses
+ - (GAN)(GA)
+ - (analyticsbi)AIML(aimlcore)DevOps(clouddevops)
+
+3. Netology
+ - (nlp)(TS)(classicalml)
+ - AIML(aimlcore)(generativeai)(softwareengineering)
+ - (jobsupport)(independentassignments)(webinarsandfreecontent)
+
+4. Otus
+ - (nlp)(classicalml)
+ - AIML(aimlcore)(qualitysecurity)(clouddevops)
+
+5. Skillbox
+ - (nlp)(classicalml)(TS)
+ - AIML(aimlcore)(softwareengineering)(analyticsbi)
+
+6. Yandex Practicum
+ - (nlp)DevOps(frontenddevelopment)
+ - (clouddevops)(analyticsbi)AIML(aimlcore)
+
+(УИИ)
+
+ 
+
+(nlp)(analyticsbi)(classicalml)AIML(aimlcore)AI
+
+ 
+
+- GAP ZONES(GAN)(reinforcementlearning)
+- (frontenddevelopment)

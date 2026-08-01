@@ -1,0 +1,349 @@
+{
+  "market_trends": [
+    "Критические пробелы на рынке: Компьютерное зрение (CV), Обработка естественного языка (NLP), Временные ряды (TS)"
+  ],
+  "competitors": [
+    {
+      "name": "hse",
+      "directions": [],
+      "directions_count": 0,
+      "signals": [],
+      "positioning": "hse — платформа без выраженной AI-специализации",
+      "catalog_size": 0,
+      "pages_ok": 120,
+      "pages_total": 122
+    },
+    {
+      "name": "karpov-courses",
+      "directions": [
+        "ml",
+        "pm"
+      ],
+      "directions_count": 2,
+      "signals": [],
+      "positioning": "karpov-courses — платформа сбалансированной AI-подготовки с фокусом на Классическое машинное обучение (ML), Управление AI проектами",
+      "catalog_size": 0,
+      "pages_ok": 95,
+      "pages_total": 96
+    },
+    {
+      "name": "otus",
+      "directions": [],
+      "directions_count": 0,
+      "signals": [],
+      "positioning": "otus — платформа без выраженной AI-специализации",
+      "catalog_size": 0,
+      "pages_ok": 120,
+      "pages_total": 121
+    },
+    {
+      "name": "skillbox",
+      "directions": [],
+      "directions_count": 0,
+      "signals": [],
+      "positioning": "skillbox — платформа без выраженной AI-специализации",
+      "catalog_size": 0,
+      "pages_ok": 120,
+      "pages_total": 123
+    },
+    {
+      "name": "yandex-practicum",
+      "directions": [],
+      "directions_count": 0,
+      "signals": [],
+      "positioning": "yandex-practicum — платформа без выраженной AI-специализации",
+      "catalog_size": 0,
+      "pages_ok": 120,
+      "pages_total": 120
+    },
+    {
+      "name": "netology",
+      "directions": [],
+      "directions_count": 0,
+      "signals": [],
+      "positioning": "netology — платформа без выраженной AI-специализации",
+      "catalog_size": 0,
+      "pages_ok": 120,
+      "pages_total": 120
+    }
+  ],
+  "market_position": {
+    "segment": "AI/ML Education Platforms",
+    "stage": "Growth",
+    "competitive_intensity": "High",
+    "platforms_analyzed": 6,
+    "total_courses": 0,
+    "directions_total": 12,
+    "directions_covered": 2
+  },
+  "direction_coverage": {
+    "cv": {
+      "platforms": [],
+      "count": 0
+    },
+    "nlp": {
+      "platforms": [],
+      "count": 0
+    },
+    "ts": {
+      "platforms": [],
+      "count": 0
+    },
+    "rl": {
+      "platforms": [],
+      "count": 0
+    },
+    "s2t": {
+      "platforms": [],
+      "count": 0
+    },
+    "gan": {
+      "platforms": [],
+      "count": 0
+    },
+    "ml": {
+      "platforms": [
+        "karpov-courses"
+      ],
+      "count": 1
+    },
+    "ga": {
+      "platforms": [],
+      "count": 0
+    },
+    "pm": {
+      "platforms": [
+        "karpov-courses"
+      ],
+      "count": 1
+    },
+    "production": {
+      "platforms": [],
+      "count": 0
+    },
+    "llm_agents": {
+      "platforms": [],
+      "count": 0
+    },
+    "automl": {
+      "platforms": [],
+      "count": 0
+    }
+  },
+  "gaps": [
+    {
+      "key": "cv",
+      "name": "Компьютерное зрение (CV)",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "nlp",
+      "name": "Обработка естественного языка (NLP)",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "ts",
+      "name": "Временные ряды (TS)",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "rl",
+      "name": "Обучение с подкреплением (RL)",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "s2t",
+      "name": "Аудио и распознавание речи (S2T)",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "gan",
+      "name": "Генеративно-состязательные нейросети (GAN)",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "ga",
+      "name": "Генетические алгоритмы (GA)",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "production",
+      "name": "Интеграция в PRODUCTION / MLOps",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "llm_agents",
+      "name": "AI-агенты на базе LLM",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "automl",
+      "name": "AUTOML",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "ml",
+      "name": "Классическое машинное обучение (ML)",
+      "platforms": [
+        "karpov-courses"
+      ],
+      "platforms_count": 1,
+      "coverage_percent": 16.666666666666664,
+      "status": "critical"
+    },
+    {
+      "key": "pm",
+      "name": "Управление AI проектами",
+      "platforms": [
+        "karpov-courses"
+      ],
+      "platforms_count": 1,
+      "coverage_percent": 16.666666666666664,
+      "status": "critical"
+    }
+  ],
+  "critical_gaps": [
+    {
+      "key": "cv",
+      "name": "Компьютерное зрение (CV)",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "nlp",
+      "name": "Обработка естественного языка (NLP)",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "ts",
+      "name": "Временные ряды (TS)",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "rl",
+      "name": "Обучение с подкреплением (RL)",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "s2t",
+      "name": "Аудио и распознавание речи (S2T)",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "gan",
+      "name": "Генеративно-состязательные нейросети (GAN)",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "ga",
+      "name": "Генетические алгоритмы (GA)",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "production",
+      "name": "Интеграция в PRODUCTION / MLOps",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "llm_agents",
+      "name": "AI-агенты на базе LLM",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "automl",
+      "name": "AUTOML",
+      "platforms": [],
+      "platforms_count": 0,
+      "coverage_percent": 0.0,
+      "status": "critical"
+    },
+    {
+      "key": "ml",
+      "name": "Классическое машинное обучение (ML)",
+      "platforms": [
+        "karpov-courses"
+      ],
+      "platforms_count": 1,
+      "coverage_percent": 16.666666666666664,
+      "status": "critical"
+    },
+    {
+      "key": "pm",
+      "name": "Управление AI проектами",
+      "platforms": [
+        "karpov-courses"
+      ],
+      "platforms_count": 1,
+      "coverage_percent": 16.666666666666664,
+      "status": "critical"
+    }
+  ],
+  "recommendations": [
+    "🎯 Сосредоточиться на направлениях-пробелах: Компьютерное зрение (CV), Обработка естественного языка (NLP), Временные ряды (TS)",
+    "📊 Ориентироваться на лидера: karpov-courses (охват 2 направлений)",
+    "📈 Расширить анализ на недостающие направления"
+  ],
+  "findings": [
+    "Проанализировано 6 платформ, охвачено 2 из 12 направлений",
+    "Критические пробелы: Компьютерное зрение (CV), Обработка естественного языка (NLP), Временные ряды (TS)",
+    "Лидер по охвату: karpov-courses (2 направлений)"
+  ],
+  "platforms_analyzed": 6,
+  "timestamp": "2026-07-12T17:37:23.235342"
+}

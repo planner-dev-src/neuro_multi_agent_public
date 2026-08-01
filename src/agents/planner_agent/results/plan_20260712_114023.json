@@ -1,0 +1,476 @@
+{
+  "actions": [
+    {
+      "id": "reg_crit_strat_strategic_ai_projects",
+      "type": "strategic",
+      "description": "🎯 Уровень стратегический: Достичь стратегической цели: AI проекты (текущее 247 из 1000)",
+      "priority": "critical",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "metric_id": "strategic_ai_projects",
+        "value": 247,
+        "target": 1000
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "стратегическая цель компании"
+    },
+    {
+      "id": "reg_crit_comp_competency_mlops",
+      "type": "hire",
+      "description": "🧠 Уровень компетенций: Закрыть критический пробел в компетенции: MLOps (покрытие 25%)",
+      "priority": "critical",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "skill": "MLOps",
+        "coverage": 25
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "задачи: Настройка CI/CD, Мониторинг моделей"
+    },
+    {
+      "id": "reg_crit_comp_competency_docker",
+      "type": "hire",
+      "description": "🧠 Уровень компетенций: Закрыть критический пробел в компетенции: Docker (покрытие 25%)",
+      "priority": "critical",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "skill": "Docker",
+        "coverage": 25
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "компетенция Docker"
+    },
+    {
+      "id": "comp_mlops",
+      "type": "hire",
+      "description": "🧠 Уровень компетенций: Нанять специалиста по MLOps",
+      "priority": "critical",
+      "status": "pending",
+      "source": "competency_gap",
+      "details": {
+        "skill": "MLOps",
+        "coverage": 0
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "компетенция MLOps"
+    },
+    {
+      "id": "thesis_0",
+      "type": "process",
+      "description": "📌 Тезис руководителя: Мы начинаем школу разработки агентов в университете искусственного интеллекта.",
+      "priority": "high",
+      "status": "pending",
+      "source": "transcript",
+      "details": {},
+      "deadline": null,
+      "assignee": null,
+      "context": "вводные от руководителя"
+    },
+    {
+      "id": "thesis_1",
+      "type": "process",
+      "description": "📌 Тезис руководителя: У нас богатый опыт преподавания и разработки проектов.",
+      "priority": "high",
+      "status": "pending",
+      "source": "transcript",
+      "details": {},
+      "deadline": null,
+      "assignee": null,
+      "context": "вводные от руководителя"
+    },
+    {
+      "id": "decision_2",
+      "type": "decision",
+      "description": "📋 Решение: Провести три живых занятия и бонусное занятие в записи",
+      "priority": "high",
+      "status": "pending",
+      "source": "transcript",
+      "details": {
+        "who": "Руководитель",
+        "deadline": null
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "кто: Руководитель"
+    },
+    {
+      "id": "decision_3",
+      "type": "decision",
+      "description": "📋 Решение: Рассмотреть монологовые и диалоговые промты на следующем занятии",
+      "priority": "high",
+      "status": "pending",
+      "source": "transcript",
+      "details": {
+        "who": "Руководитель",
+        "deadline": null
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "кто: Руководитель"
+    },
+    {
+      "id": "task_4",
+      "type": "task",
+      "description": "📋 Поручение: Создать проекты на Google As-2D, использовать промты для обучения агентов",
+      "priority": "high",
+      "status": "pending",
+      "source": "transcript",
+      "details": {
+        "assignee": "Участники школы",
+        "deadline": null
+      },
+      "deadline": null,
+      "assignee": "Участники школы",
+      "context": "исполнитель: Участники школы"
+    },
+    {
+      "id": "task_5",
+      "type": "task",
+      "description": "📋 Поручение: Ответить на вопросы участников в режиме вопросов и ответов",
+      "priority": "high",
+      "status": "pending",
+      "source": "transcript",
+      "details": {
+        "assignee": "Дмитрий Романов",
+        "deadline": null
+      },
+      "deadline": null,
+      "assignee": "Дмитрий Романов",
+      "context": "исполнитель: Дмитрий Романов"
+    },
+    {
+      "id": "risk_6",
+      "type": "risk",
+      "description": "⚠️ Риск: Нехватка времени для всех вопросов из-за большого количества участников",
+      "priority": "high",
+      "status": "pending",
+      "source": "transcript",
+      "details": {
+        "owner": "Дмитрий Романов",
+        "severity": "medium"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "ответственный: Дмитрий Романов"
+    },
+    {
+      "id": "reg_crit_market_market_directions",
+      "type": "market",
+      "description": "🌍 Уровень рыночный: Расширить анализ: Направления (охвачено 0 из 12)",
+      "priority": "high",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "metric_id": "market_directions",
+        "value": 0,
+        "target": 12
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "рыночный анализ"
+    },
+    {
+      "id": "train_mlops",
+      "type": "training",
+      "description": "🧠 Уровень компетенций: Организовать обучение команды по MLOps",
+      "priority": "high",
+      "status": "pending",
+      "source": "competency_gap_alternative",
+      "details": {
+        "skill": "MLOps",
+        "type": "internal_training"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "компетенция MLOps"
+    },
+    {
+      "id": "comp_docker",
+      "type": "hire",
+      "description": "🧠 Уровень компетенций: Нанять специалиста по Docker",
+      "priority": "high",
+      "status": "pending",
+      "source": "competency_gap",
+      "details": {
+        "skill": "Docker",
+        "coverage": 0
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "компетенция Docker"
+    },
+    {
+      "id": "advantage_2",
+      "type": "market",
+      "description": "🌍 Уровень рыночный: Усилить конкурентное преимущество: Скорость разработки",
+      "priority": "high",
+      "status": "pending",
+      "source": "competitive_advantage",
+      "details": {
+        "advantage": "Скорость разработки"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "конкурентные преимущества"
+    },
+    {
+      "id": "advantage_3",
+      "type": "market",
+      "description": "🌍 Уровень рыночный: Усилить конкурентное преимущество: Гибкость",
+      "priority": "high",
+      "status": "pending",
+      "source": "competitive_advantage",
+      "details": {
+        "advantage": "Гибкость"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "конкурентные преимущества"
+    },
+    {
+      "id": "topics_summary",
+      "type": "process",
+      "description": "📌 Ключевые темы обсуждения: Обучение агентам, Использование промтов",
+      "priority": "medium",
+      "status": "pending",
+      "source": "transcript",
+      "details": {},
+      "deadline": null,
+      "assignee": null,
+      "context": "темы совещания"
+    },
+    {
+      "id": "reg_warn_tech_technical_code_coverage",
+      "type": "improve",
+      "description": "⚙️ Уровень технический: Улучшить: Покрытие кода (текущее 78.5 при цели 80.0)",
+      "priority": "medium",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "metric_id": "technical_code_coverage",
+        "value": 78.5,
+        "target": 80.0
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "продукт: Нейро-куратор"
+    },
+    {
+      "id": "reg_warn_tech_technical_neuro_curator_response_time",
+      "type": "improve",
+      "description": "⚙️ Уровень технический: Улучшить: Neuro Curator Response Time (текущее 8.0 при цели 7.5)",
+      "priority": "medium",
+      "status": "pending",
+      "source": "metrics_registry",
+      "details": {
+        "metric_id": "technical_neuro_curator_response_time",
+        "value": 8.0,
+        "target": 7.5
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "продукт: Нейро-куратор"
+    },
+    {
+      "id": "train_docker",
+      "type": "training",
+      "description": "🧠 Уровень компетенций: Организовать обучение команды по Docker",
+      "priority": "medium",
+      "status": "pending",
+      "source": "competency_gap_alternative",
+      "details": {
+        "skill": "Docker",
+        "type": "internal_training"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "компетенция Docker"
+    },
+    {
+      "id": "criteria_точность_модели_>=_95%_partial",
+      "type": "improve",
+      "description": "⚙️ Уровень технический: Довести до выполнения: Точность модели >= 95%",
+      "priority": "medium",
+      "status": "pending",
+      "source": "criteria_partial",
+      "details": {
+        "name": "Точность модели >= 95%",
+        "status": "partially_met",
+        "target": 95,
+        "current": 94.2,
+        "gap": 0.8
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "Точность модели >= 95%"
+    },
+    {
+      "id": "criteria_покрытие_кода_>=_80%_partial",
+      "type": "improve",
+      "description": "⚙️ Уровень технический: Довести до выполнения: Покрытие кода >= 80%",
+      "priority": "medium",
+      "status": "pending",
+      "source": "criteria_partial",
+      "details": {
+        "name": "Покрытие кода >= 80%",
+        "status": "partially_met",
+        "target": 80,
+        "current": 78.5,
+        "gap": 1.5
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "Покрытие кода >= 80%"
+    },
+    {
+      "id": "criteria_интеграция_с_источниками",
+      "type": "improve",
+      "description": "📋 Критерий: Улучшить: Интеграция с источниками (текущее 2 при цели 3)",
+      "priority": "medium",
+      "status": "pending",
+      "source": "criteria_gap",
+      "details": {
+        "name": "Интеграция с источниками",
+        "status": "not_met",
+        "target": 3,
+        "current": 2,
+        "gap": 1
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "Интеграция с источниками"
+    },
+    {
+      "id": "market_0",
+      "type": "market",
+      "description": "🌍 Уровень рыночный: Усилить маркетинговую активность в сегменте Enterprise",
+      "priority": "medium",
+      "status": "pending",
+      "source": "market_analysis",
+      "details": {
+        "recommendation": "Усилить маркетинговую активность в сегменте Enterprise"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "рыночный анализ"
+    },
+    {
+      "id": "market_1",
+      "type": "market",
+      "description": "🌍 Уровень рыночный: Сфокусироваться на развитии MLOps-компетенций",
+      "priority": "medium",
+      "status": "pending",
+      "source": "market_analysis",
+      "details": {
+        "recommendation": "Сфокусироваться на развитии MLOps-компетенций"
+      },
+      "deadline": null,
+      "assignee": null,
+      "context": "рыночный анализ"
+    },
+    {
+      "id": "tone_info",
+      "type": "process",
+      "description": "📊 Тональность встречи: Уверенность, открытость для вопросов и взаимодействия",
+      "priority": "low",
+      "status": "pending",
+      "source": "transcript",
+      "details": {},
+      "deadline": null,
+      "assignee": null,
+      "context": "общая атмосфера"
+    }
+  ],
+  "summary": "Всего действий: 26\nКритические: 4, Высокий приоритет: 12, Средний: 9, Низкий: 1\nТипы действий: strategic: 1, hire: 4, process: 4, decision: 2, task: 2, risk: 1, market: 5, training: 2, improve: 5",
+  "priorities": {
+    "critical": [
+      "🎯 Уровень стратегический: Достичь стратегической цели: AI проекты (текущее 247 из 1000)",
+      "🧠 Уровень компетенций: Закрыть критический пробел в компетенции: MLOps (покрытие 25%)",
+      "🧠 Уровень компетенций: Закрыть критический пробел в компетенции: Docker (покрытие 25%)",
+      "🧠 Уровень компетенций: Нанять специалиста по MLOps"
+    ],
+    "high": [
+      "📌 Тезис руководителя: Мы начинаем школу разработки агентов в университете искусственного интеллекта.",
+      "📌 Тезис руководителя: У нас богатый опыт преподавания и разработки проектов.",
+      "📋 Решение: Провести три живых занятия и бонусное занятие в записи",
+      "📋 Решение: Рассмотреть монологовые и диалоговые промты на следующем занятии",
+      "📋 Поручение: Создать проекты на Google As-2D, использовать промты для обучения агентов",
+      "📋 Поручение: Ответить на вопросы участников в режиме вопросов и ответов",
+      "⚠️ Риск: Нехватка времени для всех вопросов из-за большого количества участников",
+      "🌍 Уровень рыночный: Расширить анализ: Направления (охвачено 0 из 12)",
+      "🧠 Уровень компетенций: Организовать обучение команды по MLOps",
+      "🧠 Уровень компетенций: Нанять специалиста по Docker",
+      "🌍 Уровень рыночный: Усилить конкурентное преимущество: Скорость разработки",
+      "🌍 Уровень рыночный: Усилить конкурентное преимущество: Гибкость"
+    ],
+    "medium": [
+      "📌 Ключевые темы обсуждения: Обучение агентам, Использование промтов",
+      "⚙️ Уровень технический: Улучшить: Покрытие кода (текущее 78.5 при цели 80.0)",
+      "⚙️ Уровень технический: Улучшить: Neuro Curator Response Time (текущее 8.0 при цели 7.5)",
+      "🧠 Уровень компетенций: Организовать обучение команды по Docker",
+      "⚙️ Уровень технический: Довести до выполнения: Точность модели >= 95%",
+      "⚙️ Уровень технический: Довести до выполнения: Покрытие кода >= 80%",
+      "📋 Критерий: Улучшить: Интеграция с источниками (текущее 2 при цели 3)",
+      "🌍 Уровень рыночный: Усилить маркетинговую активность в сегменте Enterprise",
+      "🌍 Уровень рыночный: Сфокусироваться на развитии MLOps-компетенций"
+    ],
+    "low": [
+      "📊 Тональность встречи: Уверенность, открытость для вопросов и взаимодействия"
+    ]
+  },
+  "timeline": {
+    "immediate": [
+      "🎯 Уровень стратегический: Достичь стратегической цели: AI проекты (текущее 247 из 1000)",
+      "🧠 Уровень компетенций: Закрыть критический пробел в компетенции: MLOps (покрытие 25%)",
+      "🧠 Уровень компетенций: Закрыть критический пробел в компетенции: Docker (покрытие 25%)",
+      "🧠 Уровень компетенций: Нанять специалиста по MLOps"
+    ],
+    "1-2 weeks": [
+      "📌 Тезис руководителя: Мы начинаем школу разработки агентов в университете искусственного интеллекта.",
+      "📌 Тезис руководителя: У нас богатый опыт преподавания и разработки проектов.",
+      "📋 Решение: Провести три живых занятия и бонусное занятие в записи",
+      "📋 Решение: Рассмотреть монологовые и диалоговые промты на следующем занятии",
+      "📋 Поручение: Создать проекты на Google As-2D, использовать промты для обучения агентов",
+      "📋 Поручение: Ответить на вопросы участников в режиме вопросов и ответов",
+      "⚠️ Риск: Нехватка времени для всех вопросов из-за большого количества участников",
+      "🌍 Уровень рыночный: Расширить анализ: Направления (охвачено 0 из 12)",
+      "🧠 Уровень компетенций: Организовать обучение команды по MLOps",
+      "🧠 Уровень компетенций: Нанять специалиста по Docker",
+      "🌍 Уровень рыночный: Усилить конкурентное преимущество: Скорость разработки",
+      "🌍 Уровень рыночный: Усилить конкурентное преимущество: Гибкость"
+    ],
+    "1 month": [
+      "📌 Ключевые темы обсуждения: Обучение агентам, Использование промтов",
+      "⚙️ Уровень технический: Улучшить: Покрытие кода (текущее 78.5 при цели 80.0)",
+      "⚙️ Уровень технический: Улучшить: Neuro Curator Response Time (текущее 8.0 при цели 7.5)",
+      "🧠 Уровень компетенций: Организовать обучение команды по Docker",
+      "⚙️ Уровень технический: Довести до выполнения: Точность модели >= 95%",
+      "⚙️ Уровень технический: Довести до выполнения: Покрытие кода >= 80%",
+      "📋 Критерий: Улучшить: Интеграция с источниками (текущее 2 при цели 3)",
+      "🌍 Уровень рыночный: Усилить маркетинговую активность в сегменте Enterprise",
+      "🌍 Уровень рыночный: Сфокусироваться на развитии MLOps-компетенций"
+    ],
+    "2-3 months": [
+      "📊 Тональность встречи: Уверенность, открытость для вопросов и взаимодействия"
+    ]
+  },
+  "risks": [
+    "Отсутствие экспертизы в: MLOps, Docker",
+    "Отставание от конкурентов в области MLOps",
+    "Нехватка времени для всех вопросов из-за большого количества участников"
+  ],
+  "success_criteria": [
+    "Выполнить все 5 критериев качества",
+    "Закрыть пробелы в компетенциях: MLOps, Docker",
+    "Реализовать решение: Провести три живых занятия и бонусное занятие в за",
+    "Реализовать решение: Рассмотреть монологовые и диалоговые промты на сле"
+  ],
+  "generated_at": "2026-07-12T11:40:23.629805"
+}

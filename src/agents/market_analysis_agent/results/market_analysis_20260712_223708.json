@@ -1,0 +1,962 @@
+{
+  "competitors": [
+    {
+      "name": "hse",
+      "courses": [
+        {
+          "title": "Excel PRO. Аналитика и автоматизация на базе искусственного интеллекта для бизнеса",
+          "description": "Найдено: 61 программа Вышка+ Сортировать по: Дате По возрастанию цены По убыванию цены Сначала короткие курсы Сначала длительные курсы Бизнес-информатика, Цифровой бизнес, Вычислительная техника и сети Excel PRO. Аналитика и автоматизация на базе искусственного интеллекта для бизнеса ПК Нижний Новго",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [
+            "ml"
+          ],
+          "url": "https://www.hse.ru/edu/dpo/1045264926"
+        },
+        {
+          "title": "Найдено: 61 программа Вышка+ Сортировать по: Дате По возрастанию цены По убыванию цены Сначала короткие курсы Сначала длительные курсы",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://www.hse.ru/edu/dpo/?page=2&tags=867039226&tags=867039230&tags=867039232&tags=867039167&tags=867039231&tags=867039227&tags=867039168&tags=914770513"
+        },
+        {
+          "title": "Искусственный интеллект в корпоративных финансах",
+          "description": "Искусственный интеллект Искусственный интеллект в корпоративных финансах ПК Москва Смешанный 17.09.2026 4 недели 129 000 ₽ В корзину",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://www.hse.ru/edu/dpo/979361062"
+        },
+        {
+          "title": "Прикладная статистика для машинного обучения",
+          "description": "Искусственный интеллект Прикладная статистика для машинного обучения ПК Москва Очный 19.09.2026 4 недель 56 000 ₽ В корзину",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://www.hse.ru/edu/dpo/471339557"
+        },
+        {
+          "title": "Вайб-кодинг для начинающих: IT-продукты с нейросетями без кода",
+          "description": "Бизнес-информатика, Общий менеджмент, принятие решений Вайб-кодинг для начинающих: IT-продукты с нейросетями без кода ПК Нижний Новгород Онлайн синхронный 21.09.2026 8 недель 65 000 ₽ В корзину",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://www.hse.ru/edu/dpo/1127600259"
+        },
+        {
+          "title": "Интенсив по генеративным алгоритмам и искусственному интеллекту",
+          "description": "Цифровой бизнес, Стратегический менеджмент, Искусственный интеллект Интенсив по генеративным алгоритмам и искусственному интеллекту ПК Москва Гибридный (обучение проходит очно и параллельно в онлайн) 21.09.2026 2 дня 100 000 ₽ В корзину",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://www.hse.ru/edu/dpo/1152266861"
+        },
+        {
+          "title": "Разработка и эксплуатация защищенных систем искусственного интеллекта (MLSecOps)",
+          "description": "Информационная безопасность, Искусственный интеллект Разработка и эксплуатация защищенных систем искусственного интеллекта (MLSecOps) ПК Москва Онлайн синхронный 21.09.2026 4 недели 80 000 ₽ В корзину",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [
+            "ml"
+          ],
+          "url": "https://www.hse.ru/edu/dpo/1154552851"
+        },
+        {
+          "title": "Современные технологии искусственного интеллекта: внедрения и эффекты",
+          "description": "Предпринимательство, управление инновациями, Искусственный интеллект Современные технологии искусственного интеллекта: внедрения и эффекты ПК Москва Онлайн синхронный 21.09.2026 45 000 ₽ В корзину",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://www.hse.ru/edu/dpo/878438150"
+        },
+        {
+          "title": "SQL для работы с данными и аналитики",
+          "description": "Анализ данных(Data Science) и аналитика SQL для работы с данными и аналитики ПК Нижний Новгород Онлайн синхронный 22.09.2026 30 000 ₽ В корзину",
+          "topics": [],
+          "directions": [],
+          "url": "https://www.hse.ru/edu/dpo/1170733510"
+        },
+        {
+          "title": "Управление данными и аналитика на языке структурированных запросов (SQL)",
+          "description": "Анализ данных(Data Science) и аналитика Управление данными и аналитика на языке структурированных запросов (SQL) ПК Нижний Новгород Онлайн синхронный 22.09.2026 22.09.2026 - 27.10.2026 35 000 ₽ В корзину",
+          "topics": [],
+          "directions": [],
+          "url": "https://www.hse.ru/edu/dpo/703040944"
+        },
+        {
+          "title": "Бизнес-аналитика",
+          "description": "Бизнес-информатика, Цифровая трансформация бизнеса, Управление продуктом Бизнес-аналитика ПП Москва Онлайн асинхронный 24.09.2026 9 месяцев 298 000 ₽ В корзину",
+          "topics": [],
+          "directions": [],
+          "url": "https://www.hse.ru/edu/dpo/896815387"
+        },
+        {
+          "title": "ИИ-лидеры: бизнес-лаборатория для руководителей",
+          "description": "Развитие бизнеса, Анализ данных(Data Science) и аналитика, Искусственный интеллект ИИ-лидеры: бизнес-лаборатория для руководителей ПП Москва Очный 25.09.2026 935 000 ₽ В корзину",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://aileaders.hse.ru/?utm_source=busedu&utm_medium=card"
+        },
+        {
+          "title": "Интеллектуальная собственность и искусственный интеллект: от теории к практике",
+          "description": "Право, Искусственный интеллект Интеллектуальная собственность и искусственный интеллект: от теории к практике ПП Нижний Новгород Онлайн синхронный 01.10.2026 115 000 ₽ В корзину",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://www.hse.ru/edu/dpo/1175669466"
+        },
+        {
+          "title": "Многоподходное имитационное моделирование в ЭниЛоджик (AnyLogic)",
+          "description": "Бизнес-информатика Многоподходное имитационное моделирование в ЭниЛоджик (AnyLogic) ПК Нижний Новгород Онлайн синхронный 01.10.2026 59 000 ₽ В корзину",
+          "topics": [],
+          "directions": [],
+          "url": "https://www.hse.ru/edu/dpo/951442202"
+        },
+        {
+          "title": "Аналитика в ИТ: бизнес, архитектура, данные",
+          "description": "Бизнес-информатика Аналитика в ИТ: бизнес, архитектура, данные ПП Пермь Смешанный 03.10.2026 7 месяцев 140 000 ₽ В корзину",
+          "topics": [],
+          "directions": [],
+          "url": "https://www.hse.ru/edu/dpo/1160459306"
+        }
+      ],
+      "courses_count": 100,
+      "total_catalog": 352,
+      "top_directions": [
+        "Классическое машинное обучение (ML)",
+        "AI-агенты на базе LLM"
+      ],
+      "direction_coverage": {
+        "ml": 2,
+        "llm_agents": 1
+      },
+      "pages_ok": 120,
+      "pages_total": 122
+    },
+    {
+      "name": "karpov-courses",
+      "courses": [
+        {
+          "title": "Курс Аналитик данных",
+          "description": "Обучение на аналитика данных для начинающих с нуля и повышения квалификации. Курсы Data Analytics с трудоустройством. Анализ больших баз данных. Power BI, SQL, Python.",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://karpov.courses/analytics"
+        },
+        {
+          "title": "Курс Hard Аналитика данных",
+          "description": "Помогаем аналитикам перешагнуть на новый уровень в решении важных задач. Продвинутый курс аналитики данных в онлайн-школе karpov.courses.",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://karpov.courses/analytics-hard"
+        },
+        {
+          "title": "Курс Аналитика больших данных",
+          "description": "Научитесь работать с данными на уровне продвинутого аналитика и приносить пользу бизнесу.",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://karpov.courses/big-data-analytics"
+        },
+        {
+          "title": "Знакомство с онлайн-магистратурой «Аналитика больших данных»",
+          "description": "Узнайте, как устроена программа НИУ ВШЭ и karpov.courses — и примите взвешенное решение о поступлении.",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://karpov.courses/big-data-analytics/intro"
+        },
+        {
+          "title": "Курс Гид по профессиям в сфере анализа данных и машинного обучения",
+          "description": "Поймете, какие задачи решает специалист и какими навыками должен обладать.",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://karpov.courses/career/guide-ds"
+        },
+        {
+          "title": "Курс ClickHouse: эффективная работа с большими данными",
+          "description": "Решайте аналитические задачи по работе с данными быстрее и эффективнее.",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://karpov.courses/clickhouse"
+        },
+        {
+          "title": "Формат и нагрузка",
+          "description": "— ⦁Обучение проходит в⦁интенсивном формате по⦁3 занятия в⦁неделю. Для⦁каждого домашнего задания установлены мягкие двухнедельные дедлайны. — ⦁На⦁учёбу наши студенты тратят в⦁среднем 10−15 часов в⦁неделю — ⦁Если у⦁вас возникнут сложности с⦁выполнением заданий, вы⦁сможете обратиться к⦁команде сопровож",
+          "topics": [],
+          "directions": [],
+          "url": "https://karpov.courses/dataengineer"
+        },
+        {
+          "title": "Курс Инженер данных в Yandex Cloud",
+          "description": "Обучение на инженера облачных сервисов в Yandex Cloud с нуля.",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://karpov.courses/dataengineer-cloud"
+        },
+        {
+          "title": "Онлайн-курс Инженер данных с нуля",
+          "description": "Обучение профессии Data Engineer с нуля до middle. Обучение на Data Engineer для начинающих специалистов в школе Data Science karpov.courses.",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://karpov.courses/dataengineer-start"
+        },
+        {
+          "title": "Курс Визуализация данных и продвинутое Tableau",
+          "description": "Освойте основы дизайна и работы в Tableau.",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://karpov.courses/datavisualization"
+        },
+        {
+          "title": "Курс Deep Learning Engineer",
+          "description": "Обучение нейросетям. Курс по глубинному обучению в школе Data Science karpov.courses.",
+          "topics": [
+            "deep_learning",
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://karpov.courses/deep-learning"
+        },
+        {
+          "title": "Инженер машинного обучения",
+          "description": "Подойдет всем, кто хочет освоить машинное обучение с нуля и поменять карьерный трек Подробнее о курсе Продвинутое машинное обучение Программа для тех, кто уже имеет опыт работы в машинном обучении и хочет вывести свою карьеру на новый уровень Подробнее о курсе Симулятор DS Подойдет тем, кто владеет ",
+          "topics": [
+            "machine_learning",
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://karpov.courses/ml-start"
+        },
+        {
+          "title": "Подойдет всем, кто хочет освоить машинное обучение с нуля и поменять карьерный трек",
+          "description": "",
+          "topics": [
+            "machine_learning",
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://karpov.courses/docker"
+        },
+        {
+          "title": "Продвинутое машинное обучение",
+          "description": "Программа для тех, кто уже имеет опыт работы в машинном обучении и хочет вывести свою карьеру на новый уровень Подробнее о курсе",
+          "topics": [
+            "machine_learning",
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://karpov.courses/ml-hard"
+        },
+        {
+          "title": "Симулятор DS",
+          "description": "Подойдет тем, кто владеет базой в анализе данных и хочет получить прикладной опыт в аналитике, машинном обучении или искусственном обучении Подробнее о симуляторе",
+          "topics": [],
+          "directions": [],
+          "url": "https://karpov.courses/simulator-ds"
+        }
+      ],
+      "courses_count": 63,
+      "total_catalog": 63,
+      "top_directions": [
+        "Классическое машинное обучение (ML)",
+        "Временные ряды (TS)",
+        "AI-агенты на базе LLM"
+      ],
+      "direction_coverage": {
+        "llm_agents": 1,
+        "ml": 4,
+        "ts": 3
+      },
+      "pages_ok": 95,
+      "pages_total": 96
+    },
+    {
+      "name": "otus",
+      "courses": [
+        {
+          "title": "ИИ-агенты: продвинутое внедрение и использование",
+          "description": "ИИ-агенты: продвинутое внедрение и использование",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://otus.ru"
+        },
+        {
+          "title": "Вы освоите",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://otus.ru/lessons/qa-go/"
+        },
+        {
+          "title": "Разместите резюме в базе OTUS: так наши партнёры смогут пригласить вас на интервью Получите помощь с оформлением резюме, портфолио и сопроводительного письма",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://otus.ru/lessons/architector1c/"
+        },
+        {
+          "title": "Что вам даст этот курс?",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://otus.ru/lessons/sql/"
+        },
+        {
+          "title": "https://otus.ru/lessons/ai-agents/",
+          "description": "",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [
+            "ts",
+            "llm_agents"
+          ],
+          "url": "https://otus.ru/lessons/ai-agents/"
+        },
+        {
+          "title": "https://otus.ru/lessons/ai-architect/",
+          "description": "",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://otus.ru/lessons/ai-architect/"
+        },
+        {
+          "title": "https://otus.ru/lessons/ai-dlya-marketinga-kontent-kreativ-i-strategiya/",
+          "description": "",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [
+            "ga"
+          ],
+          "url": "https://otus.ru/lessons/ai-dlya-marketinga-kontent-kreativ-i-strategiya/"
+        },
+        {
+          "title": "https://otus.ru/lessons/ai-for-business/",
+          "description": "",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://otus.ru/lessons/ai-for-business/"
+        },
+        {
+          "title": "https://otus.ru/lessons/ai-for-devs/",
+          "description": "",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://otus.ru/lessons/ai-for-devs/"
+        },
+        {
+          "title": "https://otus.ru/lessons/ai-security/",
+          "description": "",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://otus.ru/lessons/ai-security/"
+        },
+        {
+          "title": "https://otus.ru/lessons/ai-v-testirovanii/",
+          "description": "",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://otus.ru/lessons/ai-v-testirovanii/"
+        },
+        {
+          "title": "https://otus.ru/lessons/asp-net/",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://otus.ru/lessons/asp-net/"
+        },
+        {
+          "title": "https://otus.ru/lessons/avtomatizaciya-finansovogo-uchyota/",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://otus.ru/lessons/avtomatizaciya-finansovogo-uchyota/"
+        },
+        {
+          "title": "https://otus.ru/lessons/calendar/2026",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://otus.ru/lessons/calendar/2026"
+        },
+        {
+          "title": "https://otus.ru/lessons/ciso/",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://otus.ru/lessons/ciso/"
+        }
+      ],
+      "courses_count": 100,
+      "total_catalog": 109,
+      "top_directions": [
+        "Классическое машинное обучение (ML)",
+        "Временные ряды (TS)",
+        "AI-агенты на базе LLM",
+        "Генетические алгоритмы (GA)",
+        "Управление AI проектами"
+      ],
+      "direction_coverage": {
+        "ts": 4,
+        "llm_agents": 3,
+        "ga": 3,
+        "ml": 6,
+        "pm": 2,
+        "cv": 1,
+        "production": 1,
+        "nlp": 1
+      },
+      "pages_ok": 120,
+      "pages_total": 121
+    },
+    {
+      "name": "skillbox",
+      "courses": [
+        {
+          "title": "AI-креатор: создаём контент с помощью нейросетей",
+          "description": "",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://skillbox.ru/course/profession-ai-creator/"
+        },
+        {
+          "title": "Python-разработчик + ИИ",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://skillbox.ru/course/profession-python/"
+        },
+        {
+          "title": "Менеджер маркетплейсов: продвинутый курс с нуля + ИИ",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://skillbox.ru/course/profession-marketplace-manager/"
+        },
+        {
+          "title": "Графический дизайнер PRO + ИИ",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://skillbox.ru/course/profession-graphdesigner/"
+        },
+        {
+          "title": "Дизайнер интерьеров",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://skillbox.ru/course/profession-interiordesigner/"
+        },
+        {
+          "title": "1С-программист",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://skillbox.ru/course/profession-1c/"
+        },
+        {
+          "title": "Веб-дизайнер + ИИ",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://skillbox.ru/course/profession-webdesigner/"
+        },
+        {
+          "title": "3D-дженералист + ИИ",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://skillbox.ru/course/3d-generalist/"
+        },
+        {
+          "title": "Дизайнер жилых и коммерческих интерьеров",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://skillbox.ru/course/profession-designer-interior/"
+        },
+        {
+          "title": "Java-разработчик + ИИ",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://skillbox.ru/course/profession-java/"
+        },
+        {
+          "title": "Бухгалтер + ИИ",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://skillbox.ru/course/profession-accountant/"
+        },
+        {
+          "title": "Инфографика и нейросети для маркетплейсов",
+          "description": "",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://skillbox.ru/course/infographics-for-marketplaces/"
+        },
+        {
+          "title": "Фронтенд-разработчик + ИИ",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://skillbox.ru/course/frontend-developer/"
+        },
+        {
+          "title": "Специалист по 3D-печати и реверс-инжинирингу",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://skillbox.ru/course/reverse_engineering/"
+        },
+        {
+          "title": "UX/UI-дизайнер + ИИ",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://skillbox.ru/course/profession-ux/"
+        }
+      ],
+      "courses_count": 100,
+      "total_catalog": 216,
+      "top_directions": [
+        "Генетические алгоритмы (GA)"
+      ],
+      "direction_coverage": {
+        "ga": 2
+      },
+      "pages_ok": 120,
+      "pages_total": 123
+    },
+    {
+      "name": "yandex-practicum",
+      "courses": [
+        {
+          "title": "Инженер по тестированию",
+          "description": "Программирование Инженер по тестированию С нуля, 5 месяцев",
+          "topics": [],
+          "directions": [],
+          "url": "https://practicum.yandex.ru/"
+        },
+        {
+          "title": "Нейросети для работы",
+          "description": "Менеджмент Нейросети для работы С нуля, PRO, 2 месяца Программирование DevOps для эксплуатации и разработки PRO, 6 месяцев Программирование Архитектура программного обеспечения PRO, 6 месяцев Программирование Продвинутый Go-разработчик PRO, 6 месяцев Менеджмент Продакт-менеджмент для специалистов с ",
+          "topics": [
+            "deep_learning",
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://practicum.yandex.ru/ai-for-work/?from=main_top_courses"
+        },
+        {
+          "title": "Онлайн-магистратура «Специалист по работе с данными и применению ИИ»",
+          "description": "НИЯУ МИФИ Анализ данных Онлайн-магистратура «Специалист по работе с данными и применению ИИ» С нуля, 22 месяца ИТМО Программирование Онлайн-магистратура «Фронтенд-, бэкенд-разработка и ИИ-решения» С нуля, 22 месяца НИЯУ МИФИ Программирование Онлайн-магистратура «Кибербезопасность» С нуля, 22 месяца ",
+          "topics": [],
+          "directions": [],
+          "url": "https://practicum.yandex.ru/high-education/higher-data-analytics/?from=main_top_courses"
+        },
+        {
+          "title": "Вайбкодинг",
+          "description": "Менеджмент Вайбкодинг PRO, 2 месяца Маркетинг Нейросети для маркетинга PRO, 2 месяца Менеджмент Нейросети для бизнеса PRO, 2 месяца Дизайн Нейросети для дизайна PRO, 2 месяца Менеджмент Нейросети для работы С нуля, PRO, 2 месяца Посмотреть все курсы",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://practicum.yandex.ru/ai-for-marketing/?from=main_ai_courses"
+        },
+        {
+          "title": "Какую профессию выбрать в программировании",
+          "description": "Бесплатно Кем стать в IT, Программирование Какую профессию выбрать в программировании С нуля",
+          "topics": [],
+          "directions": [],
+          "url": "https://practicum.yandex.ru/catalog/?from=main_all-courses-first-page_card"
+        },
+        {
+          "title": "Дарите курсы близким",
+          "description": "Спрашивайте о чём угодно Мы всегда рядом: в чате, почте или по телефону Бесплатно Задать любой вопрос Дарите курсы близким Сертификат на обучение поможет им качественно изменить карьеру и жизнь Выбрать курс в подарок Дарите курсы близким",
+          "topics": [],
+          "directions": [],
+          "url": "https://practicum.yandex.ru/profession-certificates/"
+        },
+        {
+          "title": "UX/UI дизайн",
+          "description": "Веб-разработка Деловое общение Яндекс Директ Kotlin Базы данных Java Scrum SQL Нейросети Создание сайтов Illustrator Agile Linux Swift Tilda Django JavaScript Тестирование Photoshop Data science Веб-дизайн Графический дизайн 1C SMM CRM Python HR Язык C Backend-разработка Figma Мобильная разработка Б",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [
+            "ts",
+            "pm",
+            "production"
+          ],
+          "url": "https://practicum.yandex.ru/catalog/ux-ui/"
+        },
+        {
+          "title": "Какую профессию выбрать в анализе данных",
+          "description": "Бесплатно Кем стать в IT, Анализ данных Какую профессию выбрать в анализе данных С нуля",
+          "topics": [],
+          "directions": [],
+          "url": "https://practicum.yandex.ru/catalog/data-analysis/?from=main_data-analysis_card"
+        },
+        {
+          "title": "Специалист по Data Science",
+          "description": "Анализ данных Специалист по Data Science С нуля, 13 месяцев",
+          "topics": [],
+          "directions": [],
+          "url": "https://practicum.yandex.ru/catalog/iskusstvennyj-intellekt/?from=main_ai_card"
+        },
+        {
+          "title": "исследования НИУ ВШЭ",
+          "description": "4,7 на Отзовике, TutorTop, в Яндексе на Отзовике, TutorTop, в Яндексе 10 000 выпускников нашли работу после обучения выпускников нашли работу после обучения по данным исследования НИУ ВШЭ по данным исследования НИУ ВШЭ",
+          "topics": [],
+          "directions": [],
+          "url": "https://practicum.yandex.ru/jobreport"
+        },
+        {
+          "title": "Оставьте заявку — и вам будут доступны:",
+          "description": "(1) гайд по поступлению (2) консультация с личным куратором (3) анонсы мероприятий и новости приёмной кампании Вы оставляете заявку на консультацию с куратором Практикума на основе открытой информации. Университеты ИТМО и НИЯУ МИФИ реализуют программы, ведут приём и зачисление. АНО ДПО «Образователь",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://yandex.ru/legal/practicum_termsofuse/"
+        },
+        {
+          "title": "Специалист по Data Science Всё необходимое, чтобы начать работать junior специалистом по Data Science",
+          "description": "− % 6 287 ₽/мес от 6 287 ₽ /мес на 36 месяцев или 154 000 ₽ одним платежом с учётом промокода и сертификатов Попробовать бесплатно 13 месяцев обучения Базовая программа 17 проектов Помощь в трудоустройстве Доступ к Мастерской Вакансии от 4 000+ партнёров Индивидуальная практика на реальных кейсах 5 ",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [
+            "ml"
+          ],
+          "url": "https://practicum.yandex.ru/profile/data-scientist/"
+        },
+        {
+          "title": "Специалист по Data Science расширенный То же самое + больше навыков, которые помогут найти работу и быстрее вырасти до middle",
+          "description": "Больше всего практики Специалист по Data Science расширенный То же самое + больше навыков, которые помогут найти работу и быстрее вырасти до middle − % 8 246 ₽/мес от 8 246 ₽ /мес на 36 месяцев или 202 000 ₽ одним платежом с учётом промокода и сертификатов Попробовать бесплатно 17 месяцев обучения Р",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [
+            "ml"
+          ],
+          "url": "https://practicum.yandex.ru/profile/data-scientist-plus/"
+        },
+        {
+          "title": "Управление маркетингом для предпринимателей",
+          "description": "Маркетинг • С нуля Управление маркетингом для предпринимателей Поможем разобраться в маркетинге, чтобы улучшить показатели бизнеса самостоятельно или найти хорошего маркетолога Начать учиться Анализ данных • С нуля Бесплатный курс «Аналитик данных» Побудете в роли аналитика данных и поймёте, подходи",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://start.practicum.yandex/marketing-for-business-free/"
+        },
+        {
+          "title": "Маркетинг • С нуля",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://start.practicum.yandex/courses/"
+        }
+      ],
+      "courses_count": 97,
+      "total_catalog": 135,
+      "top_directions": [
+        "Интеграция в PRODUCTION / MLOps",
+        "Классическое машинное обучение (ML)",
+        "Временные ряды (TS)",
+        "Управление AI проектами",
+        "AI-агенты на базе LLM"
+      ],
+      "direction_coverage": {
+        "ts": 2,
+        "pm": 1,
+        "production": 4,
+        "llm_agents": 1,
+        "ml": 3
+      },
+      "pages_ok": 120,
+      "pages_total": 120
+    },
+    {
+      "name": "netology",
+      "courses": [
+        {
+          "title": "Освоить профессию",
+          "description": "Освоить навыки Определиться с профессией Растите вместе с ИИ — в профессии, карьере и доходе Выбрать курс Программы с вузами Корпоративное обучение",
+          "topics": [],
+          "directions": [],
+          "url": "https://netology.ru/programs/ai-courses"
+        },
+        {
+          "title": "Освоить навыки",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://netology.ru/"
+        },
+        {
+          "title": "Нейросети для работы",
+          "description": "30 курсов Нейросети для работы Вместе с новой профессией получите навыки работы с ИИ 18 курсов Нейросети для жизни Освоите искусственный интеллект, сможете легко решать любые задачи 77 курсов Работа на удалёнке Освоите профессии, которые приносят доход из любой точки мира 9 курсов Создание сайтов На",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://netology.ru/navigation/professii-s-neyrosetyami"
+        },
+        {
+          "title": "Определитесь с профессией на экспресс-консультации",
+          "description": "Заполните анкету и бесплатно получите рекомендации от нейросети Нетологии Подобрать профессию Начните с бесплатных материалов Курсы Открытые занятия Гайды и чек-листы Начать бесплатно",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://netology.ru/free"
+        },
+        {
+          "title": "- 40 % - 40 % Профессия 1C-программист: расширенный курс 16 месяцев",
+          "description": "Курсы по программированию, тестированию, системному администрированию и информационной безопасности. Подробнее Вы сможете получить профессию с нуля или усилить свои знания в области IT. Содержимое программ регулярно обновляется и всегда актуально. Эксперты — практикующие разработчики и IT-специалист",
+          "topics": [
+            "artificial_intelligence"
+          ],
+          "directions": [],
+          "url": "https://netology.ru/programs/developer1c_ultimate"
+        },
+        {
+          "title": "- 40 %",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://netology.ru/development"
+        },
+        {
+          "title": "- 50 % - 50 % Профессия ИИ-навыки Devops-инженер с нуля: расширенный курс 19 месяцев",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://netology.ru/programs/fullstack-devops"
+        },
+        {
+          "title": "- 40 % - 40 % Профессия Сфера ИИ Промпт-инженер 6 месяцев",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://netology.ru/programs/prompt-inzhener"
+        },
+        {
+          "title": "- 45 % - 45 % Профессия ИИ-навыки Специалист по информационной безопасности 12 месяцев",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://netology.ru/programs/informationsecurity"
+        },
+        {
+          "title": "- 45 % - 45 % Профессия Инженер по автоматизации 13 месяцев",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://netology.ru/programs/automation-engineer"
+        },
+        {
+          "title": "- 45 % - 45 % Профессия ИИ-навыки Инженер по тестированию: расширенный курс 15 месяцев",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://netology.ru/programs/qa-middle"
+        },
+        {
+          "title": "- 45 % - 45 % Профессия ИИ-навыки Инженер по тестированию 8 месяцев",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://netology.ru/programs/qa"
+        },
+        {
+          "title": "- 50 % - 50 % Профессия Системный администратор 12 месяцев",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://netology.ru/programs/sysadmin"
+        },
+        {
+          "title": "- 50 % - 50 % Профессия ИИ-навыки Python-разработчик: расширенный курс 12 месяцев",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://netology.ru/programs/python"
+        },
+        {
+          "title": "- 45 % - 45 % Профессия DevOps-инженер: курс для действующих IT-специалистов 9 месяцев",
+          "description": "",
+          "topics": [],
+          "directions": [],
+          "url": "https://netology.ru/programs/devops"
+        }
+      ],
+      "courses_count": 100,
+      "total_catalog": 180,
+      "top_directions": [
+        "Управление AI проектами",
+        "Классическое машинное обучение (ML)"
+      ],
+      "direction_coverage": {
+        "pm": 2,
+        "ml": 1
+      },
+      "pages_ok": 120,
+      "pages_total": 120
+    }
+  ],
+  "rag_chunks": [
+    {
+      "type": "market_courses",
+      "content": {
+        "total_courses": 560,
+        "courses": [
+          "- **hse**: Excel PRO. Аналитика и автоматизация на базе искусственного интеллекта для бизнеса (темы: artificial_intelligence)",
+          "- **hse**: Найдено: 61 программа Вышка+ Сортировать по: Дате По возрастанию цены По убыванию цены Сначала короткие курсы Сначала длительные курсы (темы: не указаны)",
+          "- **hse**: Искусственный интеллект в корпоративных финансах (темы: artificial_intelligence)",
+          "- **hse**: Прикладная статистика для машинного обучения (темы: artificial_intelligence)",
+          "- **hse**: Вайб-кодинг для начинающих: IT-продукты с нейросетями без кода (темы: artificial_intelligence)",
+          "- **hse**: Интенсив по генеративным алгоритмам и искусственному интеллекту (темы: artificial_intelligence)",
+          "- **hse**: Разработка и эксплуатация защищенных систем искусственного интеллекта (MLSecOps) (темы: artificial_intelligence)",
+          "- **hse**: Современные технологии искусственного интеллекта: внедрения и эффекты (темы: artificial_intelligence)",
+          "- **hse**: SQL для работы с данными и аналитики (темы: не указаны)",
+          "- **hse**: Управление данными и аналитика на языке структурированных запросов (SQL) (темы: не указаны)",
+          "- **hse**: Бизнес-аналитика (темы: не указаны)",
+          "- **hse**: ИИ-лидеры: бизнес-лаборатория для руководителей (темы: artificial_intelligence)",
+          "- **hse**: Интеллектуальная собственность и искусственный интеллект: от теории к практике (темы: artificial_intelligence)",
+          "- **hse**: Многоподходное имитационное моделирование в ЭниЛоджик (AnyLogic) (темы: не указаны)",
+          "- **hse**: Аналитика в ИТ: бизнес, архитектура, данные (темы: не указаны)",
+          "- **hse**: Системная аналитика (темы: не указаны)",
+          "- **hse**: ИИ для науки: как эффективнее работать с данными (темы: artificial_intelligence)",
+          "- **hse**: Инженер данных (темы: artificial_intelligence)",
+          "- **hse**: Интеллектуальные системы управления и обработки информации (темы: не указаны)",
+          "- **hse**: Искусственный интеллект: спектр решений для бизнеса (темы: artificial_intelligence)",
+          "- **hse**: Аналитика данных в Excel (темы: не указаны)",
+          "- **hse**: Нейросети в маркетинге. Общий курс (темы: artificial_intelligence)",
+          "- **hse**: DevSecOps: технологии безопасной разработки (темы: не указаны)",
+          "- **hse**: BI-аналитика и визуализация данных (темы: не указаны)",
+          "- **hse**: Бизнес-аналитика и визуализация данных (BI) (темы: не указаны)",
+          "- **hse**: Корпоративная защита от внутренних угроз информационной безопасности с использованием современных DLP-технологий (темы: не указаны)",
+          "- **hse**: Организация, построение и функционирование гетерогенных компьютерных сетей. Базовый курс (для имеющих опыт) (темы: не указаны)",
+          "- **hse**: Организация, построение и функционирование гетерогенных компьютерных сетей. Подготовительный курс (для начинающих) (темы: не указаны)",
+          "- **hse**: Организация, построение и функционирование гетерогенных компьютерных сетей. Расширенный курс (для продвинутых специалистов) (темы: не указаны)",
+          "- **hse**: Математика для анализа данных (темы: artificial_intelligence)",
+          "- **hse**: Аналитик данных (темы: artificial_intelligence)",
+          "- **hse**: Искусственный интеллект в работе юридических фирм и адвокатских образований: возможности, риски и практики (темы: artificial_intelligence)",
+          "- **hse**: Технологии финансиста будущего: от анализа данных к решению с Python, Microsoft Excel и искусственным интеллектом (темы: artificial_intelligence)",
+          "- **hse**: Язык программирования \"Python\" для анализа данных (темы: artificial_intelligence)",
+          "- **hse**: Генеративный ИИ для руководителей (темы: artificial_intelligence)",
+          "- **hse**: Кибербезопасность как стратегия (темы: не указаны)",
+          "- **hse**: Комплаенс в области персональных данных (темы: не указаны)",
+          "- **hse**: Язык структурированных запросов (SQL) для начинающих (темы: не указаны)",
+          "- **hse**: Процессное управление: моделирование, анализ и цифровизация бизнес-процессов (темы: не указаны)",
+          "- **hse**: Интенсив по работе с нейросетями и ИИ (темы: artificial_intelligence)",
+          "- **hse**: Основы ИИ-агентов для автоматизации процессов (темы: artificial_intelligence)",
+          "- **hse**: Основы Excel для анализа и визуализации данных (темы: machine_learning, artificial_intelligence)",
+          "- **hse**: Продвинутый SQL: хранимые компоненты баз данных (темы: не указаны)",
+          "- **hse**: Умная инклюзия: инструменты ИИ и цифровые практики (темы: artificial_intelligence)",
+          "- **hse**: Глубинное обучение (темы: artificial_intelligence)",
+          "- **hse**: Мастерская игр: практический курс по дизайну игровых проектов (темы: не указаны)",
+          "- **hse**: Цифровая психология: интеграция технологий IT и AI в психологическую практику (темы: artificial_intelligence)",
+          "- **hse**: Кардиогенетика: от секвенирования к разработке кардиопанели (темы: не указаны)",
+          "- **hse**: ИИ-мастерская видеоконтента (темы: artificial_intelligence)",
+          "- **hse**: Интуитивное программирование (вайб-кодинг) (темы: artificial_intelligence)"
+        ]
+      }
+    },
+    {
+      "type": "market_platforms",
+      "content": {
+        "platforms_count": 6,
+        "platforms": [
+          "### hse\n- Курсов: 100\n- Направления: Классическое машинное обучение (ML), AI-агенты на базе LLM",
+          "### karpov-courses\n- Курсов: 63\n- Направления: Классическое машинное обучение (ML), Временные ряды (TS), AI-агенты на базе LLM",
+          "### otus\n- Курсов: 100\n- Направления: Классическое машинное обучение (ML), Временные ряды (TS), AI-агенты на базе LLM, Генетические алгоритмы (GA), Управление AI проектами",
+          "### skillbox\n- Курсов: 100\n- Направления: Генетические алгоритмы (GA)",
+          "### yandex-practicum\n- Курсов: 97\n- Направления: Интеграция в PRODUCTION / MLOps, Классическое машинное обучение (ML), Временные ряды (TS), Управление AI проектами, AI-агенты на базе LLM",
+          "### netology\n- Курсов: 100\n- Направления: Управление AI проектами, Классическое машинное обучение (ML)"
+        ]
+      }
+    }
+  ],
+  "base_directions": [
+    "Компьютерное зрение (CV)",
+    "Обработка естественного языка (NLP)",
+    "Временные ряды (TS)",
+    "Обучение с подкреплением (RL)",
+    "Аудио и распознавание речи (S2T)",
+    "Генеративно-состязательные нейросети (GAN)",
+    "Классическое машинное обучение (ML)",
+    "Генетические алгоритмы (GA)",
+    "Управление AI проектами",
+    "Интеграция в PRODUCTION / MLOps",
+    "AI-агенты на базе LLM",
+    "AUTOML"
+  ],
+  "findings": [
+    "🏆 Компания-заказчик является безусловным лидером в области AI",
+    "📌 Базовые направления компании: Компьютерное зрение (CV), Обработка естественного языка (NLP), Временные ряды (TS), Обучение с подкреплением (RL), Аудио и распознавание речи (S2T) и др.",
+    "📊 hse — представлен в направлениях: Классическое машинное обучение (ML), AI-агенты на базе LLM",
+    "📊 karpov-courses — представлен в направлениях: Классическое машинное обучение (ML), Временные ряды (TS), AI-агенты на базе LLM",
+    "📊 otus — представлен в направлениях: Классическое машинное обучение (ML), Временные ряды (TS), AI-агенты на базе LLM, Генетические алгоритмы (GA)",
+    "📊 skillbox — представлен в направлениях: Генетические алгоритмы (GA)",
+    "📊 yandex-practicum — представлен в направлениях: Интеграция в PRODUCTION / MLOps, Классическое машинное обучение (ML), Временные ряды (TS), Управление AI проектами",
+    "📊 netology — представлен в направлениях: Управление AI проектами, Классическое машинное обучение (ML)",
+    "📚 Всего проанализировано курсов конкурентов: 560"
+  ],
+  "recommendations": [
+    "🎯 Компания-заказчик занимает уникальную позицию на рынке — сочетает РАЗРАБОТКУ и ОБУЧЕНИЕ в области AI. Это ключевое конкурентное преимущество, которое необходимо укреплять."
+  ],
+  "platforms_analyzed": 6,
+  "total_courses": 560,
+  "timestamp": "2026-07-12T22:37:08.686412"
+}
