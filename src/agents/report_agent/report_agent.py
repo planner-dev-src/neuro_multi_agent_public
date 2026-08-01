@@ -117,22 +117,16 @@ class ReportAgent:
     def generate_report(self, data: Dict[str, Any]) -> Dict[str, Any]:
         print("📄 Формирование итогового управленческого отчета...")
         
-        # Загружаем нарратив из файла (от market_narrative_agent)
         narrative_text = self._load_narrative()
         
-        # Если передан в data — используем его (приоритет)
         if data.get("market_narrative", {}).get("full_text"):
             narrative_text = data.get("market_narrative", {}).get("full_text", "")
         
         vectors = self.registry.build_state_vectors()
         decisions = self.registry.get_all_decisions()
         
-        # Извлекаем market_analysis для передачи в методы
         market_analysis = data.get("market_analysis", {})
         
-        # ============================================================
-        # ИЗВЛЕКАЕМ ДАННЫЕ ОТ SECRETARY_AGENT
-        # ============================================================
         secretary_result = data.get("secretary", {})
         secretary_input = {}
         
@@ -145,14 +139,10 @@ class ReportAgent:
                 "risks": meeting.get("risks", [])
             }
         else:
-            # Пробуем получить из старого формата
             old_secretary = data.get("secretary_input", {})
             if old_secretary.get("main_theses") or old_secretary.get("decisions"):
                 secretary_input = old_secretary
         
-        # ============================================================
-        # ИЗВЛЕКАЕМ ИССЛЕДОВАТЕЛЬСКИЙ ОТЧЁТ
-        # ============================================================
         research_data = data.get("research", {})
         research_section = None
         if research_data and research_data.get("report"):
@@ -182,7 +172,7 @@ class ReportAgent:
             "conclusion": self._generate_conclusion(data, vectors),
             "metadata": {
                 "generated_at": datetime.now().isoformat(),
-                "version": "3.3",
+                "version": "3.4",
                 "narrative_included": bool(narrative_text),
                 "research_included": bool(research_section)
             }
@@ -198,7 +188,7 @@ class ReportAgent:
             "title": "ИТОГОВЫЙ УПРАВЛЕНЧЕСКИЙ ОТЧЕТ",
             "project_id": product_metrics.get("project_id", "Не указан"),
             "date": datetime.now().strftime("%d.%m.%Y"),
-            "version": "3.3"
+            "version": "3.4"
         }
     
     def _generate_executive_summary(self, data: Dict, vectors: Dict, decisions: List) -> str:
@@ -224,7 +214,7 @@ class ReportAgent:
         summary.append(f"   План на {report_date.strftime('%d.%m.%Y')}: {plan} проектов")
         summary.append(f"   Фактически: {current} проектов")
         if deviation < 0:
-            summary.append(f"   Отставание от плана: {-deviation} проектов")
+            summary.append(f"   Отставание от плана: {abs(deviation)} проектов")
         elif deviation == 0:
             summary.append(f"   План выполняется точно")
         else:
@@ -232,7 +222,6 @@ class ReportAgent:
         
         market_analysis = data.get("market_analysis", {})
         if market_analysis:
-            # Извлекаем платформы из разных мест
             platforms = 0
             if "platforms_analyzed" in market_analysis:
                 platforms = market_analysis.get("platforms_analyzed", 0)
@@ -247,22 +236,11 @@ class ReportAgent:
         if gaps:
             summary.append(f"🧠 Критические пробелы в компетенциях: {', '.join(gaps)}")
         
-        # Добавляем информацию об исследовании
         research_data = data.get("research", {})
         if research_data and research_data.get("report"):
             summary.append(f"🔍 Проведено исследование по запросу: {research_data.get('query', '')}")
         
         return "\n".join(summary)
-    
-    def _generate_secretary_section(self, data: Dict) -> Dict:
-        secretary = data.get("secretary", {})
-        analysis = secretary.get("analysis", {})
-        return {
-            "main_theses": analysis.get("main_theses", []),
-            "decisions": analysis.get("decisions", []),
-            "action_items": analysis.get("action_items", []),
-            "risks": analysis.get("risks", [])
-        }
     
     def _generate_narrative_section(self, narrative_text: str) -> Dict:
         return {
@@ -290,6 +268,18 @@ class ReportAgent:
         
         deviation = current - plan
         
+        # Определяем статус: отрицательное отклонение — всегда проблема
+        if deviation < -100:
+            status = "critical"
+        elif deviation < -50:
+            status = "warning"
+        elif deviation < 0:
+            status = "warning"  # любое отставание — предупреждение
+        elif deviation == 0:
+            status = "normal"
+        else:
+            status = "normal"
+        
         result = {
             "metrics": [{
                 "name": "AI проекты",
@@ -298,15 +288,19 @@ class ReportAgent:
                 "plan": plan,
                 "deviation": deviation,
                 "months_passed": months_passed,
-                "status": "critical" if deviation < -100 else "warning" if deviation < -50 else "normal"
+                "status": status
             }],
             "conclusion": ""
         }
         
-        if deviation < -100:
-            result["conclusion"] = f"Критическое отставание от плана: {-deviation} проектов. Требуется ускорение."
-        elif deviation < -50:
-            result["conclusion"] = f"Отставание от плана: {-deviation} проектов. Требуется внимание."
+        # Формируем вывод
+        if deviation < 0:
+            if deviation < -100:
+                result["conclusion"] = f"Критическое отставание от плана: {abs(deviation)} проектов. Требуется ускорение."
+            elif deviation < -50:
+                result["conclusion"] = f"Отставание от плана: {abs(deviation)} проектов. Требуется внимание."
+            else:
+                result["conclusion"] = f"Незначительное отставание от плана: {abs(deviation)} проектов."
         elif deviation == 0:
             result["conclusion"] = "План выполняется точно."
         else:
@@ -315,100 +309,52 @@ class ReportAgent:
         return result
     
     def _normalize_platform_name(self, name: str) -> str:
-        """Нормализует имя платформы для сравнения (убирает подчёркивания и дефисы)"""
         if not name:
             return ""
         return name.lower().replace("_", "-").replace(" ", "-")
     
     def _generate_market_level(self, market_analysis: Dict, vectors: Dict) -> Dict:
-        """
-        Генерирует рыночный уровень отчета.
-        Принимает market_analysis (полный результат от market_analysis_agent).
-        """
         print(f"🔍 _generate_market_level: market_analysis keys = {list(market_analysis.keys()) if market_analysis else 'None'}")
         
-        # Инициализируем значения по умолчанию
         platforms_analyzed = 0
-        competitor_names = []  # будем хранить уникальные нормализованные имена
+        competitor_names = []
         trends = []
         covered_list = []
         
-        # ============================================================
-        # 1. ИЗВЛЕКАЕМ ПЛАТФОРМЫ
-        # ============================================================
         if market_analysis:
-            # Из прямых полей
             if "platforms_analyzed" in market_analysis:
                 platforms_analyzed = market_analysis.get("platforms_analyzed", 0)
             elif "platforms_total" in market_analysis:
                 platforms_analyzed = market_analysis.get("platforms_total", 0)
             
-            # Из summary
             if "summary" in market_analysis:
                 summary = market_analysis.get("summary", {})
                 if "platforms_total" in summary:
                     platforms_analyzed = summary.get("platforms_total", 0)
         
-        # ============================================================
-        # 2. ИЗВЛЕКАЕМ КОНКУРЕНТОВ ИЗ BUNDLE (ГЛАВНЫЙ ИСТОЧНИК!)
-        # ============================================================
         if "bundle" in market_analysis:
             bundle = market_analysis.get("bundle")
             if bundle is not None:
-                print(f"🔍 DEBUG: bundle type = {type(bundle)}")
-                print(f"🔍 DEBUG: bundle attributes = {dir(bundle)}")
-                
-                # Из platform_positioning
                 if hasattr(bundle, "platform_positioning"):
-                    print(f"🔍 DEBUG: platform_positioning exists, count = {len(bundle.platform_positioning)}")
-                    for idx, pos in enumerate(bundle.platform_positioning):
+                    for pos in bundle.platform_positioning:
                         name = getattr(pos, "platform_name", "")
-                        print(f"    - pos[{idx}].platform_name = '{name}'")
                         if name:
                             normalized = self._normalize_platform_name(name)
                             if normalized and normalized not in competitor_names:
                                 competitor_names.append(normalized)
-                                print(f"      ✅ Добавлен: '{normalized}'")
-                            else:
-                                print(f"      ⚠️ Пропущен (уже есть): '{normalized}'")
-                else:
-                    print("🔍 DEBUG: platform_positioning NOT found in bundle")
                 
-                # Из platform_aggregates
                 if hasattr(bundle, "platform_aggregates"):
-                    print(f"🔍 DEBUG: platform_aggregates exists, count = {len(bundle.platform_aggregates)}")
                     for agg in bundle.platform_aggregates:
                         name = getattr(agg, "platform_name", "")
                         if name:
                             normalized = self._normalize_platform_name(name)
                             if normalized and normalized not in competitor_names:
                                 competitor_names.append(normalized)
-                                print(f"      ✅ Добавлен (из aggregates): '{normalized}'")
-                else:
-                    print("🔍 DEBUG: platform_aggregates NOT found in bundle")
                 
-                # Из platforms_total
                 if hasattr(bundle, "platforms_total"):
                     platforms_analyzed = getattr(bundle, "platforms_total", platforms_analyzed)
-        else:
-            print("🔍 DEBUG: bundle NOT found in market_analysis")
         
-        # ============================================================
-        # 3. ИЗВЛЕКАЕМ КОНКУРЕНТОВ ИЗ ДРУГИХ МЕСТ (если bundle не дал)
-        # ============================================================
         if not competitor_names:
-            # Из platform_positioning (если есть напрямую)
-            if "platform_positioning" in market_analysis:
-                positioning = market_analysis.get("platform_positioning", [])
-                for pos in positioning:
-                    if isinstance(pos, dict):
-                        name = pos.get("platform_name") or pos.get("name")
-                        if name:
-                            normalized = self._normalize_platform_name(name)
-                            if normalized and normalized not in competitor_names:
-                                competitor_names.append(normalized)
-            
-            # Из competitors
             if "competitors" in market_analysis:
                 comps = market_analysis.get("competitors", [])
                 for comp in comps:
@@ -422,37 +368,7 @@ class ReportAgent:
                         normalized = self._normalize_platform_name(comp)
                         if normalized and normalized not in competitor_names:
                             competitor_names.append(normalized)
-            
-            # Из summary
-            if "summary" in market_analysis:
-                summary = market_analysis.get("summary", {})
-                comps = summary.get("competitors", [])
-                for comp in comps:
-                    if isinstance(comp, dict):
-                        name = comp.get("name") or comp.get("platform_name")
-                        if name:
-                            normalized = self._normalize_platform_name(name)
-                            if normalized and normalized not in competitor_names:
-                                competitor_names.append(normalized)
-                    elif isinstance(comp, str):
-                        normalized = self._normalize_platform_name(comp)
-                        if normalized and normalized not in competitor_names:
-                            competitor_names.append(normalized)
-            
-            # Из platform_reports (если есть)
-            if "platform_reports" in market_analysis:
-                reports = market_analysis.get("platform_reports", [])
-                for report in reports:
-                    if isinstance(report, dict):
-                        name = report.get("platform_name")
-                        if name:
-                            normalized = self._normalize_platform_name(name)
-                            if normalized and normalized not in competitor_names:
-                                competitor_names.append(normalized)
         
-        # ============================================================
-        # 4. ИЗВЛЕКАЕМ ТРЕНДЫ
-        # ============================================================
         if market_analysis:
             if "trends" in market_analysis:
                 trends = market_analysis.get("trends", [])
@@ -461,7 +377,6 @@ class ReportAgent:
             elif "trend_signals" in market_analysis:
                 trends = market_analysis.get("trend_signals", [])
             
-            # Из bundle
             if "bundle" in market_analysis:
                 bundle = market_analysis.get("bundle")
                 if bundle is not None and hasattr(bundle, "trend_signals"):
@@ -470,7 +385,6 @@ class ReportAgent:
                         if topic and topic not in trends:
                             trends.append(topic)
         
-        # Преобразуем тренды в строки
         trend_names = []
         for trend in trends[:5]:
             if isinstance(trend, dict):
@@ -480,9 +394,6 @@ class ReportAgent:
             elif isinstance(trend, str):
                 trend_names.append(trend)
         
-        # ============================================================
-        # 5. ОПРЕДЕЛЯЕМ НАПРАВЛЕНИЯ
-        # ============================================================
         if market_analysis:
             if "directions_covered" in market_analysis:
                 covered_list = market_analysis.get("directions_covered", [])
@@ -490,30 +401,11 @@ class ReportAgent:
                 covered_list = market_analysis.get("topic_clusters", [])
             elif "topics" in market_analysis:
                 covered_list = market_analysis.get("topics", [])
-            
-            # Из bundle
-            if "bundle" in market_analysis and not covered_list:
-                bundle = market_analysis.get("bundle")
-                if bundle is not None and hasattr(bundle, "offer_features"):
-                    # Извлекаем направления из offer_features
-                    topics_set = set()
-                    for offer in bundle.offer_features:
-                        for topic in getattr(offer, "topic_clusters", []):
-                            if topic:
-                                topics_set.add(topic)
-                    covered_list = list(topics_set)[:8]
         
         if not covered_list:
             covered_list = ["Компьютерное зрение (CV)", "NLP", "ML", "GAN", "RL", "S2T"]
         
         not_covered = [d for d in self.BASE_DIRECTIONS if d not in covered_list]
-        
-        # ============================================================
-        # 6. РЕЗУЛЬТАТ
-        # ============================================================
-        print(f"🔍 Найдено конкурентов: {len(competitor_names)}")
-        print(f"🔍 Найдено платформ: {platforms_analyzed}")
-        print(f"🔍 Конкуренты: {competitor_names}")
         
         result = {
             "company_position": "Лидер (сочетание разработки и обучения)",
@@ -528,8 +420,6 @@ class ReportAgent:
             "platforms_analyzed": platforms_analyzed,
             "conclusion": f"Проанализировано {len(competitor_names)} из 14 конкурентов. Охвачено {len(covered_list)} из {len(self.BASE_DIRECTIONS)} направлений."
         }
-        
-        print(f"🔍 Результат: competitors_analyzed = {result['competitors_analyzed']}")
         
         return result
     
@@ -578,12 +468,8 @@ class ReportAgent:
                 status = "excess"
                 action = "Рассмотреть перераспределение"
             result["competencies"].append({
-                "name": name,
-                "orders": orders,
-                "specialists": specialists,
-                "load": load,
-                "status": status,
-                "action": action
+                "name": name, "orders": orders, "specialists": specialists,
+                "load": load, "status": status, "action": action
             })
         
         critical = [c for c in result["competencies"] if c["status"] == "critical"]
@@ -662,17 +548,14 @@ class ReportAgent:
         return {"gaps": gaps}
     
     def _extract_competitors(self, market_analysis: Dict) -> List[str]:
-        """Извлекает список конкурентов из market_analysis"""
         competitors = []
         
         if not market_analysis:
             return competitors
         
-        # 1. Из bundle (главный источник)
         if "bundle" in market_analysis:
             bundle = market_analysis.get("bundle")
             if bundle is not None:
-                # Из platform_positioning
                 if hasattr(bundle, "platform_positioning"):
                     for pos in bundle.platform_positioning:
                         name = getattr(pos, "platform_name", "")
@@ -680,7 +563,6 @@ class ReportAgent:
                             normalized = self._normalize_platform_name(name)
                             if normalized and normalized not in competitors:
                                 competitors.append(normalized)
-                # Из platform_aggregates
                 if hasattr(bundle, "platform_aggregates"):
                     for agg in bundle.platform_aggregates:
                         name = getattr(agg, "platform_name", "")
@@ -689,7 +571,6 @@ class ReportAgent:
                             if normalized and normalized not in competitors:
                                 competitors.append(normalized)
         
-        # 2. Прямой список конкурентов
         if not competitors and "competitors" in market_analysis:
             comps = market_analysis.get("competitors", [])
             for comp in comps:
@@ -704,53 +585,12 @@ class ReportAgent:
                     if normalized and normalized not in competitors:
                         competitors.append(normalized)
         
-        # 3. Из summary
-        if not competitors and "summary" in market_analysis:
-            summary = market_analysis.get("summary", {})
-            comps = summary.get("competitors", [])
-            for comp in comps:
-                if isinstance(comp, dict):
-                    name = comp.get("name") or comp.get("platform_name")
-                    if name:
-                        normalized = self._normalize_platform_name(name)
-                        if normalized and normalized not in competitors:
-                            competitors.append(normalized)
-                elif isinstance(comp, str):
-                    normalized = self._normalize_platform_name(comp)
-                    if normalized and normalized not in competitors:
-                        competitors.append(normalized)
-        
-        # 4. Из platform_positioning
-        if not competitors and "platform_positioning" in market_analysis:
-            positioning = market_analysis.get("platform_positioning", [])
-            for pos in positioning:
-                if isinstance(pos, dict):
-                    name = pos.get("platform_name") or pos.get("name")
-                    if name:
-                        normalized = self._normalize_platform_name(name)
-                        if normalized and normalized not in competitors:
-                            competitors.append(normalized)
-        
-        # 5. Из platform_reports
-        if not competitors and "platform_reports" in market_analysis:
-            reports = market_analysis.get("platform_reports", [])
-            for report in reports:
-                if isinstance(report, dict):
-                    name = report.get("platform_name")
-                    if name:
-                        normalized = self._normalize_platform_name(name)
-                        if normalized and normalized not in competitors:
-                            competitors.append(normalized)
-        
         return list(dict.fromkeys(competitors))
     
     def _generate_recommendations(self, data: Dict, vectors: Dict) -> Dict:
         recommendations = {
-            "strategic": [],
-            "market": [],
-            "products": [],
-            "competency": [],
-            "technical": []
+            "strategic": [], "market": [], "products": [],
+            "competency": [], "technical": []
         }
         
         report_date = datetime.now()
@@ -767,9 +607,11 @@ class ReportAgent:
             current = plan
         
         if current < plan:
-            recommendations["strategic"].append("Ускорить реализацию AI-проектов")
+            recommendations["strategic"].append(f"Ускорить реализацию AI-проектов (отставание: {plan - current} проектов)")
         elif current == plan:
             recommendations["strategic"].append("Поддерживать текущий темп реализации проектов")
+        else:
+            recommendations["strategic"].append(f"Темп реализации проектов опережает план на {current - plan} проектов")
         
         market_analysis = data.get("market_analysis", {})
         competitors = self._extract_competitors(market_analysis)
@@ -807,7 +649,7 @@ class ReportAgent:
                     "task": f"Нанять специалиста по {m.get('name')}",
                     "level": "Компетенции",
                     "assignee": "HR",
-                    "deadline": "31.07",
+                    "deadline": "31.08",
                     "priority": "critical"
                 })
         
@@ -843,7 +685,9 @@ class ReportAgent:
         if current == plan:
             conclusion.append(f"- **Стратегия:** план по AI-проектам выполняется точно ({current} из {plan})")
         elif current < plan:
-            conclusion.append(f"- **Стратегия:** отставание по AI-проектам ({current} из {plan})")
+            conclusion.append(f"- **Стратегия:** отставание по AI-проектам ({current} из {plan}, недобор: {plan - current})")
+        else:
+            conclusion.append(f"- **Стратегия:** перевыполнение плана ({current} из {plan}, +{current - plan})")
         
         if critical_comp:
             conclusion.append(f"- **Компетенции:** найм специалистов по {', '.join(critical_comp)}")
@@ -877,14 +721,10 @@ class ReportAgent:
             f.write(f"Дата: {header.get('date', '')}\n")
             f.write("=" * 80 + "\n\n")
             
-            # Резюме
             f.write("📋 РЕЗЮМЕ\n")
             f.write("-" * 40 + "\n")
             f.write(report.get("executive_summary", "") + "\n\n")
             
-            # ============================================================
-            # ВВОДНЫЕ ОТ РУКОВОДИТЕЛЯ (от secretary_agent)
-            # ============================================================
             secretary_input = report.get("secretary_input", {})
             
             if secretary_input.get("main_theses") or secretary_input.get("decisions") or secretary_input.get("action_items") or secretary_input.get("risks"):
@@ -892,14 +732,12 @@ class ReportAgent:
                 f.write("📌 ВВОДНЫЕ ОТ РУКОВОДИТЕЛЯ\n")
                 f.write("=" * 80 + "\n")
                 
-                # Основные тезисы
                 if secretary_input.get("main_theses"):
                     f.write("\n📋 Основные тезисы:\n")
                     f.write("-" * 40 + "\n")
                     for thesis in secretary_input.get("main_theses", []):
                         f.write(f"  • {thesis}\n")
                 
-                # Решения
                 if secretary_input.get("decisions"):
                     f.write("\n📋 Принятые решения:\n")
                     f.write("-" * 40 + "\n")
@@ -913,7 +751,6 @@ class ReportAgent:
                         else:
                             f.write(f"  • {decision}\n")
                 
-                # Поручения и задачи
                 if secretary_input.get("action_items"):
                     f.write("\n📋 Поручения и задачи:\n")
                     f.write("-" * 40 + "\n")
@@ -927,7 +764,6 @@ class ReportAgent:
                         else:
                             f.write(f"  • {task}\n")
                 
-                # Риски
                 if secretary_input.get("risks"):
                     f.write("\n⚠️ Выявленные риски:\n")
                     f.write("-" * 40 + "\n")
@@ -948,9 +784,6 @@ class ReportAgent:
                 f.write("=" * 80 + "\n")
                 f.write("Данные от secretary_agent отсутствуют.\n\n")
             
-            # ============================================================
-            # РАСПОРЯЖЕНИЯ И УКАЗАНИЯ
-            # ============================================================
             tasks = []
             planner = report.get("planner", {})
             if planner:
@@ -998,25 +831,14 @@ class ReportAgent:
                 f.write("=" * 80 + "\n")
                 for task in tasks:
                     status_emoji = {
-                        "pending": "⏳",
-                        "in_progress": "🔄",
-                        "completed": "✅",
-                        "cancelled": "❌",
-                        "critical": "🔴",
-                        "high": "🟠",
-                        "medium": "🟡",
-                        "low": "🟢"
+                        "pending": "⏳", "in_progress": "🔄", "completed": "✅", "cancelled": "❌",
+                        "critical": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"
                     }.get(task.get("status", ""), "⚪")
                     
                     status_ru = {
-                        "pending": "Ожидает",
-                        "in_progress": "В работе",
-                        "completed": "Выполнено",
-                        "cancelled": "Отменено",
-                        "critical": "Критический",
-                        "high": "Высокий",
-                        "medium": "Средний",
-                        "low": "Низкий"
+                        "pending": "Ожидает", "in_progress": "В работе", "completed": "Выполнено",
+                        "cancelled": "Отменено", "critical": "Критический", "high": "Высокий",
+                        "medium": "Средний", "low": "Низкий"
                     }.get(task.get("status", ""), task.get("status", ""))
                     
                     f.write(f"\n{status_emoji} {task.get('title', 'Без названия')}\n")
@@ -1034,7 +856,6 @@ class ReportAgent:
                 f.write("=" * 80 + "\n")
                 f.write("На данный момент распоряжений нет.\n\n")
             
-            # Исследовательский отчёт
             research_section = report.get("research_section")
             if research_section and research_section.get("report"):
                 f.write("=" * 80 + "\n")
@@ -1046,7 +867,6 @@ class ReportAgent:
                 f.write(research_section.get("report", ""))
                 f.write("\n\n")
             
-            # Нарратив
             narrative = report.get("narrative", {})
             if narrative.get("available") and narrative.get("full_text"):
                 f.write("=" * 80 + "\n")
@@ -1055,7 +875,6 @@ class ReportAgent:
                 f.write(narrative.get("full_text", ""))
                 f.write("\n\n")
             
-            # Анализ по уровням
             level_analysis = report.get("level_analysis", {})
             
             for level_key, level_data in level_analysis.items():
@@ -1118,7 +937,6 @@ class ReportAgent:
                 
                 f.write("\n")
             
-            # Рекомендации
             recommendations = report.get("recommendations", {})
             f.write("=" * 80 + "\n")
             f.write("💡 РЕКОМЕНДАЦИИ ПО УРОВНЯМ\n")
@@ -1130,7 +948,6 @@ class ReportAgent:
                     for rec in recs[:3]:
                         f.write(f"  • {rec}\n")
             
-            # План
             plan = report.get("plan", {})
             f.write("\n" + "=" * 80 + "\n")
             f.write("📋 ПЛАН ДЕЙСТВИЙ\n")
@@ -1141,7 +958,6 @@ class ReportAgent:
                 priority_emoji = {"critical": "🔴", "high": "🟠", "medium": "🟡", "low": "🟢"}.get(task.get("priority", ""), "⚪")
                 f.write(f"| {task.get('task', '')} | {task.get('level', '')} | {task.get('assignee', '')} | {task.get('deadline', '')} | {priority_emoji} |\n")
             
-            # Заключение
             f.write("\n" + "=" * 80 + "\n")
             f.write(report.get("conclusion", "") + "\n")
             
