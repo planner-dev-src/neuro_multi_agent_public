@@ -1,0 +1,347 @@
+{
+  "header": {
+    "title": "ИТОГОВЫЙ УПРАВЛЕНЧЕСКИЙ ОТЧЕТ",
+    "project_id": "Не указан",
+    "date": "02.08.2026",
+    "version": "3.4"
+  },
+  "executive_summary": "🎯 Стратегическая цель: 1000 AI-проектов за 2025-2026\n   План на 02.08.2026: 792 проектов\n   Фактически: 750 проектов\n   Отставание от плана: 42 проектов\n🌍 Проанализировано 6 платформ\n🧠 Критические пробелы в компетенциях: MLOps",
+  "secretary_input": {
+    "main_theses": [
+      "Начало школы разработки агентов искусственного интеллекта.",
+      "Подчеркивание реального боевого опыта команды.",
+      "Объяснение цели и структуры обучения.",
+      "Промты имеют стратегическое значение для проектов.",
+      "Планируется подробное изучение агентов и технологий в сфере ИИ.",
+      "Обсуждаются способы продажи проектов на фрилансе и подконтрольных сервисах.",
+      "Разбираются возможности трудоустройства через HR-агентство.",
+      "Организуется бонусное занятие с розыгрышем призов.",
+      "Обеспечить поддержку и помощь пользователям при проблемах с подключением к системам",
+      "Использовать различные сервисы для выполнения задач, включая Google Studio и Яндекс.Сайд Студию"
+    ],
+    "decisions": [
+      {
+        "decision": "Начать обучение в 40 вопросов.",
+        "who": "Дмитрий Романов",
+        "deadline": null
+      },
+      {
+        "decision": "Провести обзор популярных агентов и технологий в сфере ИИ.",
+        "who": "Руководитель",
+        "deadline": null
+      },
+      {
+        "decision": "Обсудить продажи проектов на фрилансе и подконтрольных сервисах.",
+        "who": "Руководитель",
+        "deadline": null
+      },
+      {
+        "decision": "Рекомендовать использование FTG-канала или обращение в поддержку при проблемах",
+        "who": "Руководитель",
+        "deadline": null
+      }
+    ],
+    "action_items": [
+      {
+        "task": "Создать проекты на Google As-2D.",
+        "assignee": "Участники курса",
+        "deadline": "В течение дня"
+      },
+      {
+        "task": "Разобраться с промтами.",
+        "assignee": "Участники курса",
+        "deadline": null
+      },
+      {
+        "task": "Провести занятия по анализу резюме, монологическим и диалоговым промтам.",
+        "assignee": "Команда",
+        "deadline": null
+      },
+      {
+        "task": "Подготовить подборку из 28 агентов для обзора.",
+        "assignee": "Руководитель и команда",
+        "deadline": null
+      },
+      {
+        "task": "Обратиться в поддержку с вопросами по доступу и консультациям по использованию сервисов",
+        "assignee": "Все участники",
+        "deadline": null
+      }
+    ],
+    "risks": [
+      {
+        "risk": "Невозможность отвечать на все вопросы из-за большого количества участников.",
+        "owner": "Дмитрий Романов",
+        "priority": "medium"
+      },
+      {
+        "risk": "Недостаточная эффективность No Code в сравнении с Web Coding.",
+        "owner": "Руководитель",
+        "priority": "medium"
+      },
+      {
+        "risk": "Сложности при продаже проектов на фрилансе и подконтрольных сервисах.",
+        "owner": "Команда",
+        "priority": "high"
+      },
+      {
+        "risk": "Проблемы с подключением к системам (VPN, Google Studio)",
+        "owner": "Поддержка и IT-отдел",
+        "priority": "high"
+      }
+    ]
+  },
+  "narrative": {
+    "available": true,
+    "full_text": "Введение обзор рынка AI-образования в России\n\nРынок искусственного интеллекта (AI) в России находится на начальной стадии развития и постепенно расширяет свои границы благодаря growing инвестициям и интересу со стороны\n\n-- \n\nAI\n\n \n\nAI6yandex-practicum, hse, otus, skillbox, netology karpov-courses\n\n- yandex-practicum 99NLPDevOpsQA\n \n- hse 97BI\n \n- otus 78GANBI\n\n- skillbox 62AI\n \n- netology 54AI\n\n- karpov-courses 33GANBI\n\n UII \n\nUIIAI\n\n \n\nNLPBIAI\n\n- NLP\n- BI\n- AI\n\n UII \n\nUII\n\n1. UII\n \n2. MLOps\n\n3. GAN\n \n4. NLPGAN\n\nUII",
+    "word_count": 75
+  },
+  "research_section": null,
+  "level_analysis": {
+    "strategic": {
+      "metrics": [
+        {
+          "name": "AI проекты",
+          "current": 750,
+          "target": 1000,
+          "plan": 792,
+          "deviation": -42,
+          "months_passed": 19,
+          "status": "warning"
+        }
+      ],
+      "conclusion": "Незначительное отставание от плана: 42 проектов."
+    },
+    "market": {
+      "company_position": "Лидер (сочетание разработки и обучения)",
+      "competitors_analyzed": 6,
+      "competitors_total": 14,
+      "competitors_list": [
+        "hse",
+        "karpov-courses",
+        "netology",
+        "otus",
+        "skillbox",
+        "yandex-practicum"
+      ],
+      "directions_covered": 6,
+      "directions_total": 12,
+      "directions_covered_list": [
+        "Компьютерное зрение (CV)",
+        "NLP",
+        "ML",
+        "GAN",
+        "RL",
+        "S2T"
+      ],
+      "directions_not_covered": [
+        "Обработка естественного языка (NLP)",
+        "Временные ряды (TS)",
+        "Обучение с подкреплением (RL)",
+        "Аудио и распознавание речи (S2T)",
+        "Генеративно-состязательные нейросети (GAN)"
+      ],
+      "trends": [
+        "nlp",
+        "analytics_bi",
+        "classical_ml"
+      ],
+      "platforms_analyzed": 6,
+      "conclusion": "Проанализировано 6 из 14 конкурентов. Охвачено 6 из 12 направлений."
+    },
+    "products": {
+      "products": [
+        {
+          "name": "Нейро-продажник",
+          "revenue": 2500000,
+          "profit": 750000
+        },
+        {
+          "name": "Нейро-HR",
+          "revenue": 1800000,
+          "profit": 540000
+        },
+        {
+          "name": "Нейро-проверка заданий",
+          "revenue": 1200000,
+          "profit": 360000
+        },
+        {
+          "name": "Обучающие курсы",
+          "revenue": 3400000,
+          "profit": 1020000
+        }
+      ],
+      "total_revenue": 8900000,
+      "total_profit": 2670000,
+      "growth": "+12%",
+      "conclusion": "Все продукты показывают рост, курсы — основной источник дохода."
+    },
+    "competency": {
+      "competencies": [
+        {
+          "name": "GAN",
+          "orders": 3,
+          "specialists": 1,
+          "load": 300,
+          "status": "critical",
+          "action": "Нанять 3 специалистов"
+        },
+        {
+          "name": "GA",
+          "orders": 2,
+          "specialists": 1,
+          "load": 200,
+          "status": "warning",
+          "action": "Нанять 1 специалиста"
+        },
+        {
+          "name": "MLOps",
+          "orders": 3,
+          "specialists": 1,
+          "load": 300,
+          "status": "critical",
+          "action": "Нанять 3 специалистов"
+        },
+        {
+          "name": "NLP",
+          "orders": 2,
+          "specialists": 2,
+          "load": 100,
+          "status": "good",
+          "action": "Поддерживать"
+        },
+        {
+          "name": "CV",
+          "orders": 4,
+          "specialists": 3,
+          "load": 133,
+          "status": "warning",
+          "action": "Нанять 1 специалиста"
+        }
+      ],
+      "conclusion": "Критическая нехватка: GAN, MLOps. Требуется срочный найм."
+    },
+    "technical": {
+      "product": "Нейро-куратор",
+      "metrics": [
+        {
+          "name": "Покрытие кода",
+          "current": 78.5,
+          "target": 80.0,
+          "unit": "%",
+          "status": "warning"
+        },
+        {
+          "name": "Neuro Curator Response Time",
+          "current": 8.0,
+          "target": 7.5,
+          "unit": "сек",
+          "status": "warning"
+        },
+        {
+          "name": "Качество ответов",
+          "current": 9.6,
+          "target": 9.5,
+          "unit": "/10",
+          "status": "exceeded"
+        },
+        {
+          "name": "Доступность",
+          "current": "24/7",
+          "target": "24/7",
+          "unit": "",
+          "status": "met"
+        }
+      ],
+      "conclusion": "Требуется доработка по: Покрытие кода, Neuro Curator Response Time"
+    }
+  },
+  "gap_analysis": {
+    "gaps": [
+      {
+        "level": "Стратегический",
+        "metric": "AI проекты",
+        "current": 750,
+        "target": 792,
+        "gap": 42
+      },
+      {
+        "level": "Рыночный",
+        "metric": "Конкуренты",
+        "current": 6,
+        "target": 14,
+        "gap": 8
+      }
+    ]
+  },
+  "recommendations": {
+    "strategic": [
+      "Ускорить реализацию AI-проектов (отставание: 42 проектов)"
+    ],
+    "market": [
+      "Проанализировать оставшиеся 8 конкурентов"
+    ],
+    "products": [],
+    "competency": [
+      "Нанять специалистов по MLOps"
+    ],
+    "technical": [
+      "Улучшить Покрытие кода до 80.0",
+      "Улучшить Neuro Curator Response Time до 7.5"
+    ]
+  },
+  "plan": {
+    "tasks": [
+      {
+        "task": "Настроить CI/CD",
+        "level": "operational",
+        "assignee": "DevOps",
+        "deadline": "31.08",
+        "priority": "high"
+      },
+      {
+        "task": "Обновить документацию",
+        "level": "operational",
+        "assignee": "Tech Writer",
+        "deadline": "15.09",
+        "priority": "medium"
+      },
+      {
+        "task": "Согласовать список метрик",
+        "level": "operational",
+        "assignee": "Д.Р.",
+        "deadline": "Не указан",
+        "priority": "medium"
+      },
+      {
+        "task": "Согласовать список метрик (повторно)",
+        "level": "operational",
+        "assignee": "Дмитрий Романов",
+        "deadline": "2026-08-18",
+        "priority": "high"
+      },
+      {
+        "task": "Написать материал по Этапу № 4",
+        "level": "operational",
+        "assignee": "ВНМ",
+        "deadline": "2026-07-31",
+        "priority": "medium"
+      },
+      {
+        "task": "Нанять специалиста по MLOps",
+        "level": "Компетенции",
+        "assignee": "HR",
+        "deadline": "31.08",
+        "priority": "critical"
+      }
+    ]
+  },
+  "conclusion": "## ЗАКЛЮЧЕНИЕ\n\nКомпания является безусловным лидером в области AI в России, сочетая разработку и обучение.\n\nОсновные точки роста:\n- **Стратегия:** отставание по AI-проектам (750 из 792, недобор: 42)\n- **Компетенции:** найм специалистов по MLOps\n- **Рынок:** расширение анализа (не охвачено 8 конкурентов)\n\nРекомендуется сосредоточиться на устранении пробелов в компетенциях и расширении рыночного анализа.",
+  "metadata": {
+    "generated_at": "2026-08-02T00:40:57.056083",
+    "version": "3.4",
+    "narrative_included": true,
+    "research_included": false
+  }
+}
