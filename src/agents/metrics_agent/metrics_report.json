@@ -1,0 +1,611 @@
+{
+  "metrics": {
+    "product_metrics": {
+      "project_id": "neuro_bot_2025",
+      "velocity": 42,
+      "cycle_time": 12.5,
+      "lead_time": 18.3,
+      "throughput": 8,
+      "sprint_count": 6,
+      "epics_completed": 3
+    },
+    "component_metrics": {
+      "code_coverage": 78.5,
+      "tech_debt": 4.2,
+      "complexity": 12.8,
+      "bugs_count": 15,
+      "test_count": 342,
+      "build_success_rate": 94.7
+    },
+    "team_metrics": {
+      "team_size": 8,
+      "engagement_score": 4.2,
+      "retro_scores": [
+        4.5,
+        4.8,
+        4.2,
+        5.0,
+        4.6
+      ],
+      "avg_hours": 38.5,
+      "turnover_rate": 12.5,
+      "satisfaction": 4.0
+    },
+    "individual_metrics": [
+      {
+        "name": "Алексей",
+        "role": "Tech Lead",
+        "skills": [
+          "Python",
+          "NLP",
+          "MLOps",
+          "Docker",
+          "K8s"
+        ],
+        "experience": 8,
+        "certifications": [
+          "AWS",
+          "ML"
+        ],
+        "contributions": 45
+      },
+      {
+        "name": "Мария",
+        "role": "Senior Developer",
+        "skills": [
+          "Python",
+          "PyTorch",
+          "FastAPI",
+          "SQL"
+        ],
+        "experience": 5,
+        "certifications": [
+          "PyTorch"
+        ],
+        "contributions": 38
+      },
+      {
+        "name": "Иван",
+        "role": "Developer",
+        "skills": [
+          "Python",
+          "Django",
+          "React"
+        ],
+        "experience": 3,
+        "certifications": [],
+        "contributions": 28
+      },
+      {
+        "name": "Елена",
+        "role": "ML Engineer",
+        "skills": [
+          "Python",
+          "TensorFlow",
+          "PyTorch",
+          "NLP"
+        ],
+        "experience": 6,
+        "certifications": [
+          "TensorFlow"
+        ],
+        "contributions": 32
+      }
+    ],
+    "project_requirements": {
+      "phase": "development",
+      "required_skills": [
+        "Python",
+        "NLP",
+        "PyTorch",
+        "MLOps",
+        "Docker"
+      ],
+      "deadline": "2025-12-31",
+      "criteria": [
+        {
+          "name": "Точность модели >= 95%",
+          "target": 95.0,
+          "current": 94.2
+        },
+        {
+          "name": "Время инференса < 100ms",
+          "target": 100,
+          "current": 85
+        },
+        {
+          "name": "Покрытие кода >= 80%",
+          "target": 80.0,
+          "current": 78.5
+        },
+        {
+          "name": "API доступность 99.9%",
+          "target": 99.9,
+          "current": 99.95
+        },
+        {
+          "name": "Интеграция с источниками",
+          "target": 3,
+          "current": 2
+        }
+      ]
+    }
+  },
+  "normalized": {
+    "product": {
+      "velocity": 0.84,
+      "cycle_time": 0.5833333333333333,
+      "lead_time": 0.5425,
+      "throughput": 0.5333333333333333,
+      "epics_progress": 0.6
+    },
+    "component": {
+      "code_coverage": 0.785,
+      "tech_debt": 0.58,
+      "complexity": 0.36,
+      "bugs_density": 0.5,
+      "build_success": 0.9470000000000001
+    },
+    "team": {
+      "engagement": 0.8400000000000001,
+      "satisfaction": 0.8,
+      "retro_avg": 0.924,
+      "productivity": 0.9625,
+      "stability": 0.5
+    },
+    "individual": [
+      {
+        "name": "Алексей",
+        "role": "Tech Lead",
+        "skill_match": 0.8,
+        "experience": 0.8,
+        "cert_score": 0.6666666666666666,
+        "contributions": 0.9
+      },
+      {
+        "name": "Мария",
+        "role": "Senior Developer",
+        "skill_match": 0.4,
+        "experience": 0.5,
+        "cert_score": 0.3333333333333333,
+        "contributions": 0.76
+      },
+      {
+        "name": "Иван",
+        "role": "Developer",
+        "skill_match": 0.2,
+        "experience": 0.3,
+        "cert_score": 0.0,
+        "contributions": 0.56
+      },
+      {
+        "name": "Елена",
+        "role": "ML Engineer",
+        "skill_match": 0.6,
+        "experience": 0.6,
+        "cert_score": 0.3333333333333333,
+        "contributions": 0.64
+      }
+    ]
+  },
+  "competency_map": {
+    "required_skills": [
+      "Python",
+      "NLP",
+      "PyTorch",
+      "MLOps",
+      "Docker"
+    ],
+    "team_skills": {
+      "Python": 4,
+      "NLP": 2,
+      "MLOps": 1,
+      "Docker": 1,
+      "K8s": 1,
+      "PyTorch": 2,
+      "FastAPI": 1,
+      "SQL": 1,
+      "Django": 1,
+      "React": 1,
+      "TensorFlow": 1
+    },
+    "gaps": [],
+    "coverage": {
+      "Python": 100.0,
+      "NLP": 50.0,
+      "PyTorch": 50.0,
+      "MLOps": 25.0,
+      "Docker": 25.0
+    },
+    "individuals": [
+      {
+        "name": "Алексей",
+        "role": "Tech Lead",
+        "skills": [
+          "Python",
+          "NLP",
+          "K8s",
+          "MLOps",
+          "Docker"
+        ],
+        "skill_count": 5,
+        "relevance": [
+          "NLP",
+          "Docker",
+          "MLOps",
+          "Python"
+        ],
+        "gap_count": 1
+      },
+      {
+        "name": "Мария",
+        "role": "Senior Developer",
+        "skills": [
+          "PyTorch",
+          "FastAPI",
+          "SQL",
+          "Python"
+        ],
+        "skill_count": 4,
+        "relevance": [
+          "PyTorch",
+          "Python"
+        ],
+        "gap_count": 3
+      },
+      {
+        "name": "Иван",
+        "role": "Developer",
+        "skills": [
+          "React",
+          "Django",
+          "Python"
+        ],
+        "skill_count": 3,
+        "relevance": [
+          "Python"
+        ],
+        "gap_count": 4
+      },
+      {
+        "name": "Елена",
+        "role": "ML Engineer",
+        "skills": [
+          "NLP",
+          "TensorFlow",
+          "PyTorch",
+          "Python"
+        ],
+        "skill_count": 4,
+        "relevance": [
+          "NLP",
+          "PyTorch",
+          "Python"
+        ],
+        "gap_count": 2
+      }
+    ]
+  },
+  "criteria_coverage": {
+    "total": 5,
+    "met": 1,
+    "partially_met": 2,
+    "not_met": 2,
+    "criteria_details": [
+      {
+        "name": "Точность модели >= 95%",
+        "target": 95.0,
+        "current": 94.2,
+        "gap": 0.7999999999999972,
+        "status": "partially_met",
+        "progress": 99.15789473684211
+      },
+      {
+        "name": "Время инференса < 100ms",
+        "target": 100,
+        "current": 85,
+        "gap": 15,
+        "status": "not_met",
+        "progress": 85.0
+      },
+      {
+        "name": "Покрытие кода >= 80%",
+        "target": 80.0,
+        "current": 78.5,
+        "gap": 1.5,
+        "status": "partially_met",
+        "progress": 98.125
+      },
+      {
+        "name": "API доступность 99.9%",
+        "target": 99.9,
+        "current": 99.95,
+        "gap": -0.04999999999999716,
+        "status": "met",
+        "progress": 100.05005005005006
+      },
+      {
+        "name": "Интеграция с источниками",
+        "target": 3,
+        "current": 2,
+        "gap": 1,
+        "status": "not_met",
+        "progress": 66.66666666666666
+      }
+    ],
+    "overall_progress": 20.0
+  },
+  "impact_map": {
+    "nodes": [
+      {
+        "id": "code_coverage",
+        "label": "Покрытие кода",
+        "type": "quality",
+        "value": 78.5,
+        "unit": "%"
+      },
+      {
+        "id": "tech_debt",
+        "label": "Технический долг",
+        "type": "quality",
+        "value": 4.2,
+        "unit": "дней"
+      },
+      {
+        "id": "velocity",
+        "label": "Скорость разработки",
+        "type": "productivity",
+        "value": 42,
+        "unit": "SP"
+      },
+      {
+        "id": "bugs_count",
+        "label": "Количество ошибок",
+        "type": "quality",
+        "value": 15,
+        "unit": "шт"
+      },
+      {
+        "id": "team_satisfaction",
+        "label": "Удовлетворенность команды",
+        "type": "people",
+        "value": 4.0,
+        "unit": "из 5"
+      },
+      {
+        "id": "cycle_time",
+        "label": "Время цикла",
+        "type": "productivity",
+        "value": 12.5,
+        "unit": "дней"
+      },
+      {
+        "id": "coverage",
+        "label": "Покрытие критериев",
+        "type": "project",
+        "value": 20.0,
+        "unit": "%"
+      }
+    ],
+    "edges": [
+      {
+        "from": "code_coverage",
+        "to": "bugs_count",
+        "strength": -0.7,
+        "direction": "negative"
+      },
+      {
+        "from": "tech_debt",
+        "to": "velocity",
+        "strength": -0.5,
+        "direction": "negative"
+      },
+      {
+        "from": "code_coverage",
+        "to": "tech_debt",
+        "strength": -0.4,
+        "direction": "negative"
+      },
+      {
+        "from": "team_satisfaction",
+        "to": "velocity",
+        "strength": 0.6,
+        "direction": "positive"
+      },
+      {
+        "from": "bugs_count",
+        "to": "cycle_time",
+        "strength": 0.6,
+        "direction": "positive"
+      },
+      {
+        "from": "velocity",
+        "to": "coverage",
+        "strength": 0.5,
+        "direction": "positive"
+      },
+      {
+        "from": "cycle_time",
+        "to": "coverage",
+        "strength": -0.4,
+        "direction": "negative"
+      },
+      {
+        "from": "bugs_count",
+        "to": "coverage",
+        "strength": -0.6,
+        "direction": "negative"
+      }
+    ],
+    "findings": [
+      "🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)",
+      "📊 Текущее значение: 15",
+      "📊 code_coverage снижает bugs_count (сила влияния: 0.7)",
+      "⚠️ Покрытие кода ниже 80% - это увеличивает риски качества"
+    ],
+    "recommendations": [
+      "📈 Увеличьте покрытие кода до 80% - это снизит количество ошибок и ускорит разработку"
+    ],
+    "timestamp": "2026-07-09T14:50:51.449873"
+  },
+  "rag_chunks": [
+    {
+      "type": "competency",
+      "content": {
+        "summary": "Команда из 4 человек",
+        "required_skills": [
+          "Python",
+          "NLP",
+          "PyTorch",
+          "MLOps",
+          "Docker"
+        ],
+        "team_skills": {
+          "Python": 4,
+          "NLP": 2,
+          "MLOps": 1,
+          "Docker": 1,
+          "K8s": 1,
+          "PyTorch": 2,
+          "FastAPI": 1,
+          "SQL": 1,
+          "Django": 1,
+          "React": 1,
+          "TensorFlow": 1
+        },
+        "gaps": [],
+        "coverage": {
+          "Python": 100.0,
+          "NLP": 50.0,
+          "PyTorch": 50.0,
+          "MLOps": 25.0,
+          "Docker": 25.0
+        }
+      }
+    },
+    {
+      "type": "criteria",
+      "content": {
+        "summary": "Выполнено 1 из 5 критериев",
+        "progress": 20.0,
+        "details": [
+          {
+            "name": "Точность модели >= 95%",
+            "target": 95.0,
+            "current": 94.2,
+            "gap": 0.7999999999999972,
+            "status": "partially_met",
+            "progress": 99.15789473684211
+          },
+          {
+            "name": "Время инференса < 100ms",
+            "target": 100,
+            "current": 85,
+            "gap": 15,
+            "status": "not_met",
+            "progress": 85.0
+          },
+          {
+            "name": "Покрытие кода >= 80%",
+            "target": 80.0,
+            "current": 78.5,
+            "gap": 1.5,
+            "status": "partially_met",
+            "progress": 98.125
+          },
+          {
+            "name": "API доступность 99.9%",
+            "target": 99.9,
+            "current": 99.95,
+            "gap": -0.04999999999999716,
+            "status": "met",
+            "progress": 100.05005005005006
+          },
+          {
+            "name": "Интеграция с источниками",
+            "target": 3,
+            "current": 2,
+            "gap": 1,
+            "status": "not_met",
+            "progress": 66.66666666666666
+          }
+        ]
+      }
+    },
+    {
+      "type": "findings_recommendations",
+      "content": {
+        "findings": [
+          "🎯 Ключевой драйвер: bugs_count (влияет на 1.2 метрик)",
+          "📊 Текущее значение: 15",
+          "📊 code_coverage снижает bugs_count (сила влияния: 0.7)",
+          "⚠️ Покрытие кода ниже 80% - это увеличивает риски качества"
+        ],
+        "recommendations": [
+          "📈 Увеличьте покрытие кода до 80% - это снизит количество ошибок и ускорит разработку"
+        ]
+      }
+    },
+    {
+      "type": "normalized_metrics",
+      "content": {
+        "product": {
+          "velocity": 0.84,
+          "cycle_time": 0.5833333333333333,
+          "lead_time": 0.5425,
+          "throughput": 0.5333333333333333,
+          "epics_progress": 0.6
+        },
+        "component": {
+          "code_coverage": 0.785,
+          "tech_debt": 0.58,
+          "complexity": 0.36,
+          "bugs_density": 0.5,
+          "build_success": 0.9470000000000001
+        },
+        "team": {
+          "engagement": 0.8400000000000001,
+          "satisfaction": 0.8,
+          "retro_avg": 0.924,
+          "productivity": 0.9625,
+          "stability": 0.5
+        },
+        "individual": [
+          {
+            "name": "Алексей",
+            "role": "Tech Lead",
+            "skill_match": 0.8,
+            "experience": 0.8,
+            "cert_score": 0.6666666666666666,
+            "contributions": 0.9
+          },
+          {
+            "name": "Мария",
+            "role": "Senior Developer",
+            "skill_match": 0.4,
+            "experience": 0.5,
+            "cert_score": 0.3333333333333333,
+            "contributions": 0.76
+          },
+          {
+            "name": "Иван",
+            "role": "Developer",
+            "skill_match": 0.2,
+            "experience": 0.3,
+            "cert_score": 0.0,
+            "contributions": 0.56
+          },
+          {
+            "name": "Елена",
+            "role": "ML Engineer",
+            "skill_match": 0.6,
+            "experience": 0.6,
+            "cert_score": 0.3333333333333333,
+            "contributions": 0.64
+          }
+        ]
+      }
+    }
+  ],
+  "timestamp": "2026-07-09T14:50:51.449873"
+}

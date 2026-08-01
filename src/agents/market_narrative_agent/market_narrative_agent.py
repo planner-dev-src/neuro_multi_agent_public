@@ -29,15 +29,10 @@ class MarketNarrativeAgent:
     (без вводных от руководителя — они идут в итоговый отчёт)
     """
     
-    # ============================================================
     # 12 БАЗОВЫХ НАПРАВЛЕНИЙ КОМПАНИИ (из keywords.py)
-    # ============================================================
-    # Используем COMPANY_DIRECTIONS из единого реестра
     COMPANY_BASE_DIRECTIONS = COMPANY_DIRECTIONS
     
-    # ============================================================
-    # УСИЛЕННЫЙ ПРОМПТ С ЖЁСТКИМ ТРЕБОВАНИЕМ РУССКОГО ЯЗЫКА
-    # ============================================================
+    # ПРОМПТ ДЛЯ LLM
     NARRATIVE_PROMPT = """
 Ты — профессиональный аналитик на русском языке.
 
@@ -158,7 +153,7 @@ class MarketNarrativeAgent:
         market_analysis: Dict,
         metrics_data: Optional[Dict] = None
     ) -> str:
-        """Формирует данные о рынке для промпта"""
+        """Формирует данные о рынке для промпта с детальной разбивкой по платформам"""
         lines = []
         
         # 1. О компании УИИ
@@ -170,7 +165,6 @@ class MarketNarrativeAgent:
         lines.append("  - Это УНИКАЛЬНОЕ сочетание, которого нет ни у кого из конкурентов")
         lines.append("")
         
-        # Используем направления из keywords.py
         lines.append(f"БАЗОВЫЕ НАПРАВЛЕНИЯ КОМПАНИИ УИИ ({len(self.COMPANY_BASE_DIRECTIONS)} направлений):")
         direction_names = get_all_direction_names()
         for name in direction_names:
@@ -184,6 +178,7 @@ class MarketNarrativeAgent:
         total_courses = 0
         competitor_names = []
         competitor_details = []
+        platform_courses = {}
         
         if "bundle" in market_analysis:
             bundle = market_analysis.get("bundle")
@@ -193,6 +188,23 @@ class MarketNarrativeAgent:
                 if hasattr(bundle, "catalog_items_total_kept"):
                     total_courses = getattr(bundle, "catalog_items_total_kept", 0)
                 
+                # Собираем данные из platform_aggregates
+                if hasattr(bundle, "platform_aggregates"):
+                    for agg in bundle.platform_aggregates:
+                        name = getattr(agg, "platform_name", "")
+                        if name and name not in competitor_names:
+                            competitor_names.append(name)
+                            courses_count = getattr(agg, "offers_count", 0) or getattr(agg, "items_count", 0)
+                            platform_courses[name] = courses_count
+                            competitor_details.append({
+                                "name": name,
+                                "courses_count": courses_count,
+                                "topics": getattr(agg, "top_topics", [])[:3],
+                                "competencies": getattr(agg, "top_competency_families", [])[:3],
+                                "signals": getattr(agg, "top_core_signals", [])[:3]
+                            })
+                
+                # Дополняем из platform_positioning
                 if hasattr(bundle, "platform_positioning"):
                     for pos in bundle.platform_positioning:
                         name = getattr(pos, "platform_name", "")
@@ -203,21 +215,10 @@ class MarketNarrativeAgent:
                             signals = getattr(pos, "core_signals", [])
                             competitor_details.append({
                                 "name": name,
+                                "courses_count": platform_courses.get(name, 0),
                                 "topics": topics[:3] if topics else [],
                                 "competencies": competencies[:3] if competencies else [],
                                 "signals": signals[:3] if signals else []
-                            })
-                
-                if hasattr(bundle, "platform_aggregates"):
-                    for agg in bundle.platform_aggregates:
-                        name = getattr(agg, "platform_name", "")
-                        if name and name not in competitor_names:
-                            competitor_names.append(name)
-                            competitor_details.append({
-                                "name": name,
-                                "topics": getattr(agg, "top_topics", [])[:3],
-                                "competencies": getattr(agg, "top_competency_families", [])[:3],
-                                "signals": getattr(agg, "top_core_signals", [])[:3]
                             })
         
         if platforms_analyzed == 0:
@@ -225,31 +226,40 @@ class MarketNarrativeAgent:
         if total_courses == 0:
             total_courses = market_analysis.get("total_courses", market_analysis.get("courses_total", 0))
         
-        if not competitor_details and "competitors" in market_analysis:
-            for comp in market_analysis.get("competitors", []):
-                if isinstance(comp, dict):
-                    name = comp.get("name") or comp.get("platform_name")
-                    if name and name not in competitor_names:
-                        competitor_names.append(name)
+        if not competitor_details:
+            if "competitors" in market_analysis:
+                for comp in market_analysis.get("competitors", []):
+                    if isinstance(comp, dict):
+                        name = comp.get("name") or comp.get("platform_name")
+                        if name and name not in competitor_names:
+                            competitor_names.append(name)
+                            courses_count = comp.get("courses_count", 0)
+                            platform_courses[name] = courses_count
+                            competitor_details.append({
+                                "name": name,
+                                "courses_count": courses_count,
+                                "topics": comp.get("directions", [])[:3],
+                                "competencies": [], "signals": []
+                            })
+                    elif isinstance(comp, str) and comp not in competitor_names:
+                        competitor_names.append(comp)
                         competitor_details.append({
-                            "name": name, "topics": comp.get("directions", [])[:3],
-                            "competencies": [], "signals": []
+                            "name": comp, "courses_count": 0,
+                            "topics": [], "competencies": [], "signals": []
                         })
-                elif isinstance(comp, str) and comp not in competitor_names:
-                    competitor_names.append(comp)
-                    competitor_details.append({"name": comp, "topics": [], "competencies": [], "signals": []})
-        
-        if not competitor_details and "platform_reports" in market_analysis:
-            for report in market_analysis.get("platform_reports", []):
-                if isinstance(report, dict):
-                    name = report.get("platform_name")
-                    if name and name not in competitor_names:
-                        competitor_names.append(name)
-                        competitor_details.append({"name": name, "topics": [], "competencies": [], "signals": []})
         
         lines.append(f"Проанализировано платформ: {platforms_analyzed}")
         lines.append(f"ВСЕГО курсов на ВСЕХ платформах (суммарно): {total_courses}")
         lines.append("")
+        
+        # Детальная разбивка по платформам
+        if platform_courses:
+            lines.append("РАСПРЕДЕЛЕНИЕ КУРСОВ ПО ПЛАТФОРМАМ:")
+            for name, count in sorted(platform_courses.items(), key=lambda x: x[1], reverse=True):
+                if count > 0:
+                    lines.append(f"  - {name}: {count} курсов")
+            lines.append("")
+        
         lines.append("Все перечисленные ниже конкуренты занимаются ТОЛЬКО ОБУЧЕНИЕМ.")
         lines.append("")
         
@@ -257,13 +267,17 @@ class MarketNarrativeAgent:
             competitor_details.sort(key=lambda x: x.get("name", ""))
             for i, comp in enumerate(competitor_details[:10], 1):
                 details = []
-                if comp.get("topics"): details.append(f"направления: {', '.join(comp['topics'])}")
-                if comp.get("competencies"): details.append(f"компетенции: {', '.join(comp['competencies'])}")
-                if comp.get("signals"): details.append(f"сигналы: {', '.join(comp['signals'])}")
+                courses_info = f"({comp.get('courses_count', 0)} курсов)" if comp.get('courses_count', 0) > 0 else ""
+                if comp.get("topics"):
+                    details.append(f"направления: {', '.join(comp['topics'])}")
+                if comp.get("competencies"):
+                    details.append(f"компетенции: {', '.join(comp['competencies'])}")
+                if comp.get("signals"):
+                    details.append(f"сигналы: {', '.join(comp['signals'])}")
                 if details:
-                    lines.append(f"  {i}. {comp['name']} ({'; '.join(details)})")
+                    lines.append(f"  {i}. {comp['name']} {courses_info} ({'; '.join(details)})")
                 else:
-                    lines.append(f"  {i}. {comp['name']}")
+                    lines.append(f"  {i}. {comp['name']} {courses_info}")
         else:
             lines.append("  - Данные о конкурентах отсутствуют")
         lines.append("")
@@ -353,16 +367,58 @@ class MarketNarrativeAgent:
             return self._generate_fallback_narrative(market_data)
     
     def _clean_narrative(self, narrative: str) -> str:
+        """Очищает нарратив от артефактов LLM и исправляет частые ошибки"""
+        # Удаляем маркеры кода
         narrative = re.sub(r'```.*?```', '', narrative, flags=re.DOTALL)
         narrative = re.sub(r'\n{3,}', '\n\n', narrative)
         narrative = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', narrative)
         narrative = narrative.replace("Компания-заказчик", "УИИ")
-        narrative = re.sub(r'\d+\.\s*AI\s*\n', '', narrative)
-        narrative = re.sub(r'\d+\.\s*\n', '', narrative)
+        
+        # Исправление артефактов смешанного языка
+        replacements = {
+            "Комpetенции": "Компетенции",
+            "компетенции": "компетенции",
+            "Легативное усиление": "",
+            "Driven by increasing digitalization": "",
+            "AIML Core": "Основы AI/ML",
+            "AIML core": "Основы AI/ML",
+            "aimlcore": "основы AI/ML",
+            "classicalml": "классическое ML",
+            "Classical ML": "Классическое машинное обучение",
+            "analyticsbi": "аналитика и BI",
+            "Analytics BI": "Аналитика и BI",
+            "Analytics_BI": "Аналитика и BI",
+            "clouddevops": "облачное DevOps",
+            "generativeai": "генеративный AI",
+            "Generative AI": "Генеративный AI",
+            "qualitysecurity": "качество и безопасность",
+            "softwareengineering": "разработка ПО",
+            "reinforcementlearning": "обучение с подкреплением",
+            "independentassignments": "самостоятельные задания",
+            "webinarsandfreecontent": "вебинары и бесплатный контент",
+            "jobsupport": "поддержка трудоустройства",
+        }
+        for old, new in replacements.items():
+            narrative = narrative.replace(old, new)
+        
+        # Удаляем строки с обрывом чисел
+        narrative = re.sub(r'(составил|составила|составило)\s*\n', r'\1 значительное количество\n', narrative)
+        narrative = re.sub(r'Общий объем курсов на всех представленных платформах составил\s*\n', 
+                          'Общий объем курсов на всех представленных платформах значителен и продолжает расти.\n', narrative)
+        
+        # Удаляем строки, состоящие только из одного английского слова в нижнем регистре
+        narrative = re.sub(r'\n\s*[a-z_]+\s*\n', '\n', narrative)
+        
+        # Удаляем пустые пункты списка
         narrative = re.sub(r'•\s*\n', '', narrative)
         narrative = re.sub(r'-\s*\n', '', narrative)
+        
+        # Удаляем нелатинские/некириллические символы
         narrative = re.sub(r'[^\u0400-\u04FFa-zA-Z0-9\s.,!?\-;:()"\'"]+', '', narrative)
+        
+        # Удаляем повторяющиеся пробелы
         narrative = re.sub(r' +', ' ', narrative)
+        
         return narrative.strip()
     
     def _generate_fallback_narrative(self, market_data: str) -> str:

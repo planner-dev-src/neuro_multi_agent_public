@@ -304,9 +304,6 @@
     </footer>
 
     <script>
-    // ============================================================
-    // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-    // ============================================================
     function escapeHtml(text) {
         if (!text) return '';
         const div = document.createElement('div');
@@ -346,16 +343,7 @@
         return map[priority] || '<span class="badge bg-secondary">Неизвестно</span>';
     }
 
-    // ============================================================
-    // ВКЛАДКИ (ЛЕНИВАЯ ЗАГРУЗКА)
-    // ============================================================
-    const tabsLoaded = {
-        reports: false,
-        metrics: false,
-        tasks: false,
-        research: false
-    };
-
+    const tabsLoaded = { reports: false, metrics: false, tasks: false, research: false };
     tabsLoaded.reports = true;
 
     document.querySelectorAll('[data-tab]').forEach(btn => {
@@ -365,38 +353,27 @@
             const tabId = this.dataset.tab;
             document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
-            
-            if (tabId === 'reports' && !tabsLoaded.reports) {
-                loadReports();
-                tabsLoaded.reports = true;
-            }
-            if (tabId === 'metrics' && !tabsLoaded.metrics) {
-                loadMetricsSummary();
-                tabsLoaded.metrics = true;
-            }
-            if (tabId === 'tasks' && !tabsLoaded.tasks) {
-                loadTasks();
-                tabsLoaded.tasks = true;
-            }
-            if (tabId === 'research' && !tabsLoaded.research) {
-                loadResearchList();
-                tabsLoaded.research = true;
-            }
+            if (tabId === 'reports' && !tabsLoaded.reports) { loadReports(); tabsLoaded.reports = true; }
+            if (tabId === 'metrics' && !tabsLoaded.metrics) { loadMetricsSummary(); tabsLoaded.metrics = true; }
+            if (tabId === 'tasks' && !tabsLoaded.tasks) { loadTasks(); tabsLoaded.tasks = true; }
+            if (tabId === 'research' && !tabsLoaded.research) { loadResearchList(); tabsLoaded.research = true; }
         });
     });
 
-    // ============================================================
-    // KPI
-    // ============================================================
     async function loadKPI() {
         try {
             const resp = await fetch('/api/dashboard');
-            if (!resp.ok) {
-                throw new Error(`HTTP error! status: ${resp.status}`);
-            }
+            if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
             const data = await resp.json();
-            document.getElementById('kpi-strategic').textContent = data.strategic.current;
-            document.getElementById('kpi-market').textContent = data.market.current;
+            
+            // Стратегия: факт / план
+            document.getElementById('kpi-strategic').innerHTML = 
+                `${data.strategic.current} <span style="font-size:0.7em;color:#6c757d;">/ ${data.strategic.target}</span>`;
+            
+            // Рынок: охвачено из всего
+            document.getElementById('kpi-market').innerHTML = 
+                `${data.market.current} <span style="font-size:0.7em;color:#6c757d;">из ${data.market.total}</span>`;
+            
             document.getElementById('kpi-competency').textContent = data.competency.critical;
             document.getElementById('kpi-products').textContent = '8.9 млн ₽';
             document.getElementById('kpi-technical').textContent = '78.5%';
@@ -406,41 +383,27 @@
         }
     }
 
-    // ============================================================
-    // 1. ОТЧЁТЫ
-    // ============================================================
     async function loadReports() {
-        console.log('loadReports вызван');
         const container = document.getElementById('reportList');
         const view = document.getElementById('reportView');
-        
         container.innerHTML = '<div class="text-muted text-center py-3"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка...</div>';
         view.innerHTML = '<p class="text-muted text-center py-5"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка...</p>';
-        
         try {
             const resp = await fetch('/api/reports/list');
-            if (!resp.ok) {
-                throw new Error(`HTTP error! status: ${resp.status}`);
-            }
+            if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
             const data = await resp.json();
-            console.log('Отчёты:', data);
             if (data.reports && data.reports.length > 0) {
                 container.innerHTML = data.reports.map(r => `
                     <div class="list-group-item list-group-item-action report-item" onclick="loadReportContent('${r.name.replace(/'/g, "\\'")}', this)">
-                        <div>
-                            <strong>${escapeHtml(r.title)}</strong>
-                            <div class="date">${formatDate(r.date)}</div>
-                        </div>
+                        <div><strong>${escapeHtml(r.title)}</strong><div class="date">${formatDate(r.date)}</div></div>
                         <i class="fas fa-chevron-right text-muted"></i>
-                    </div>
-                `).join('');
+                    </div>`).join('');
                 view.innerHTML = '<p class="text-muted text-center py-5">Выберите отчёт из списка слева</p>';
             } else {
                 container.innerHTML = '<p class="text-muted text-center py-3">Нет сохранённых отчётов</p>';
                 view.innerHTML = '<p class="text-muted text-center py-5">Нет отчётов для отображения</p>';
             }
         } catch (e) {
-            console.error('Reports error:', e);
             container.innerHTML = '<p class="text-danger text-center py-3">Ошибка загрузки отчётов</p>';
             view.innerHTML = '<p class="text-danger text-center py-5">Не удалось загрузить список отчётов</p>';
         }
@@ -449,43 +412,21 @@
     async function loadReportContent(reportName, clickedElement = null) {
         const view = document.getElementById('reportView');
         view.innerHTML = '<p class="text-muted text-center py-5"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка отчёта...</p>';
-        
-        document.querySelectorAll('#reportList .report-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        
-        if (clickedElement) {
-            clickedElement.classList.add('active');
-        } else {
+        document.querySelectorAll('#reportList .report-item').forEach(item => item.classList.remove('active'));
+        if (clickedElement) clickedElement.classList.add('active');
+        else {
             const activeItem = document.querySelector(`#reportList .report-item[onclick*="${reportName.replace(/'/g, "\\'")}"]`);
-            if (activeItem) {
-                activeItem.classList.add('active');
-            }
+            if (activeItem) activeItem.classList.add('active');
         }
-        
         try {
             const resp = await fetch(`/api/reports/content/${reportName}`);
-            if (!resp.ok) {
-                throw new Error(`HTTP error! status: ${resp.status}`);
-            }
+            if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
             const data = await resp.json();
-            if (data.error) {
-                view.innerHTML = `<p class="text-danger">${escapeHtml(data.error)}</p>`;
-                return;
-            }
-            
-            let reportDate = data.header?.date || '';
-            let formattedDate = formatDate(reportDate);
-            
+            if (data.error) { view.innerHTML = `<p class="text-danger">${escapeHtml(data.error)}</p>`; return; }
             let html = `<h2>${escapeHtml(data.header?.title || 'Отчёт')}</h2>`;
-            html += `<p class="text-muted">${formattedDate || 'Дата не указана'}</p>`;
-            
-            if (data.executive_summary) {
-                html += `<h3>📋 Резюме</h3><p>${escapeHtml(data.executive_summary).replace(/\n/g, '<br>')}</p>`;
-            }
-            if (data.narrative) {
-                html += `<h3>📝 Аналитический обзор</h3><p>${escapeHtml(data.narrative).replace(/\n/g, '<br>')}</p>`;
-            }
+            html += `<p class="text-muted">${formatDate(data.header?.date || '') || 'Дата не указана'}</p>`;
+            if (data.executive_summary) html += `<h3>📋 Резюме</h3><p>${escapeHtml(data.executive_summary).replace(/\n/g, '<br>')}</p>`;
+            if (data.narrative) html += `<h3>📝 Аналитический обзор</h3><p>${escapeHtml(data.narrative).replace(/\n/g, '<br>')}</p>`;
             const levels = ['strategic', 'market', 'products', 'competency', 'technical'];
             const levelNames = {'strategic':'Стратегический','market':'Рыночный','products':'Продуктовый','competency':'Компетенции','technical':'Технический'};
             levels.forEach(l => {
@@ -494,11 +435,8 @@
                     html += `<h3>${levelNames[l]}</h3>`;
                     if (l === 'products' && levelData.products) {
                         html += `<table><tr><th>Продукт</th><th>Выручка</th><th>Прибыль</th></tr>`;
-                        levelData.products.forEach(p => {
-                            html += `<tr><td>${p.name}</td><td>${p.revenue?.toLocaleString()} руб.</td><td>${p.profit?.toLocaleString()} руб.</td></tr>`;
-                        });
-                        html += `</table>`;
-                        html += `<p><strong>Итого:</strong> ${levelData.total_revenue?.toLocaleString()} руб. (${levelData.growth})</p>`;
+                        levelData.products.forEach(p => html += `<tr><td>${p.name}</td><td>${p.revenue?.toLocaleString()} руб.</td><td>${p.profit?.toLocaleString()} руб.</td></tr>`);
+                        html += `</table><p><strong>Итого:</strong> ${levelData.total_revenue?.toLocaleString()} руб. (${levelData.growth})</p>`;
                     } else if (l === 'competency' && levelData.competencies) {
                         html += `<table><tr><th>Компетенция</th><th>Заказов</th><th>Специалистов</th><th>Загрузка</th><th>Статус</th></tr>`;
                         levelData.competencies.forEach(c => {
@@ -518,9 +456,7 @@
                         html += `<p><strong>Конкуренты:</strong> ${levelData.competitors_analyzed} из ${levelData.competitors_total}</p>`;
                         if (levelData.trends) html += `<p><strong>Тренды:</strong> ${levelData.trends.join(', ')}</p>`;
                     } else if (l === 'strategic' && levelData.metrics) {
-                        levelData.metrics.forEach(m => {
-                            html += `<p><strong>${m.name}:</strong> ${m.current} из ${m.target} (${m.status})</p>`;
-                        });
+                        levelData.metrics.forEach(m => html += `<p><strong>${m.name}:</strong> ${m.current} из ${m.target} (${m.status})</p>`);
                     }
                     if (levelData.conclusion) html += `<p><em>${levelData.conclusion}</em></p>`;
                 }
@@ -533,46 +469,25 @@
                 if (recs.competency?.length) html += `<p><strong>Компетенции:</strong> ${recs.competency.join(', ')}</p>`;
                 if (recs.technical?.length) html += `<p><strong>Технические:</strong> ${recs.technical.join(', ')}</p>`;
             }
-            if (data.conclusion) {
-                html += `<h3>📌 Заключение</h3><p>${escapeHtml(data.conclusion).replace(/\n/g, '<br>')}</p>`;
-            }
+            if (data.conclusion) html += `<h3>📌 Заключение</h3><p>${escapeHtml(data.conclusion).replace(/\n/g, '<br>')}</p>`;
             view.innerHTML = html;
-        } catch (e) {
-            console.error('Report content error:', e);
-            view.innerHTML = '<p class="text-danger">Ошибка загрузки отчёта</p>';
-        }
+        } catch (e) { view.innerHTML = '<p class="text-danger">Ошибка загрузки отчёта</p>'; }
     }
 
-    // ============================================================
-    // 2. МЕТРИКИ
-    // ============================================================
     async function loadMetricsSummary() {
-        console.log('loadMetricsSummary вызван');
         const container = document.getElementById('metricsSummary');
         container.innerHTML = '<p class="text-muted text-center py-3"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка...</p>';
         try {
             const resp = await fetch('/api/metrics/summary');
-            if (!resp.ok) {
-                throw new Error(`HTTP error! status: ${resp.status}`);
-            }
+            if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
             const data = await resp.json();
-            console.log('Метрики (сводка):', data);
             if (data.summary && data.summary.length > 0) {
-                let html = `<table class="table table-bordered metric-summary-table"><thead><tr>
-                    <th>Уровень</th><th>Всего</th><th>🔴 Критических</th><th>🟡 Предупреждений</th><th>🟢 Выполнено</th>
-                </tr></thead><tbody>`;
-                data.summary.forEach(s => {
-                    html += `<tr><td>${s.icon} ${s.name}</td><td>${s.total}</td><td>${s.critical}</td><td>${s.warning}</td><td>${s.met}</td></tr>`;
-                });
+                let html = `<table class="table table-bordered metric-summary-table"><thead><tr><th>Уровень</th><th>Всего</th><th>🔴 Критических</th><th>🟡 Предупреждений</th><th>🟢 Выполнено</th></tr></thead><tbody>`;
+                data.summary.forEach(s => html += `<tr><td>${s.icon} ${s.name}</td><td>${s.total}</td><td>${s.critical}</td><td>${s.warning}</td><td>${s.met}</td></tr>`);
                 html += `</tbody></table>`;
                 container.innerHTML = html;
-            } else {
-                container.innerHTML = '<p class="text-muted text-center py-3">Нет данных по метрикам</p>';
-            }
-        } catch (e) {
-            console.error('Metrics summary error:', e);
-            container.innerHTML = '<p class="text-muted text-center py-3">Ошибка загрузки метрик</p>';
-        }
+            } else container.innerHTML = '<p class="text-muted text-center py-3">Нет данных по метрикам</p>';
+        } catch (e) { container.innerHTML = '<p class="text-muted text-center py-3">Ошибка загрузки метрик</p>'; }
         loadAllMetrics();
     }
 
@@ -581,187 +496,89 @@
         container.innerHTML = '<p class="text-muted text-center py-3">Загрузка...</p>';
         try {
             const resp = await fetch('/api/metrics/all');
-            if (!resp.ok) {
-                throw new Error(`HTTP error! status: ${resp.status}`);
-            }
+            if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
             const data = await resp.json();
-            console.log('Все метрики:', data);
             if (data.metrics && data.metrics.length > 0) {
                 let html = `<div class="metric-row"><strong>Название</strong><strong>Значение</strong><strong>Статус</strong></div>`;
                 data.metrics.forEach(m => {
                     const statusBadge = getStatusBadge(m.status);
-                    html += `<div class="metric-row">
-                        <span>${escapeHtml(m.name)} <small class="text-muted">(${m.level})</small></span>
-                        <span>${m.value} ${m.unit || ''}</span>
-                        <span>${statusBadge}</span>
-                    </div>`;
+                    html += `<div class="metric-row"><span>${escapeHtml(m.name)} <small class="text-muted">(${m.level})</small></span><span>${m.value} ${m.unit || ''}</span><span>${statusBadge}</span></div>`;
                 });
                 container.innerHTML = html;
-            } else {
-                container.innerHTML = '<p class="text-muted text-center py-3">Нет метрик</p>';
-            }
-        } catch (e) {
-            console.error('All metrics error:', e);
-            container.innerHTML = '<p class="text-muted text-center py-3">Ошибка загрузки метрик</p>';
-        }
+            } else container.innerHTML = '<p class="text-muted text-center py-3">Нет метрик</p>';
+        } catch (e) { container.innerHTML = '<p class="text-muted text-center py-3">Ошибка загрузки метрик</p>'; }
     }
 
     let allMetricsVisible = false;
     function toggleAllMetrics() {
         allMetricsVisible = !allMetricsVisible;
-        const container = document.getElementById('allMetricsContainer');
-        const icon = document.getElementById('expandIcon');
-        if (allMetricsVisible) {
-            container.style.display = 'block';
-            icon.className = 'fas fa-minus me-1';
-        } else {
-            container.style.display = 'none';
-            icon.className = 'fas fa-plus me-1';
-        }
+        document.getElementById('allMetricsContainer').style.display = allMetricsVisible ? 'block' : 'none';
+        document.getElementById('expandIcon').className = allMetricsVisible ? 'fas fa-minus me-1' : 'fas fa-plus me-1';
     }
 
-    // ============================================================
-    // 3. ЗАДАЧИ
-    // ============================================================
     async function loadTasks() {
-        console.log('loadTasks вызван');
         const container = document.getElementById('tasksList');
         container.innerHTML = '<p class="text-muted text-center py-3"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка...</p>';
         try {
             const resp = await fetch('/api/tasks/list');
-            if (!resp.ok) {
-                throw new Error(`HTTP error! status: ${resp.status}`);
-            }
+            if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
             const data = await resp.json();
-            console.log('Задачи:', data);
             if (data.tasks && data.tasks.length > 0) {
                 container.innerHTML = data.tasks.map(t => `
                     <div class="task-item priority-${t.priority || 'low'} d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>${escapeHtml(t.title)}</strong>
-                            <div class="small text-muted">${t.assignee ? '👤 ' + escapeHtml(t.assignee) : ''} ${t.deadline ? '| 📅 ' + escapeHtml(t.deadline) : ''}</div>
-                        </div>
+                        <div><strong>${escapeHtml(t.title)}</strong><div class="small text-muted">${t.assignee ? '👤 ' + escapeHtml(t.assignee) : ''} ${t.deadline ? '| 📅 ' + escapeHtml(t.deadline) : ''}</div></div>
                         ${getPriorityBadge(t.priority)}
-                    </div>
-                `).join('');
-            } else {
-                container.innerHTML = '<p class="text-muted text-center py-3">Нет активных задач</p>';
-            }
-        } catch (e) {
-            console.error('Tasks error:', e);
-            container.innerHTML = '<p class="text-muted text-center py-3">Ошибка загрузки задач</p>';
-        }
+                    </div>`).join('');
+            } else container.innerHTML = '<p class="text-muted text-center py-3">Нет активных задач</p>';
+        } catch (e) { container.innerHTML = '<p class="text-muted text-center py-3">Ошибка загрузки задач</p>'; }
     }
 
-    // ============================================================
-    // 4. ИССЛЕДОВАНИЯ (как в Отчётах)
-    // ============================================================
     async function loadResearchList() {
-        console.log('loadResearchList вызван');
         const container = document.getElementById('researchList');
         container.innerHTML = '<div class="text-muted text-center py-3"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка...</div>';
         try {
             const resp = await fetch('/api/research/list');
-            if (!resp.ok) {
-                throw new Error(`HTTP error! status: ${resp.status}`);
-            }
+            if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
             const data = await resp.json();
-            console.log('Исследования:', data);
-            
             if (data.research && data.research.length > 0) {
                 container.innerHTML = data.research.map((r, index) => `
-                    <div class="list-group-item list-group-item-action report-item" 
-                         onclick="loadResearchContent(this)" 
-                         data-path="${escapeHtml(r.path)}">
-                        <div>
-                            <strong><i class="fas fa-search text-primary me-1"></i> ${escapeHtml(r.query)}</strong>
-                            <div class="date">${formatDate(r.date)}</div>
-                        </div>
+                    <div class="list-group-item list-group-item-action report-item" onclick="loadResearchContent(this)" data-path="${escapeHtml(r.path)}">
+                        <div><strong><i class="fas fa-search text-primary me-1"></i> ${escapeHtml(r.query)}</strong><div class="date">${formatDate(r.date)}</div></div>
                         <i class="fas fa-chevron-right text-muted"></i>
-                    </div>
-                `).join('');
-                
-                if (data.research[0]) {
-                    const firstItem = container.querySelector('.report-item');
-                    loadResearchContent(firstItem);
-                } else {
-                    document.getElementById('researchView').innerHTML = '<p class="text-muted text-center py-5">Нет исследований</p>';
-                }
+                    </div>`).join('');
+                if (data.research[0]) { const firstItem = container.querySelector('.report-item'); loadResearchContent(firstItem); }
+                else document.getElementById('researchView').innerHTML = '<p class="text-muted text-center py-5">Нет исследований</p>';
             } else {
                 container.innerHTML = '<p class="text-muted text-center py-3">Нет исследований</p>';
                 document.getElementById('researchView').innerHTML = '<p class="text-muted text-center py-5">Нет исследований для отображения</p>';
             }
-        } catch (e) {
-            console.error('Research list error:', e);
-            container.innerHTML = '<p class="text-muted text-center py-3">Ошибка загрузки исследований</p>';
-        }
+        } catch (e) { container.innerHTML = '<p class="text-muted text-center py-3">Ошибка загрузки исследований</p>'; }
     }
 
     async function loadResearchContent(element) {
         const path = element.getAttribute('data-path');
-        console.log('loadResearchContent вызван, path:', path);
-        
         const view = document.getElementById('researchView');
         view.innerHTML = '<p class="text-muted text-center py-5"><i class="fas fa-spinner fa-spin me-2"></i>Загрузка исследования...</p>';
-        
-        document.querySelectorAll('#researchList .report-item').forEach(item => {
-            item.classList.remove('active');
-        });
+        document.querySelectorAll('#researchList .report-item').forEach(item => item.classList.remove('active'));
         element.classList.add('active');
-        
         try {
             const resp = await fetch(`/api/research/content?path=${encodeURIComponent(path)}`);
-            if (!resp.ok) {
-                const errorData = await resp.json().catch(() => ({}));
-                throw new Error(errorData.error || `HTTP error! status: ${resp.status}`);
-            }
+            if (!resp.ok) { const errorData = await resp.json().catch(() => ({})); throw new Error(errorData.error || `HTTP error! status: ${resp.status}`); }
             const data = await resp.json();
-            console.log('Содержимое исследования:', data);
-            
-            if (data.error) {
-                view.innerHTML = `<p class="text-danger">${escapeHtml(data.error)}</p>`;
-                return;
-            }
-            
+            if (data.error) { view.innerHTML = `<p class="text-danger">${escapeHtml(data.error)}</p>`; return; }
             let html = `<h2>🔍 Исследование</h2>`;
             html += `<p class="text-muted">Запрос: ${escapeHtml(data.query || 'Без запроса')}</p>`;
             html += `<p class="text-muted">Дата: ${formatDate(data.timestamp)}</p>`;
-            html += `<p><strong>Источников:</strong> ${data.sources_count || 0}</p>`;
-            html += `<hr>`;
-            
-            if (data.report) {
-                html += `<div style="white-space: pre-wrap; font-family: monospace; background: #f8f9fa; padding: 1rem; border-radius: 8px; font-size: 0.9rem;">`;
-                html += escapeHtml(data.report);
-                html += `</div>`;
-            } else {
-                html += `<p class="text-muted">Отчёт не найден</p>`;
-            }
-            
+            html += `<p><strong>Источников:</strong> ${data.sources_count || 0}</p><hr>`;
+            if (data.report) html += `<div style="white-space: pre-wrap; font-family: monospace; background: #f8f9fa; padding: 1rem; border-radius: 8px; font-size: 0.9rem;">${escapeHtml(data.report)}</div>`;
+            else html += `<p class="text-muted">Отчёт не найден</p>`;
             view.innerHTML = html;
-        } catch (e) {
-            console.error('Ошибка загрузки исследования:', e);
-            view.innerHTML = `<p class="text-danger">Ошибка загрузки исследования: ${escapeHtml(e.message)}</p>`;
-        }
+        } catch (e) { view.innerHTML = `<p class="text-danger">Ошибка загрузки исследования: ${escapeHtml(e.message)}</p>`; }
     }
 
-    function refreshAll() {
-        console.log('refreshAll вызван');
-        loadKPI();
-        const activeTab = document.querySelector('[data-tab].active');
-        if (activeTab) {
-            const tabId = activeTab.dataset.tab;
-            if (tabId === 'reports') loadReports();
-            if (tabId === 'metrics') loadMetricsSummary();
-            if (tabId === 'tasks') loadTasks();
-            if (tabId === 'research') loadResearchList();
-        }
-    }
+    function refreshAll() { loadKPI(); const activeTab = document.querySelector('[data-tab].active'); if (activeTab) { const tabId = activeTab.dataset.tab; if (tabId === 'reports') loadReports(); if (tabId === 'metrics') loadMetricsSummary(); if (tabId === 'tasks') loadTasks(); if (tabId === 'research') loadResearchList(); } }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM загружен');
-        loadKPI();
-        loadReports();
-    });
+    document.addEventListener('DOMContentLoaded', function() { loadKPI(); loadReports(); });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,0 +1,93 @@
+{
+  "product_metrics": {
+    "project_id": "neuro_bot_2025",
+    "velocity": 42,
+    "cycle_time": 12.5,
+    "lead_time": 18.3,
+    "throughput": 8,
+    "sprint_count": 6,
+    "epics_completed": 3
+  },
+  "component_metrics": {
+    "code_coverage": 78.5,
+    "tech_debt": 4.2,
+    "complexity": 12.8,
+    "bugs_count": 15,
+    "test_count": 342,
+    "build_success_rate": 94.7
+  },
+  "team_metrics": {
+    "team_size": 8,
+    "engagement_score": 4.2,
+    "retro_scores": [4.5, 4.8, 4.2, 5.0, 4.6],
+    "avg_hours": 38.5,
+    "turnover_rate": 12.5,
+    "satisfaction": 4.0
+  },
+  "individual_metrics": [
+    {
+      "name": "Алексей",
+      "role": "Tech Lead",
+      "skills": ["Python", "NLP", "MLOps", "Docker", "K8s"],
+      "experience": 8,
+      "certifications": ["AWS", "ML"],
+      "contributions": 45
+    },
+    {
+      "name": "Мария",
+      "role": "Senior Developer",
+      "skills": ["Python", "PyTorch", "FastAPI", "SQL"],
+      "experience": 5,
+      "certifications": ["PyTorch"],
+      "contributions": 38
+    },
+    {
+      "name": "Иван",
+      "role": "Developer",
+      "skills": ["Python", "Django", "React"],
+      "experience": 3,
+      "certifications": [],
+      "contributions": 28
+    },
+    {
+      "name": "Елена",
+      "role": "ML Engineer",
+      "skills": ["Python", "TensorFlow", "PyTorch", "NLP"],
+      "experience": 6,
+      "certifications": ["TensorFlow"],
+      "contributions": 32
+    }
+  ],
+  "project_requirements": {
+    "phase": "development",
+    "required_skills": ["Python", "NLP", "PyTorch", "MLOps", "Docker"],
+    "deadline": "2025-12-31",
+    "criteria": [
+      {
+        "name": "Точность модели >= 95%",
+        "target": 95.0,
+        "current": 94.2
+      },
+      {
+        "name": "Время инференса < 100ms",
+        "target": 100,
+        "current": 85
+      },
+      {
+        "name": "Покрытие кода >= 80%",
+        "target": 80.0,
+        "current": 78.5
+      },
+      {
+        "name": "API доступность 99.9%",
+        "target": 99.9,
+        "current": 99.95
+      },
+      {
+        "name": "Интеграция с источниками",
+        "target": 3,
+        "current": 2
+      }
+    ]
+  }
+}
