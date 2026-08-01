@@ -1,0 +1,142 @@
+/* Общие стили */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Карточки */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 600;
+}
+
+/* Статус бейджи */
+.badge {
+    font-weight: 500;
+    padding: 0.4em 0.8em;
+}
+
+/* Задачи */
+.task-item {
+    transition: background-color 0.2s ease;
+    border-left: 4px solid transparent;
+}
+
+.task-item[data-status="pending"] {
+    border-left-color: #6c757d;
+}
+
+.task-item[data-status="in_progress"] {
+    border-left-color: #0d6efd;
+}
+
+.task-item[data-status="completed"] {
+    border-left-color: #198754;
+}
+
+.task-item[data-status="cancelled"] {
+    border-left-color: #dc3545;
+}
+
+/* Чат */
+.message.system .bg-light {
+    background-color: #f0f2f5 !important;
+}
+
+.message.user .bg-primary {
+    background-color: #0d6efd !important;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    
+    .card {
+        border-radius: 8px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message {
+    animation: fadeIn 0.3s ease;
+}
+
+/* Скролл чата */
+.chat-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+    background: #c1c7cd;
+    border-radius: 3px;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+    background: #a8b0b8;
+}
+
+/* Отчёт */
+.report-content {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #2c3e50;
+}
+
+.report-content h1,
+.report-content h2,
+.report-content h3 {
+    margin-top: 24px;
+    margin-bottom: 12px;
+}
+
+.report-content table {
+    width: 100%;
+    margin: 16px 0;
+    border-collapse: collapse;
+}
+
+.report-content table th,
+.report-content table td {
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+}
+
+.report-content table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}

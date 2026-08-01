@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Отчёт — AI-Ассистент Руководителя{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-file-alt me-2"></i>Отчёт</h1>
+            <div>
+                <button class="btn btn-outline-secondary me-2" onclick="window.print()">
+                    <i class="fas fa-print me-1"></i>Печать
+                </button>
+                <button class="btn btn-success" onclick="downloadReport()">
+                    <i class="fas fa-download me-1"></i>Скачать
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <!-- Заголовок -->
+                <div class="text-center mb-4">
+                    <h2>ИССЛЕДОВАТЕЛЬСКИЙ ОТЧЁТ</h2>
+                    <p class="text-muted">Запрос: {{ report.query }}</p>
+                    <p class="text-muted small">
+                        {{ report.started_at[:16].replace('T', ' ') }}
+                        · {{ report.sources_count }} источников
+                        · {{ report.chunks_count }} чанков
+                    </p>
+                </div>
+                
+                <hr>
+                
+                <!-- Отчёт -->
+                {% if report.report and report.report.text %}
+                <div class="report-content">
+                    {{ report.report.text | replace('\n', '<br>') | safe }}
+                </div>
+                {% else %}
+                <div class="text-muted text-center py-5">
+                    <i class="fas fa-file-alt fa-3x mb-3 d-block"></i>
+                    <p>Отчёт не найден или ещё не сгенерирован</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function downloadReport() {
+    // Скачиваем отчёт как текст
+    const content = document.querySelector('.report-content');
+    if (content) {
+        const text = content.textContent || content.innerText;
+        const blob = new Blob([text], {type: 'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'report_{{ report.id }}.txt';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+}
+</script>
+{% endblock %}

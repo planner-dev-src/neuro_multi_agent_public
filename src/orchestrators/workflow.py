@@ -177,10 +177,39 @@ def run_full_pipeline(
     # -----------------------------------------------------------------------
     print("\n[1/8] secretary_agent...")
     try:
-        secretary_result = run_secretary_agent(
-            mode="load",
-            meeting_json_path=meeting_json_path,
-        )
+        # Проверяем, есть ли видео для транскрипции
+        default_video = Path("data/input/meeting_ceo.mp4")
+        need_process = False
+        
+        if default_video.exists():
+            # Проверяем, есть ли актуальные результаты транскрипции
+            results_dir = Path("src/agents/secretary_agent/transcription_results")
+            if results_dir.exists():
+                json_files = list(results_dir.rglob("full_result_*.json"))
+                if json_files:
+                    latest = max(json_files, key=lambda p: p.stat().st_mtime)
+                    # Если видео новее результатов — перетранскрибируем
+                    if default_video.stat().st_mtime > latest.stat().st_mtime:
+                        need_process = True
+                else:
+                    need_process = True
+            else:
+                need_process = True
+        
+        if need_process:
+            print(f"  🎬 Обнаружено видео: {default_video}")
+            print(f"  🎙️ Запуск транскрипции... (это может занять несколько минут)")
+            secretary_result = run_secretary_agent(
+                mode="process",
+                audio_path=str(default_video),
+                analyze=True,
+                auto_save=True,
+            )
+        else:
+            secretary_result = run_secretary_agent(
+                mode="load",
+                meeting_json_path=meeting_json_path,
+            )
         
         if secretary_result.get("success"):
             added = store.index_chunks(_chunks_to_dicts(secretary_result.get("rag_chunks", [])))
@@ -188,6 +217,10 @@ def run_full_pipeline(
             print(f"  Решения: {len(meeting.get('key_decisions', []))}")
             print(f"  Поручения: {len(meeting.get('assigned_tasks', []))}")
             print(f"  Чанков в RAG: {store.count} (+{added})")
+            if need_process:
+                saved = secretary_result.get("saved_files", {})
+                if saved:
+                    print(f"  📁 Результаты сохранены в: {Path(saved.get('full_result', '')).parent}")
             report_data["secretary"] = secretary_result
         else:
             print(f"  ⚠️ secretary_agent: {secretary_result.get('error', 'Неизвестная ошибка')}")
@@ -243,7 +276,7 @@ def run_full_pipeline(
         report_data["market_narrative"] = {"full_text": narrative_text, "error": str(e)}
 
     # -----------------------------------------------------------------------
-    # 4. Metrics Agent — ИСПРАВЛЕННАЯ ВЕРСИЯ
+    # 4. Metrics Agent
     # -----------------------------------------------------------------------
     print("\n[4/8] metrics_agent...")
     try:
@@ -267,7 +300,6 @@ def run_full_pipeline(
             print(f"  Критериев: {criteria.get('total', 0)}")
             print(f"  Чанков в RAG: {store.count} (+{added})")
             
-            # ✅ Сохраняем только словарь, НЕ объект MetricsAgent
             metrics_dict = {
                 "metrics_data": metrics_data,
                 "competency_map": competency_map,
@@ -277,7 +309,7 @@ def run_full_pipeline(
                 "status": "completed"
             }
             report_data["metrics"] = metrics_dict
-            metrics_result = metrics_dict  # ← тоже словарь для planner_agent
+            metrics_result = metrics_dict
         else:
             error_msg = metrics_result.get('error', 'Неизвестная ошибка')
             print(f"  ⚠️ metrics_agent: {error_msg}")

@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "last_updated": "2026-07-30T15:09:23.144650",
+  "last_updated": "2026-08-01T18:43:04.661382",
   "levels": {
     "strategic": {
       "data": {
@@ -466,6 +466,14 @@
           "unit": "%",
           "status": "warning",
           "interpretation": "Кластер тем представлен ограниченно и может рассматриваться как заметная зона конкурентного роста."
+        },
+        "automl": {
+          "name": "AutoML",
+          "value": "0.5592",
+          "target": 70,
+          "unit": "%",
+          "status": "warning",
+          "interpretation": "Кластер тем представлен ограниченно и может рассматриваться как заметная зона конкурентного роста."
         }
       }
     },
@@ -568,11 +576,11 @@
     }
   ],
   "summary": {
-    "total_metrics": 51,
+    "total_metrics": 52,
     "total_decisions": 5,
     "status_distribution": {
       "critical": 3,
-      "warning": 46,
+      "warning": 47,
       "met": 2
     }
   }
