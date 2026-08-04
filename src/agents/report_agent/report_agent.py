@@ -209,7 +209,7 @@ class ReportAgent:
         product_metrics = metrics.get("metrics", {}).get("product_metrics", {})
         return {
             "title": "ИТОГОВЫЙ УПРАВЛЕНЧЕСКИЙ ОТЧЕТ",
-            "project_id": product_metrics.get("project_id", "Не указан"),
+            "project_id": product_metrics.get("project_id", "УИИ — AI/IT компания"),
             "date": datetime.now().strftime("%d.%m.%Y"),
             "version": "3.5"
         }
