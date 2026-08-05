@@ -145,6 +145,7 @@
                     <li class="nav-item"><a class="nav-link" href="/research"><i class="fas fa-search me-1"></i>Исследование</a></li>
                     <li class="nav-item"><a class="nav-link" href="/tasks"><i class="fas fa-tasks me-1"></i>Задачи</a></li>
                     <li class="nav-item"><a class="nav-link" href="/chat"><i class="fas fa-comment-dots me-1"></i>Чат</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/presentation"><i class="fas fa-desktop me-1"></i>Презентация</a></li>
                 </ul>
                 <span class="navbar-text text-light-emphasis small">
                     <i class="fas fa-circle text-success me-1" style="font-size:8px;"></i>Система активна
@@ -366,11 +367,9 @@
             if (!resp.ok) throw new Error(`HTTP error! status: ${resp.status}`);
             const data = await resp.json();
             
-            // Стратегия: факт / план
             document.getElementById('kpi-strategic').innerHTML = 
                 `${data.strategic.current} <span style="font-size:0.7em;color:#6c757d;">/ ${data.strategic.target}</span>`;
             
-            // Рынок: охвачено из всего
             document.getElementById('kpi-market').innerHTML = 
                 `${data.market.current} <span style="font-size:0.7em;color:#6c757d;">из ${data.market.total}</span>`;
             

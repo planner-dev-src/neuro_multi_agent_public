@@ -4,6 +4,7 @@
 
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from datetime import datetime
 import sys
@@ -23,6 +24,10 @@ app = FastAPI(title="AI-Ассистент Руководителя")
 # Пути
 BASE_DIR = Path(__file__).resolve().parent
 TEMPLATES_DIR = BASE_DIR / "templates"
+STATIC_DIR = BASE_DIR / "static"
+
+# Подключаем статические файлы
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 
 # ============================================================
@@ -928,19 +933,28 @@ def read_html(filename: str) -> str:
 
 @app.get("/", response_class=HTMLResponse)
 async def index():
+    """Главная страница"""
     return HTMLResponse(content=read_html("index.html"))
 
 @app.get("/research", response_class=HTMLResponse)
 async def research_page():
+    """Страница исследования"""
     return HTMLResponse(content=read_html("research.html"))
 
 @app.get("/tasks", response_class=HTMLResponse)
 async def tasks_page():
+    """Страница задач"""
     return HTMLResponse(content=read_html("tasks.html"))
 
 @app.get("/chat", response_class=HTMLResponse)
 async def chat_page():
+    """Страница чата"""
     return HTMLResponse(content=read_html("chat.html"))
+
+@app.get("/presentation", response_class=HTMLResponse)
+async def presentation_page():
+    """Страница презентации"""
+    return HTMLResponse(content=read_html("presentation.html"))
 
 
 if __name__ == "__main__":

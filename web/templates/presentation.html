@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Презентация — AI-Ассистент</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            background: #f8f9fa;
+            padding-top: 56px;
+        }
+        main { flex: 1; }
+        
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        .slide {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid #dee2e6;
+        }
+        
+        .slide h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0d6efd;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #0d6efd;
+        }
+        
+        .slide h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #212529;
+            margin-top: 1.5rem;
+        }
+        
+        .slide-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .slide-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        
+        .slide-table th, .slide-table td {
+            padding: 0.5rem 0.6rem;
+            border: 1px solid #dee2e6;
+            vertical-align: top;
+            text-align: left;
+        }
+        
+        .slide-table th {
+            background: #0d6efd;
+            color: white;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .slide-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .slide ul {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .slide ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .slide ol {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .slide ol li {
+            margin-bottom: 0.8rem;
+        }
+
+        .slide p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .two-columns {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .column {
+            flex: 1;
+        }
+        
+        .column h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0d6efd;
+            margin-bottom: 1rem;
+            padding-bottom: 0.3rem;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/"><i class="fas fa-brain me-2"></i>AI-Ассистент</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-chart-pie me-1"></i>Обзор</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/research"><i class="fas fa-search me-1"></i>Исследование</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/tasks"><i class="fas fa-tasks me-1"></i>Задачи</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/chat"><i class="fas fa-comment-dots me-1"></i>Чат</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/presentation"><i class="fas fa-desktop me-1"></i>Презентация</a></li>
+                </ul>
+                <span class="navbar-text text-light-emphasis small">
+                    <i class="fas fa-circle text-success me-1" style="font-size:8px;"></i>Система активна
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid py-4">
+        <h1 class="mb-4">
+            <i class="fas fa-desktop me-2"></i>
+            Мультиагентная система поддержки управленческих решений для AI/IT-компании
+        </h1>
+        
+        <!-- Слайд 1: Проблемная область -->
+        <div class="slide">
+            <h2>Проблемная область</h2>
+            <p>Руководитель AI/IT-компании ежедневно сталкивается с необходимостью принимать управленческие решения в условиях:</p>
+            <ul>
+                <li><strong>Быстро меняющегося внешнего рынка</strong> AI-технологий</li>
+                <li><strong>Ограниченного времени</strong> на анализ больших объёмов информации</li>
+                <li><strong>Необходимости согласования</strong> внешних трендов с внутренними возможностями компании</li>
+            </ul>
+        </div>
+
+        <!-- Слайд 2: Общая идея решения -->
+        <div class="slide">
+            <h2>Общая идея решения</h2>
+            <p>Создать интеллектуальную систему, которая автоматически:</p>
+            <ol>
+                <li><strong>Собирает информацию</strong> о внешней среде (рынок AI-образования, конкуренты, тренды).</li>
+                <li><strong>Агрегирует внутренние метрики</strong> компании (компетенции, продукты, проекты).</li>
+                <li><strong>Фиксирует стратегические установки</strong> руководителя (через транскрибацию совещаний).</li>
+                <li><strong>Сопоставляет</strong> внешние и внутренние данные.</li>
+                <li><strong>Формирует информационные предпосылки</strong> для принятия обоснованных управленческих решений.</li>
+            </ol>
+        </div>
+
+        <!-- Слайд 3: Ключевые сущности системы -->
+        <div class="slide">
+            <h2>Ключевые сущности системы</h2>
+            <div class="two-columns">
+                <div class="column">
+                    <h3>🌍 Внешняя среда</h3>
+                    <ul>
+                        <li><strong>12 направлений AI</strong></li>
+                        <li><strong>6 конкурентных платформ:</strong>
+                            <ul>
+                                <li>Высшая школа экономики</li>
+                                <li>ЯндексПрактикум</li>
+                                <li>Karpov-courses</li>
+                                <li>OTUS</li>
+                                <li>NETOLOGY</li>
+                                <li>SKILLBOX</li>
+                            </ul>
+                        </li>
+                        <li><strong>Рыночные тренды</strong></li>
+                        <li><strong>GAP-зоны</strong></li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h3>📊 Внутренние метрики</h3>
+                    <ul>
+                        <li><strong>🎯 Стратегический</strong></li>
+                        <li><strong>🌍 Рыночный</strong></li>
+                        <li><strong>📦 Продуктовый</strong></li>
+                        <li><strong>🧠 Компетенции</strong></li>
+                        <li><strong>⚙️ Технический</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 4: База данных -->
+        <div class="slide">
+            <h2>База данных</h2>
+            <p>В качестве 12 направлений базы знаний по DATA SCIENCE и нейронным сетям УИИ, базиса сравнения с другими платформами и конкурирующих обучающих платформ приняты данные, приведённые на сайте УИИ.</p>
+            <img src="/static/img/Neural_University_2.jpg" alt="Направления УИИ" class="slide-image" style="max-width:80%;">
+        </div>
+
+        <!-- Слайд 5: 12 направлений и базис сравнения -->
+        <div class="slide">
+            <h2>12 направлений и базис сравнения</h2>
+            <div class="two-columns">
+                <div class="column">
+                    <h3>📚 12 направлений базы знаний</h3>
+                    <ol>
+                        <li>Компьютерное зрение (CV)</li>
+                        <li>Обработка естественного языка (NLP)</li>
+                        <li>Временные ряды (TS)</li>
+                        <li>Обучение с подкреплением (RL)</li>
+                        <li>Аудио и распознавание речи (S2T)</li>
+                        <li>Генеративно-состязательные нейросети (GAN)</li>
+                        <li>Классическое машинное обучение (ML)</li>
+                        <li>Генетические алгоритмы (GA)</li>
+                        <li>Управление AI проектами и продажи на заказ</li>
+                        <li>Интеграция в PRODUCTION</li>
+                        <li>AI-агенты на базе LLM</li>
+                        <li>AUTOML</li>
+                    </ol>
+                </div>
+                <div class="column">
+                    <h3>📋 Базис сравнения</h3>
+                    <ul>
+                        <li>Самостоятельные задания</li>
+                        <li>Гибкий график курса</li>
+                        <li>Вебинары и наличие бесплатного контента</li>
+                        <li>Помощь в трудоустройстве</li>
+                        <li>Гарантированное трудоустройство</li>
+                        <li>База контента по AI, количество занятий</li>
+                        <li>Чёткая специализация на AI</li>
+                        <li>Реальные проекты для крупных компаний</li>
+                        <li>Собственное AI HR агентство</li>
+                        <li>Выкуп стоимости вашего курса (работа у нас)</li>
+                        <li>Подтверждённые победы на хакатонах</li>
+                        <li>AI Реалити</li>
+                        <li>Нейро-куратор по AI на chatGPT</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайд 6: Укрупнённая блок-схема системы -->
+        <div class="slide">
+            <h2>Укрупнённая блок-схема системы</h2>
+            <img src="/static/img/01_scheme_final_krupn_b.jpg" alt="Укрупнённая блок-схема системы" class="slide-image">
+        </div>
+
+        <!-- Слайд 7: Архитектура системы -->
+        <div class="slide">
+            <h2>Архитектура системы</h2>
+            <p>Вход один — потребность руководителя в анализе. Далее идёт выбор сценария: обработать совещание, провести исследование, создать задачу, задать вопрос в чат или запустить полный цикл. Запрос проходит через веб-интерфейс в оркестратор, который маршрутизирует его к нужным агентам.</p>
+            <p>Всего в системе <strong>девять нейро-агентов</strong>. Каждый работает со своим типом данных и не смешивает контексты на ранних этапах. Результаты всех агентов попадают в единую базу знаний, а затем возвращаются руководителю в виде отчётов, плана действий или ответа в чате.</p>
+        </div>
+
+        <!-- Слайд 8: Инфраструктура -->
+        <div class="slide">
+            <h2>Инфраструктура</h2>
+            <p>В основе системы — <strong>три инфраструктурных компонента</strong>:</p>
+            <ul>
+                <li><strong>🗄️ RAG Store</strong> на базе ChromaDB — векторное хранилище, которое пополняется от семи агентов.</li>
+                <li><strong>🤖 LLM Ollama</strong> с моделью qwen 2.5 на 7 миллиардов параметров — используется для анализа и генерации текста.</li>
+                <li><strong>📋 Metrics Registry</strong> — хранит метрики и задачи.</li>
+            </ul>
+            <p>Все компоненты работают <strong>локально</strong>, без доступа в интернет для LLM, что обеспечивает конфиденциальность данных.</p>
+        </div>
+
+        <!-- Слайд 9: Оркестратор и маршрутизация -->
+        <div class="slide">
+            <h2>Оркестратор и маршрутизация</h2>
+            <p>Ключевой элемент системы — <strong>оркестратор</strong>. Он работает как дирижёр: принимает запрос, определяет намерение руководителя и запускает нужную цепочку агентов.</p>
+            <p>Для классификации намерений используется <strong>двухуровневая система</strong>:</p>
+            <ul>
+                <li><strong>Уровень 1:</strong> быстрая проверка по ключевым словам, работает мгновенно.</li>
+                <li><strong>Уровень 2:</strong> если уверенность ниже 70%, подключается языковая модель, которая даёт точный ответ.</li>
+            </ul>
+            <p>Всего поддерживается <strong>пять сценариев</strong>: совещание, исследование, задача, вопрос в чат и полный цикл анализа.</p>
+        </div>
+
+        <!-- Слайд 10: Оркестратор (схема) -->
+        <div class="slide">
+            <h2>Оркестратор</h2>
+            <img src="/static/img/02_orchestrator.png" alt="Схема оркестратора" class="slide-image">
+        </div>
+
+        <!-- Слайд 11: Нейро-агенты системы -->
+        <div class="slide">
+            <h2>Нейро-агенты системы</h2>
+            <img src="/static/img/03_agents.png" alt="Схема нейро-агентов" class="slide-image">
+        </div>
+
+        <!-- Слайд 12: Таблица описания блоков -->
+        <div class="slide">
+            <h2>Таблица 1. Описание блоков мультиагентной системы</h2>
+            <div class="table-responsive">
+                <table class="slide-table">
+                    <thead>
+                        <tr>
+                            <th>Блок</th>
+                            <th>Роль</th>
+                            <th>Функция</th>
+                            <th>Вход</th>
+                            <th>Выход</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Руководитель</strong></td>
+                            <td>Пользователь, инициатор</td>
+                            <td>Формулирует потребность в анализе, выбирает сценарий работы, получает и оценивает результат</td>
+                            <td>Потребность в анализе</td>
+                            <td>Решение на основе полученных данных</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Веб-интерфейс</strong></td>
+                            <td>Точка взаимодействия</td>
+                            <td>Предоставляет четыре страницы для работы с системой: Обзор (дашборд KPI, вкладки «Отчёты», «Метрики», «Задачи», «Исследования»), Исследование (форма поиска), Задачи (создание и просмотр), Чат (диалог с системой)</td>
+                            <td>Действия руководителя</td>
+                            <td>Запросы к системе оркестрации</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Система оркестрации</strong></td>
+                            <td>Координатор</td>
+                            <td>Определяет сценарий по намерению пользователя (двухуровневая классификация: ключевые слова + языковая модель), запускает агентов в нужном порядке, координирует пополнение базы знаний, обрабатывает ошибки</td>
+                            <td>Запросы из веб-интерфейса</td>
+                            <td>Скоординированные задачи агентам</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Task Manager</strong></td>
+                            <td>Управляющий задачами</td>
+                            <td>Создаёт задачу, сохраняет её в реестр метрик и задач</td>
+                            <td>Поручение руководителя</td>
+                            <td>Задача в реестре</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Secretary Agent</strong></td>
+                            <td>Обработчик совещаний</td>
+                            <td>Транскрибирует аудио/видео через Whisper, анализирует текст через языковую модель, извлекает тезисы, решения, поручения и риски</td>
+                            <td>Аудио/видео совещания</td>
+                            <td>Тезисы, решения, поручения, риски → RAG</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Research Agent</strong></td>
+                            <td>Поисковый агент</td>
+                            <td>Выполняет поиск в DuckDuckGo, фильтрует источники по уровню глубины (стандартный/глубокий/экспертный), загружает и проверяет страницы на соответствие AI-тематике, разбивает текст на фрагменты с тегами направлений, формирует отчёт</td>
+                            <td>Поисковый запрос</td>
+                            <td>Фрагменты текста с тегами → RAG, отчёт исследования</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Market Agent</strong> (две части)</td>
+                            <td>Сборщик и Аналитик</td>
+                            <td>Market Agent: собирает данные с платформ (разбор HTML, поиск); Market Analysis Agent: анализирует тренды, конкурентов, выявляет конкурентные разрывы</td>
+                            <td>URL платформ, каталоги курсов</td>
+                            <td>Тренды, анализ конкурентов, конкурентные разрывы → RAG</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Market Narrative Agent</strong></td>
+                            <td>Аналитик рынка</td>
+                            <td>Формирует аналитический обзор рынка через языковую модель, используя направления компании из единого реестра keywords.py</td>
+                            <td>Тренды, анализ конкурентов</td>
+                            <td>Аналитический обзор рынка → RAG</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Metrics Agent</strong></td>
+                            <td>Оценщик метрик</td>
+                            <td>Загружает внутренние метрики из реестра, приводит к единому виду, группирует по пяти уровням (стратегический, рыночный, продуктовый, компетенции, технический), строит карту влияния</td>
+                            <td>Данные из реестра метрик</td>
+                            <td>Метрики по уровням, карта влияния → RAG</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Planner Agent</strong></td>
+                            <td>Планировщик</td>
+                            <td>Анализирует метрики, рыночные данные, аналитический обзор и вводные от руководителя, формирует план действий и рекомендации</td>
+                            <td>Метрики, анализ рынка, вводные руководителя, задачи из реестра</td>
+                            <td>План действий, рекомендации → RAG</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Report Agent</strong></td>
+                            <td>Генератор отчёта</td>
+                            <td>Собирает итоговый управленческий отчёт из результатов всех агентов, сохраняет в форматах JSON и TXT</td>
+                            <td>Данные от всех агентов</td>
+                            <td>Итоговый отчёт (JSON + TXT) → RAG</td>
+                        </tr>
+                        <tr>
+                            <td><strong>RAG Store</strong></td>
+                            <td>База знаний</td>
+                            <td>Векторное хранилище (ChromaDB), пополняется от семи агентов, обеспечивает семантический поиск</td>
+                            <td>Фрагменты текста от агентов</td>
+                            <td>Релевантный контекст для запросов</td>
+                        </tr>
+                        <tr>
+                            <td><strong>LLM Ollama</strong></td>
+                            <td>Языковая модель</td>
+                            <td>Модель qwen2.5:7b — используется для анализа транскриптов, формирования аналитических обзоров, генерации ответов в чате, уточнения классификации намерений</td>
+                            <td>Промпты с контекстом</td>
+                            <td>Сгенерированный текст</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Metrics Registry</strong></td>
+                            <td>Реестр метрик и задач</td>
+                            <td>Хранит внутренние метрики компании и список задач, используется агентами Metrics Agent, Planner Agent и Task Manager</td>
+                            <td>Метрики, задачи</td>
+                            <td>Данные для анализа и планирования</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Исполнители</strong></td>
+                            <td>Сотрудники</td>
+                            <td>Получают задачи из плана действий, выполняют их, отчитываются на следующем совещании</td>
+                            <td>План действий</td>
+                            <td>Отчёт о выполнении → новый цикл</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Слайд 13: Веб-интерфейс -->
+        <div class="slide">
+            <h2>Веб-интерфейс мультиагентной системы</h2>
+            <img src="/static/img/site_01.jpg" alt="Страница Обзор" class="slide-image">
+        </div>
+
+        <!-- Слайд 14: Количественные показатели -->
+        <div class="slide">
+            <h2>Таблица 2. Количественные показатели системы</h2>
+            <div class="table-responsive">
+                <table class="slide-table" style="max-width:600px;">
+                    <thead>
+                        <tr>
+                            <th>Показатель</th>
+                            <th>Значение</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Программных агентов</td><td><strong>9</strong></td></tr>
+                        <tr><td>Уровней внутренних метрик</td><td><strong>5</strong> (с возможностью расширения)</td></tr>
+                        <tr><td>Направлений анализа внешней среды</td><td><strong>12</strong> (с возможностью расширения)</td></tr>
+                        <tr><td>Конечных точек API</td><td><strong>14</strong></td></tr>
+                        <tr><td>Страниц веб-интерфейса</td><td><strong>5</strong></td></tr>
+                        <tr><td>Ключевых слов в едином реестре</td><td><strong>60+</strong></td></tr>
+                        <tr><td>Уровней глубины поиска</td><td><strong>3</strong></td></tr>
+                        <tr><td>Типов отчётов</td><td><strong>4</strong></td></tr>
+                        <tr><td>Агентов, пополняющих RAG</td><td><strong>7</strong></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Слайд 15: Выводы -->
+        <div class="slide">
+            <h2>Выводы</h2>
+            <p>В результате выполнения проекта создана финальная версия мультиагентной системы поддержки управленческих решений для AI/IT-компании. Система реализует архитектурный подход <strong>«специализированные агенты с разделением контекстов»</strong>: одна группа агентов обрабатывает внутренний контекст (управленческие установки руководителя и пять уровней метрик компании), другая — внешний (рыночные сигналы по направлениям, различаемым компанией на данный момент), третья — сопоставляет их и выявляет расхождения.</p>
+            <p>Система не прогнозирует рынок и не доказывает достижимость KPI. Её задача — <strong>сопоставить полную совокупность внутренних метрик компании</strong> (пять уровней: от стратегических установок до технических параметров продукта) <strong>с совокупностью внешних сигналов</strong> (направления рынка, позиционирование конкурентов, тренды) и выявить расхождения между ними. Окончательная интерпретация расхождений и принятие решений всегда остаётся за руководителем.</p>
+        </div>
+        
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light border-top">
+        <div class="container text-center">
+            <span class="text-muted small">AI-Ассистент Руководителя v1.0 · 2026</span>
+            <br>
+            <span class="text-muted small">Мультиагентная система поддержки управленческих решений для AI/IT-компании • © Дипломный проект В.Н. Мишина</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
